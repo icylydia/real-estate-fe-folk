@@ -15,3 +15,11 @@ export const isLogin = () => {
 export const logout = () => {
   localStorage.removeItem('user');
 }
+
+export const getToken = () => {
+  const user = localStorage.getItem('user');
+  if (user) {
+    return JSON.parse(user).accessToken;
+  }
+  return null;
+}

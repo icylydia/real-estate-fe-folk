@@ -1,13 +1,9 @@
 import { AuthAPI as AuthAPIType, LoginRequest, LoginResponse } from 'src/api/auth';
-import { AxiosInstance } from 'axios';
+import { AxiosApi } from 'src/api/server/AxiosApi';
 
-export class AuthAPI implements AuthAPIType {
-  private axios: AxiosInstance;
-  constructor(axios: AxiosInstance) {
-    this.axios = axios;
-  }
+export class AuthAPI extends AxiosApi implements AuthAPIType {
   async login(request: LoginRequest): Promise<LoginResponse> {
-    const response = await this.axios.post<LoginResponse>('/login', request);
+    const response = await this.axios.post<LoginResponse>('/auth/login', request);
     return response.data;
   }
 }

@@ -33,6 +33,7 @@ module.exports = configure(function (/* ctx */) {
       'i18n',
       'axios',
       'vee-validate',
+      'filters',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -104,8 +105,9 @@ module.exports = configure(function (/* ctx */) {
       open: false, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'https://api.realestate.disneysea.cn',
+          target: 'http://127.0.0.1:4010',
           changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
         }
       },
     },

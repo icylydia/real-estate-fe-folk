@@ -16,6 +16,26 @@ const routes: RouteRecordRaw[] = [
         name: 'home',
         component: () => import('pages/ConstructingPage.vue'),
       },
+      {
+        path: 'buildings',
+        name: 'building-list',
+        component: () => import('pages/building/BuildingListPage.vue'),
+      },
+      {
+        path: 'buildings/new',
+        name: 'new-building',
+        component: () => import('pages/building/BuildingCreatePage.vue'),
+      },
+      {
+        path: 'buildings/:id',
+        name: 'building-detail',
+        component: () => import('pages/building/BuildingDetailPage.vue'),
+      },
+      {
+        path: 'buildings/:id/edit',
+        name: 'building-edit',
+        component: () => import('pages/building/BuildingEditPage.vue'),
+      }
     ],
     meta: {
       requiresAuth: true,
