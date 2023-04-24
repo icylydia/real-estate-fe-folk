@@ -2,7 +2,7 @@
   "name": "quasar-project",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "productName": "不動産管理システム",
   "author": "chris.li <chris.li@bytedance.com>",
   "private": true,
   "scripts": {

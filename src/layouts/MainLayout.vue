@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          賃貸管理システム
+          {{ appName }}
         </q-toolbar-title>
 
         <div>v{{ appVersion }}</div>
@@ -53,13 +53,14 @@ export default defineComponent({
 
   setup () {
     const leftDrawerOpen = ref(false)
-    const {appVersion} = useApp()
+    const {appName, appVersion} = useApp()
 
     return {
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
+      appName,
       appVersion,
     }
   },

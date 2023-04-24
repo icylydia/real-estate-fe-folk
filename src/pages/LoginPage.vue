@@ -12,7 +12,7 @@
           <q-card-section>
             <div class="row no-wrap items-center">
               <div class="col text-h6 text-weight-bold ellipsis">
-                賃貸管理システム<span class="text-subtitle1 q-ml-sm">v{{appVersion}}</span>
+                {{appName}}<span class="text-subtitle1 q-ml-sm">v{{appVersion}}</span>
               </div>
             </div>
           </q-card-section>
@@ -76,7 +76,7 @@ import { login } from 'src/auth';
 import { useRouter } from 'vue-router';
 import { useApi } from 'boot/axios';
 
-const {appVersion} = useApp();
+const {appName, appVersion} = useApp();
 
 const validationSchema = toTypedSchema(object({
   email: string().email().required().label('メールアドレス').default('test@email.com'),
