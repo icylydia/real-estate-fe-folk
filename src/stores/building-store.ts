@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
-import { BuildingInRequest, BuildingInResponse } from 'src/api/building';
+import { BuildingInRequest, BuildingInResponse, GetBuildingListRequest } from 'src/api/building';
 import { api } from 'boot/axios';
 import { AddressInResponse } from 'src/api/address';
+import _ from 'lodash';
 
 export type BuildingFormModel = Partial<BuildingInRequest & BuildingInResponse>
 
@@ -12,6 +13,7 @@ const defaultFormModel: BuildingFormModel = {
 
 export const useBuildingStore = defineStore('building', {
   state: () => ({
+    searchParams: {} as GetBuildingListRequest,
     list: [] as BuildingInResponse[],
     formModel: defaultFormModel,
   }),
@@ -21,12 +23,14 @@ export const useBuildingStore = defineStore('building', {
       this.formModel = defaultFormModel;
     },
 
-    async getBuildingList(page = 1, itemsPerPage = 15) {
+    async getBuildingList(params: GetBuildingListRequest) {
       this.reset();
-      const resp = await api.building.list({
-        page,
-        itemsPerPage
-      });
+      const defaultParams: GetBuildingListRequest = {
+        itemsPerPage: 15,
+        page: 1,
+      }
+      const query = _.defaults(params, defaultParams)
+      const resp = await api.building.list(query);
       this.list = resp.items || [];
     },
 
@@ -44,7 +48,7 @@ export const useBuildingStore = defineStore('building', {
       if (!postalCode) {
         return false;
       }
-      return postalCode.match(/^〒?[0-9]{3}-?[0-9]{4}$/) !== null;
+      return postalCode.match(/^[0-9]{3}-[0-9]{4}$/) !== null;
     },
 
     async updateAddressFromPostalCode() {

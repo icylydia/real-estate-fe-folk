@@ -116,7 +116,12 @@
   <q-list class="row">
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="building.address!.postalCode" label="郵便番号" :readonly="readonly" />
+        <q-input
+          v-model="building.address!.postalCode"
+          label="郵便番号"
+          placeholder="xxx-xxxx"
+          :readonly="readonly"
+        />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
