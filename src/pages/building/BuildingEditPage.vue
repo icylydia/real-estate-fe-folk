@@ -48,7 +48,7 @@ export default defineComponent({
       if (typeof id != 'string') {
         throw new Error('Invalid building id');
       }
-      return parseInt(id);
+      return id;
     },
   }
 });

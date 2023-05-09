@@ -35,7 +35,17 @@ const routes: RouteRecordRaw[] = [
         path: 'buildings/:id/edit',
         name: 'building-edit',
         component: () => import('pages/building/BuildingEditPage.vue'),
-      }
+      },
+      {
+        path: 'room/:id',
+        name: 'room-detail',
+        component: () => import('pages/room/RoomDetailPage.vue'),
+      },
+      {
+        path: 'room/:id/edit',
+        name: 'room-edit',
+        component: () => import('pages/room/RoomEditPage.vue'),
+      },
     ],
     meta: {
       requiresAuth: true,

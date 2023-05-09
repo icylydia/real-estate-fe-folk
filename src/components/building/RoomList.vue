@@ -41,7 +41,7 @@ import { QTableProps } from 'quasar';
 
 const columns: QTableProps['columns'] = [
   {
-    label: '部屋番号',
+    label: '部屋名',
     field: 'name',
     name: 'name',
     sortable: false,
@@ -86,7 +86,7 @@ export default defineComponent({
       this.$router.push({ name: 'room-edit', params: { id: key } });
     },
     removeRoom(key: number) {
-      this.$store.buildingStore.removeRoom(key);
+      console.log('remove room', key);
     },
     createRoom() {
       this.$router.push({ name: 'room-create' });
