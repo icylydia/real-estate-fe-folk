@@ -54,7 +54,7 @@
 import { defineComponent, ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 import useApp from 'components/app/useApp';
-import { logout } from "src/auth";
+import { logout } from 'src/auth';
 
 export default defineComponent({
   name: 'MainLayout',

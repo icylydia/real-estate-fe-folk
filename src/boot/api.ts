@@ -16,7 +16,7 @@ const apiConfig = new Configuration({
   basePath: import.meta.env.VITE_APP_API_URL,
 });
 
-const api: ApiType = new DefaultApi(apiConfig);
+const api: ApiType = new DefaultApi(apiConfig, import.meta.env.VITE_APP_API_URL, fetch);
 
 const API_KEY = 'API_KEY';
 
