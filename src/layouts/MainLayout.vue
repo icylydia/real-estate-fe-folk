@@ -16,6 +16,17 @@
         </q-toolbar-title>
 
         <div>v{{ appVersion }}</div>
+        <div>
+          <q-btn
+            flat
+            dense
+            round
+            icon="sym_r_logout"
+            aria-label="Logout"
+            class="q-mx-sm"
+            @click="logout"
+          />
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -43,6 +54,7 @@
 import { defineComponent, ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 import useApp from 'components/app/useApp';
+import { logout } from "src/auth";
 
 export default defineComponent({
   name: 'MainLayout',
@@ -82,5 +94,12 @@ export default defineComponent({
       ]
     }
   },
+
+  methods: {
+    logout () {
+      logout()
+      this.$router.push({ name: 'login' })
+    }
+  }
 });
 </script>

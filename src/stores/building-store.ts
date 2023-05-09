@@ -1,14 +1,24 @@
 import { defineStore } from 'pinia';
-import { BuildingInRequest, BuildingInResponse, GetBuildingListRequest } from 'src/api/building';
-import { api } from 'boot/axios';
-import { AddressInResponse } from 'src/api/address';
+import { api } from 'boot/api';
 import _ from 'lodash';
+import { AddressInResponse, BuildingDetailResponse, BuildingInRequest, BuildingInResponse } from 'src/api';
 
-export type BuildingFormModel = Partial<BuildingInRequest & BuildingInResponse>
+export type BuildingFormModel = Partial<
+  BuildingInRequest & BuildingDetailResponse
+>
 
 const defaultFormModel: BuildingFormModel = {
   address: {},
   accesses: [],
+}
+
+interface GetBuildingListRequest {
+  itemsPerPage?: number;
+  page?: number;
+  priceLowerBound?: number,
+  priceUpperBound?: number,
+  grossYield?: number,
+  other?: string,
 }
 
 export const useBuildingStore = defineStore('building', {
@@ -30,17 +40,24 @@ export const useBuildingStore = defineStore('building', {
         page: 1,
       }
       const query = _.defaults(params, defaultParams)
-      const resp = await api.building.list(query);
+      const resp = await api.getBuildings(
+        query.itemsPerPage,
+        query.page,
+        query.priceLowerBound,
+        query.priceUpperBound,
+        query.grossYield,
+        query.other,
+      );
       this.list = resp.items || [];
     },
 
-    async getBuildingDetail(id: number) {
+    async getBuildingDetail(id: string) {
       this.reset();
-      this.formModel = await api.building.detail(id);
+      this.formModel = await api.getBuilding(id);
     },
 
     callCreateBuildingApi() {
-      return api.building.create(this.formModel)
+      return api.createBuilding(this.formModel)
     },
 
     validatePostalCode() {
@@ -54,7 +71,7 @@ export const useBuildingStore = defineStore('building', {
     async updateAddressFromPostalCode() {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const postalCode = this.formModel.address!.postalCode!;
-      const resp = await api.address.getAddressByPostalCode(postalCode);
+      const resp = await api.getAddressByPostalCode(postalCode);
       this.setAddressExceptPostalCode(resp)
     },
 

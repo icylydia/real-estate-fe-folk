@@ -14,6 +14,11 @@
         />
       </q-card-actions>
     </q-card>
+    <q-card bordered class="q-my-md">
+      <q-card-section>
+        <room-list />
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 
@@ -22,10 +27,11 @@ import { defineComponent } from 'vue';
 import { mapActions, mapState } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 import BuildingForm from 'components/building/BuildingForm.vue';
+import RoomList from 'components/building/RoomList.vue';
 
 export default defineComponent({
   name: 'BuildingDetailPage',
-  components: { BuildingForm },
+  components: { RoomList, BuildingForm },
   async mounted() {
     try {
       await this.getBuildingDetail(this.buildingId);
@@ -48,7 +54,7 @@ export default defineComponent({
       if (typeof id != 'string') {
         throw new Error('Invalid building id');
       }
-      return parseInt(id);
+      return id;
     },
   }
 });

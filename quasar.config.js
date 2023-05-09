@@ -31,7 +31,7 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
       'i18n',
-      'axios',
+      'api',
       'vee-validate',
       'filters',
     ],
@@ -105,7 +105,7 @@ module.exports = configure(function (/* ctx */) {
       open: false, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'https://real-estate-api.alpha-technology.com',
+          target: 'http://127.0.0.1:4010',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '')
         }

@@ -65,17 +65,17 @@
               <template #top-right>
                 <q-btn label="新規" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="create()" />
               </template>
-              <template #body-cell-price="{ row }">
+              <template #[`body-cell-price`]="{ row }">
                 <q-td class="text-right">
                   {{ $filters.jpyCurrency(row.price) }}
                 </q-td>
               </template>
-              <template #body-cell-grossYield="{ row }">
+              <template #[`body-cell-grossYield`]="{ row }">
                 <q-td class="text-right">
                   {{ $filters.percentage(row.grossYield) }}
                 </q-td>
               </template>
-              <template #body-cell-address="{ row }">
+              <template #[`body-cell-address`]="{ row }">
                 <q-td>
                   {{ row.address.prefecture }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
                 </q-td>

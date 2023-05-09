@@ -70,11 +70,11 @@ import useApp from 'components/app/useApp';
 import {object, string} from 'yup';
 import { Field, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/yup';
-import { LoginRequest } from 'src/api/auth';
 import useErrorHandler from 'components/app/useErrorHandler.js';
 import { login } from 'src/auth';
 import { useRouter } from 'vue-router';
-import { useApi } from 'boot/axios';
+import { useApi } from 'boot/api';
+import { AuthLoginBody } from 'src/api';
 
 const {appName, appVersion} = useApp();
 
@@ -92,11 +92,18 @@ const router = useRouter();
 const api = useApi();
 const onSubmit = handleSubmit(async (values) => {
   try {
-    const payload: LoginRequest = {
+    const payload: AuthLoginBody = {
       email: values.email,
       password: values.password,
     };
-    const user = await api.auth.login(payload);
+    const loginResponse = await api.login(payload);
+    if (!loginResponse.accessToken || !loginResponse.refreshToken) {
+      throw new Error('ログインに失敗しました');
+    }
+    const user = {
+      accessToken: loginResponse.accessToken,
+      refreshToken: loginResponse.refreshToken,
+    }
     login(user)
     await router.push({ name: 'home' });
   } catch (e) {
