@@ -28,7 +28,7 @@
 import { defineComponent } from 'vue';
 import RoomForm from 'components/room/RoomForm.vue';
 import { useRoomStore } from 'stores/room-store';
-import { mapActions, mapState } from "pinia";
+import { mapActions, mapState } from 'pinia';
 
 export default defineComponent({
   name: 'RoomDetailPage',
