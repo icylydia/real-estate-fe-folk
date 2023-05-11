@@ -70,11 +70,6 @@
                   {{ $filters.jpyCurrency(row.price) }}
                 </q-td>
               </template>
-              <template #[`body-cell-grossYield`]="{ row }: { row: BuildingInResponse }">
-                <q-td class="text-right">
-                  {{ $filters.percentage(row.grossYield) }}
-                </q-td>
-              </template>
               <template #[`body-cell-address`]="{ row }: { row: BuildingInResponse }">
                 <q-td>
                   {{ row.address.prefecture }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
@@ -210,13 +205,6 @@ const columns: QTableProps['columns'] = [
     name: 'price',
     label: '価格',
     field: 'price',
-    sortable: false,
-    align: 'right',
-  },
-  {
-    name: 'grossYield',
-    label: '表面利回り',
-    field: 'grossYield',
     sortable: false,
     align: 'right',
   },
