@@ -15,10 +15,8 @@ const defaultFormModel: BuildingFormModel = {
 interface GetBuildingListRequest {
   itemsPerPage?: number;
   page?: number;
-  priceLowerBound?: number,
-  priceUpperBound?: number,
-  grossYield?: number,
-  other?: string,
+  name?: string;
+  location?: string;
 }
 
 export const useBuildingStore = defineStore('building', {
@@ -43,10 +41,8 @@ export const useBuildingStore = defineStore('building', {
       const resp = await api.getBuildings(
         query.itemsPerPage,
         query.page,
-        query.priceLowerBound,
-        query.priceUpperBound,
-        query.grossYield,
-        query.other,
+        query.name,
+        query.location,
       );
       this.list = resp.items || [];
     },
@@ -65,7 +61,7 @@ export const useBuildingStore = defineStore('building', {
       if (!postalCode) {
         return false;
       }
-      return postalCode.match(/^[0-9]{3}-[0-9]{4}$/) !== null;
+      return postalCode.match(/^\d{3}-\d{4}$/) !== null;
     },
 
     async updateAddressFromPostalCode() {

@@ -5,34 +5,14 @@
         <q-card bordered>
           <q-card-section class="text-h6">
             検索条件
-            <q-select
-              v-model="searchParams.grossYield"
-              emit-value
-              map-options
-              label="表面利回り"
-              :options="grossYieldOptions"
-              clearable
-            />
-            <q-select
-              v-model="searchParams.priceLowerBound"
-              emit-value
-              map-options
-              label="価格下限"
-              :options="priceLowerBoundOptions"
-              clearable
-            />
-            <q-select
-              v-model="searchParams.priceUpperBound"
-              emit-value
-              map-options
-              label="価格上限"
-              :options="priceUpperBoundOptions"
-              clearable
+            <q-input
+              v-model="searchParams.name"
+              label="物件名"
             />
             <q-input
-              v-model="searchParams.other"
-              label="その他"
-              placeholder="地名、駅、物件名など"
+              v-model="searchParams.location"
+              label="所在地"
+              placeholder="地名、駅など"
             />
           </q-card-section>
           <q-card-actions>
@@ -92,99 +72,6 @@
 
 <script lang="ts" setup>
 import { BuildingInResponse } from 'src/api';
-
-const grossYieldOptions = [
-  {
-    label: '4%以上',
-    value: '0.04',
-  },
-  {
-    label: '5%以上',
-    value: '0.05',
-  },
-  {
-    label: '6%以上',
-    value: '0.06',
-  },
-  {
-    label: '7%以上',
-    value: '0.07',
-  },
-  {
-    label: '8%以上',
-    value: '0.08',
-  },
-  {
-    label: '9%以上',
-    value: '0.09',
-  },
-  {
-    label: '10%以上',
-    value: '0.1',
-  },
-]
-
-const priceLowerBoundOptions = [
-  {
-    label: '1000万円以上',
-    value: 10_000_000,
-  },
-  {
-    label: '5000万円以上',
-    value: 50_000_000,
-  },
-  {
-    label: '8000万円以上',
-    value: 80_000_000,
-  },
-  {
-    label: '1億円以上',
-    value: 100_000_000,
-  },
-  {
-    label: '2億円以上',
-    value: 200_000_000,
-  },
-  {
-    label: '3億円以上',
-    value: 300_000_000,
-  },
-  {
-    label: '5億円以上',
-    value: 500_000_000,
-  },
-]
-
-const priceUpperBoundOptions = [
-  {
-    label: '1000万円以下',
-    value: 10_000_000,
-  },
-  {
-    label: '5000万円以下',
-    value: 50_000_000,
-  },
-  {
-    label: '8000万円以下',
-    value: 80_000_000,
-  },
-  {
-    label: '1億円以下',
-    value: 100_000_000,
-  },
-  {
-    label: '2億円以下',
-    value: 200_000_000,
-  },
-  {
-    label: '3億円以下',
-    value: 300_000_000,
-  },
-  {
-    label: '5億円以下',
-    value: 500_000_000,
-  },
-]
 </script>
 
 <script lang="ts">
@@ -236,10 +123,10 @@ export default defineComponent({
       loading: false,
     }
   },
-  mounted() {
+  async mounted() {
     try {
       this.loading = true;
-      this.getBuildingList({});
+      await this.getBuildingList({});
     } catch (e) {
       console.error(e);
     } finally {
@@ -260,10 +147,10 @@ export default defineComponent({
     create() {
       this.$router.push({ name: 'new-building' })
     },
-    search() {
+    async search() {
       try {
         this.loading = true;
-        this.getBuildingList(this.searchParams);
+        await this.getBuildingList(this.searchParams);
       } catch (e) {
         console.error(e);
       } finally {
