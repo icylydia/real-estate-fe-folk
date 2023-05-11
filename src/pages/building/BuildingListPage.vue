@@ -65,22 +65,22 @@
               <template #top-right>
                 <q-btn label="新規" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="create()" />
               </template>
-              <template #[`body-cell-price`]="{ row }">
+              <template #[`body-cell-price`]="{ row }: { row: BuildingInResponse }">
                 <q-td class="text-right">
                   {{ $filters.jpyCurrency(row.price) }}
                 </q-td>
               </template>
-              <template #[`body-cell-grossYield`]="{ row }">
+              <template #[`body-cell-grossYield`]="{ row }: { row: BuildingInResponse }">
                 <q-td class="text-right">
                   {{ $filters.percentage(row.grossYield) }}
                 </q-td>
               </template>
-              <template #[`body-cell-address`]="{ row }">
+              <template #[`body-cell-address`]="{ row }: { row: BuildingInResponse }">
                 <q-td>
                   {{ row.address.prefecture }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
                 </q-td>
               </template>
-              <template #body-cell-actions="{ key }">
+              <template #[`body-cell-actions`]="{ key }">
                 <q-td class="text-right">
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="detail(key)" />
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="edit(key)" />
@@ -96,6 +96,8 @@
 </template>
 
 <script lang="ts" setup>
+import { BuildingInResponse } from 'src/api';
+
 const grossYieldOptions = [
   {
     label: '4%以上',

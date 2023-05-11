@@ -98,7 +98,8 @@ const onSubmit = handleSubmit(async (values) => {
     };
     const loginResponse = await api.login(payload);
     if (!loginResponse.accessToken || !loginResponse.refreshToken) {
-      throw new Error('ログインに失敗しました');
+      toastHandler(new Error('ログインに失敗しました'));
+      return
     }
     const user = {
       accessToken: loginResponse.accessToken,

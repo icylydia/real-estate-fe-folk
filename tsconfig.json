@@ -1,7 +1,8 @@
 {
   "extends": "@quasar/app-vite/tsconfig-preset",
+  "skipLibCheck": true,
   "compilerOptions": {
     "baseUrl": "."
-  }
+  },
+  "exclude": ["dist", ".quasar", "node_modules"],
 }
-

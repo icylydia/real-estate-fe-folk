@@ -16,17 +16,17 @@
     <template #top-right>
       <q-btn label="新規" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="createRoom()" />
     </template>
-    <template #[`body-cell-layout`]="{ row }">
+    <template #[`body-cell-layout`]="{ row }: { row: RoomInResponse }">
       <q-td>
         {{ row.roomLayoutNumber }}{{ row.roomLayoutUnit }}
       </q-td>
     </template>
-    <template #[`body-cell-area`]="{ row }">
+    <template #[`body-cell-area`]="{ row }: { row: RoomInResponse }">
       <q-td class="text-right">
         {{ row.exclusiveArea }} m<sup>2</sup>
       </q-td>
     </template>
-    <template #body-cell-actions="{ key }">
+    <template #[`body-cell-actions`]="{ key }">
       <q-td class="text-right">
         <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="roomDetail(key)" />
         <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRoom(key)" />
@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import { QTableProps } from 'quasar';
+import { RoomInResponse } from 'src/api';
 
 const columns: QTableProps['columns'] = [
   {
