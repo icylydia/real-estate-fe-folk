@@ -1,4 +1,5 @@
 <template>
+  <div class="q-mt-md text-h6">部屋基本情報</div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newRoom">
       <q-item-section>
@@ -99,7 +100,7 @@ const roomLayoutUnitOptions = [
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapState } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useRoomStore } from 'stores/room-store';
 
 export default defineComponent({
@@ -113,6 +114,22 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    newRoomBuildingId: {
+      type: String,
+      default: '',
+    },
+  },
+  mounted() {
+    if (this.newRoom) {
+      this.resetFormModel();
+      if (!this.newRoomBuildingId) {
+        throw new Error('newRoomBuildingId is required when newRoom is true.');
+      }
+      this.room.buildingId = this.newRoomBuildingId;
+    }
+  },
+  methods: {
+    ...mapActions(useRoomStore, ['resetFormModel']),
   },
   computed: {
     ...mapState(useRoomStore, {

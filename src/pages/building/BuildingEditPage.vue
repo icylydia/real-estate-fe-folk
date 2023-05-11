@@ -36,7 +36,7 @@ export default defineComponent({
   methods: {
     ...mapActions(useBuildingStore, ['getBuildingDetail']),
     save() {
-      this.$router.push({ name: 'building-list' });
+      this.$router.push({ name: 'building-detail', params: { id: this.buildingId } });
     },
   },
   computed: {

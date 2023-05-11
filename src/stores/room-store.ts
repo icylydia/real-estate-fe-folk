@@ -13,6 +13,9 @@ export const useRoomStore = defineStore('room', {
   actions: {
     async getRoomDetail(id: string) {
       this.formModel = await api.getRoom(id);
+    },
+    resetFormModel() {
+      this.formModel = {};
     }
   }
 });

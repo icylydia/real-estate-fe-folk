@@ -37,6 +37,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/building/BuildingEditPage.vue'),
       },
       {
+        path: 'buildings/:buildingId/room/new',
+        name: 'room-create',
+        component: () => import('pages/room/RoomCreatePage.vue'),
+      },
+      {
         path: 'room/:id',
         name: 'room-detail',
         component: () => import('pages/room/RoomDetailPage.vue'),

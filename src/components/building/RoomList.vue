@@ -90,12 +90,13 @@ export default defineComponent({
       console.log('remove room', key);
     },
     createRoom() {
-      this.$router.push({ name: 'room-create' });
+      this.$router.push({ name: 'room-create', params: { buildingId: this.buildingId } });
     },
   },
   computed: {
     ...mapState(useBuildingStore, {
       rooms: store => store.formModel.rooms,
+      buildingId: store => store.formModel.id,
     })
   }
 });

@@ -1,5 +1,5 @@
 <template>
-  <div class="text-h6">基本情報</div>
+  <div class="text-h6">物件基本情報</div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newBuilding">
       <q-item-section>
@@ -112,7 +112,7 @@
       </q-item-section>
     </q-item>
   </q-list>
-  <div class="q-mt-md text-h6">位置情報</div>
+  <div class="q-mt-md text-h6">物件位置情報</div>
   <q-list class="row">
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
