@@ -1,5 +1,7 @@
 <template>
-  <div class="text-h6">物件基本情報</div>
+  <div class="text-h6">
+    物件基本情報{{readonly ? '（閲覧）' : '（編集）'}}
+  </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newBuilding">
       <q-item-section>
@@ -13,7 +15,7 @@
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="building.price" label="価格" :readonly="readonly" />
+        <q-input-currency v-model="building.price" label="価格" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -23,12 +25,12 @@
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="building.grossArea" label="建物面積" :readonly="readonly" />
+        <q-input-area v-model="building.grossArea" label="建物面積" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="building.landArea" label="土地面積" :readonly="readonly" />
+        <q-input-area v-model="building.landArea" label="土地面積" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -112,7 +114,9 @@
       </q-item-section>
     </q-item>
   </q-list>
-  <div class="q-mt-md text-h6">物件位置情報</div>
+  <div class="q-mt-md text-h6">
+    物件位置情報{{readonly ? '（閲覧）' : '（編集）'}}
+  </div>
   <q-list class="row">
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
@@ -160,6 +164,9 @@
 </template>
 
 <script lang="ts" setup>
+import QInputCurrency from 'components/extension/QInputCurrency.vue';
+import QInputArea from 'components/extension/QInputArea.vue';
+
 const buildingStructureOptions = [
   {
     label: '木造(W)',

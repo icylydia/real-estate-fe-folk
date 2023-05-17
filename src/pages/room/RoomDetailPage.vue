@@ -18,6 +18,7 @@
           color="negative"
           label="編集"
           @click="toEdit"
+          :disable="loading"
         />
       </q-card-actions>
     </q-card>
@@ -41,6 +42,7 @@ export default defineComponent({
   async mounted() {
     try {
       this.loading = true;
+      this.resetFormModel();
       await this.getRoomDetail(this.roomId);
     } catch (error) {
       console.log(error);
@@ -49,7 +51,7 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions(useRoomStore, ['getRoomDetail']),
+    ...mapActions(useRoomStore, ['getRoomDetail', 'resetFormModel']),
     toEdit() {
       this.$router.push({ name: 'room-edit', params: { id: this.roomId } });
     },

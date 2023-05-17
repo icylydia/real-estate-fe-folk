@@ -80,7 +80,7 @@ const {appName, appVersion} = useApp();
 
 const validationSchema = toTypedSchema(object({
   email: string().email().required().label('メールアドレス').default('test@email.com'),
-  password: string().required().min(6).label('パスワード').default('123456'),
+  password: string().required().min(6).label('パスワード').default('utz7_;a7Md'),
 }));
 
 const { handleSubmit, isSubmitting } = useForm({

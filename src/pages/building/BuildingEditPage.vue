@@ -8,6 +8,12 @@
       <q-card-actions align="right">
         <q-btn
           style="width: 100px"
+          color="negative"
+          label="取消"
+          @click="cancel"
+        />
+        <q-btn
+          style="width: 100px"
           color="primary"
           label="保存"
           @click="save"
@@ -36,6 +42,9 @@ export default defineComponent({
   methods: {
     ...mapActions(useBuildingStore, ['getBuildingDetail']),
     save() {
+      this.$router.push({ name: 'building-detail', params: { id: this.buildingId } });
+    },
+    cancel() {
       this.$router.push({ name: 'building-detail', params: { id: this.buildingId } });
     },
   },

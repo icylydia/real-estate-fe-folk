@@ -1,5 +1,7 @@
 <template>
-  <div class="q-mt-md text-h6">部屋基本情報</div>
+  <div class="q-mt-md text-h6">
+    部屋基本情報{{readonly ? '（閲覧）' : '（編集）'}}
+  </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newRoom">
       <q-item-section>
@@ -18,22 +20,22 @@
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="room.price" label="価格" :readonly="readonly" />
+        <q-input-currency v-model="room.price" label="価格" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="room.monthlyRent" label="賃料" :readonly="readonly" />
+        <q-input-currency v-model="room.monthlyRent" label="賃料" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="room.maintenanceFund" label="修繕積立金" :readonly="readonly" />
+        <q-input-currency v-model="room.maintenanceFund" label="修繕積立金" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="room.managementFee" label="管理費" :readonly="readonly" />
+        <q-input-currency v-model="room.managementFee" label="管理費" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
@@ -55,12 +57,12 @@
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="room.exclusiveArea" label="専有面積" :readonly="readonly" />
+        <q-input-area v-model="room.exclusiveArea" label="専有面積" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="room.extraArea" label="その他面積" :readonly="readonly" />
+        <q-input-area v-model="room.extraArea" label="その他面積" :readonly="readonly" />
       </q-item-section>
     </q-item>
     <q-item class="col-12">
@@ -78,6 +80,9 @@
 </template>
 
 <script setup lang="ts">
+import QInputCurrency from 'components/extension/QInputCurrency.vue';
+import QInputArea from 'components/extension/QInputArea.vue';
+
 const roomLayoutUnitOptions = [
   {
     label: 'R',
