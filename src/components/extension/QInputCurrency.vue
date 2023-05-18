@@ -7,11 +7,9 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { QInput } from 'quasar';
 
 export default defineComponent({
   name: 'QInputCurrency',
-  extends: QInput,
   props: {
     modelValue: {
       type: Number,
