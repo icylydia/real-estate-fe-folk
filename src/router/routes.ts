@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'buildings/new',
-        name: 'new-building',
+        name: 'building-create',
         component: () => import('pages/building/BuildingCreatePage.vue'),
       },
       {
@@ -50,6 +50,31 @@ const routes: RouteRecordRaw[] = [
         path: 'room/:id/edit',
         name: 'room-edit',
         component: () => import('pages/room/RoomEditPage.vue'),
+      },
+      {
+        path: 'departments',
+        name: 'department-list',
+        component: () => import('pages/department/DepartmentListPage.vue'),
+      },
+      {
+        path: 'departments/new',
+        name: 'department-create',
+        component: () => import('pages/department/DepartmentCreatePage.vue'),
+      },
+      {
+        path: 'departments/:id',
+        name: 'department-detail',
+        component: () => import('pages/department/DepartmentDetailPage.vue'),
+      },
+      {
+        path: 'departments/:id/edit',
+        name: 'department-edit',
+        component: () => import('pages/department/DepartmentEditPage.vue'),
+      },
+      {
+        path: 'employees',
+        name: 'employee-list',
+        component: () => import('pages/employee/EmployeeListPage.vue'),
       },
     ],
     meta: {

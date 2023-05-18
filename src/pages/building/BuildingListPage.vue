@@ -145,7 +145,7 @@ export default defineComponent({
       console.log('remove', rowIndex)
     },
     create() {
-      this.$router.push({ name: 'new-building' })
+      this.$router.push({ name: 'building-create' })
     },
     async search() {
       try {

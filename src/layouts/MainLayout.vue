@@ -87,10 +87,20 @@ export default defineComponent({
           link: this.$router.resolve({ name: 'home' }).href
         },
         {
-          title: '物件一覧',
+          title: '物件管理',
           icon: 'sym_r_home_work',
           link: this.$router.resolve({ name: 'building-list' }).href
-        }
+        },
+        {
+          title: '部署管理',
+          icon: 'sym_r_tenancy',
+          link: this.$router.resolve({ name: 'department-list' }).href
+        },
+        {
+          title: '社員管理',
+          icon: 'sym_r_group',
+          link: this.$router.resolve({ name: 'employee-list' }).href
+        },
       ]
     }
   },
