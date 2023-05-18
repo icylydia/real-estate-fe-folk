@@ -26,7 +26,7 @@
               <div class="text-subtitle1 text-weight-bold">
                 {{ node.name }}
                 <span class="text-subtitle2">
-                  (人数: {{ node.memberCount }}人, 責任者: {{ node.leader.firstName }} {{ node.leader.lastName }})
+                  (人数: {{ node.memberCount }}人, 責任者: {{ node.leader.lastName }} {{ node.leader.firstName }})
                 </span>
               </div>
               <div>
