@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import { delay } from 'src/utils';
 import { EmployeeModel, useEmployeeStore } from 'stores/employee-store';
 import { QTableProps } from 'quasar';
 import { storeToRefs } from 'pinia';
@@ -22,7 +21,6 @@ onMounted(async () => {
   loading.value = true;
   try {
     resetEmployeeList();
-    await delay(1000);
     await getEmployeeList();
   } catch (error) {
     console.error(error);

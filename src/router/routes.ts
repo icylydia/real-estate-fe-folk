@@ -81,6 +81,16 @@ const routes: RouteRecordRaw[] = [
         name: 'employee-create',
         component: () => import('pages/employee/EmployeeCreatePage.vue'),
       },
+      {
+        path: 'employees/:id',
+        name: 'employee-detail',
+        component: () => import('pages/employee/EmployeeDetailPage.vue'),
+      },
+      {
+        path: 'employees/:id/edit',
+        name: 'employee-edit',
+        component: () => import('pages/employee/EmployeeEditPage.vue'),
+      },
     ],
     meta: {
       requiresAuth: true,

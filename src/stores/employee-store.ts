@@ -18,6 +18,9 @@ export const useEmployeeStore = defineStore('employee', {
     },
     async getEmployeeList() {
       this.list = await api.getEmployees();
+    },
+    async getEmployeeDetail(id: string) {
+      this.formModel = await api.getEmployee(id);
     }
   }
 });

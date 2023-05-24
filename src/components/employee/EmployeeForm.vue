@@ -40,6 +40,8 @@
           use-chips
           label="部署"
           :options="options"
+          option-label="name"
+          option-value="id"
           @filter="filterFn"
           :readonly="readonly"
           use-input
@@ -56,8 +58,8 @@ import { useDepartmentStore } from 'stores/department-store';
 import { DepartmentInResponse } from 'src/api';
 
 const options = ref<Array<{
-  label: string | undefined;
-  value: string | number | undefined;
+  name: string | undefined;
+  id: string | number | undefined;
 }> | undefined>(undefined);
 
 enum DepartmentLoadingStatus {
@@ -72,8 +74,8 @@ const departmentsStatus = ref<DepartmentLoadingStatus>(DepartmentLoadingStatus.B
 const {getFlattenedDepartmentList, getDepartmentList} = useDepartmentStore();
 
 const departmentToOption = (department: DepartmentInResponse) => ({
-  label: department.name,
-  value: department.id,
+  name: department.name,
+  id: department.id,
 });
 
 const getAllDepartmentOptions = () => {
@@ -101,7 +103,7 @@ const filterFn = (val: string, update: () => void) => {
     options.value = getAllDepartmentOptions();
   } else {
     options.value = getAllDepartmentOptions().filter((v) => {
-      return v.label && v.label.toLowerCase().indexOf(val.toLowerCase()) > -1;
+      return v.name && v.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
     });
   }
   update();

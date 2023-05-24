@@ -68,7 +68,6 @@ import { DepartmentInResponse } from 'src/api';
 import { defineComponent } from 'vue';
 import { mapActions, mapState } from 'pinia';
 import { useDepartmentStore } from 'stores/department-store';
-import { delay } from 'src/utils';
 
 export default defineComponent({
   name: 'DepartmentListPage',
@@ -82,7 +81,6 @@ export default defineComponent({
     this.loading = true
     try {
       this.reset()
-      await delay(1000)
       await this.getDepartmentList()
     } catch (error) {
       console.error(error)
