@@ -14,7 +14,7 @@
       <div class="text-h6">部屋一覧</div>
     </template>
     <template #top-right>
-      <q-btn label="新規" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="createRoom()" />
+      <q-btn label="追加" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="createRoom()" />
     </template>
     <template #[`body-cell-layout`]="{ row }: { row: RoomInResponse }">
       <q-td>

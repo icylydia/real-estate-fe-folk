@@ -1,11 +1,16 @@
 import { defineStore } from 'pinia';
-import { DepartmentInResponse } from 'src/api';
+import { DepartmentDetailResponse, DepartmentInRequest, DepartmentInResponse } from 'src/api';
 import { api } from 'boot/api';
 import _ from 'lodash';
+
+export type DepartmentFormModel = Partial<
+  DepartmentInRequest & DepartmentInResponse & DepartmentDetailResponse
+>
 
 export const useDepartmentStore = defineStore('department', {
   state: () => ({
     list: [] as DepartmentInResponse[],
+    formModel: {} as DepartmentFormModel,
   }),
   actions: {
     reset() {
@@ -23,6 +28,9 @@ export const useDepartmentStore = defineStore('department', {
       }
       this.list.forEach(flatten);
       return result;
+    },
+    async getDepartment(id: string) {
+      this.formModel = await api.getDepartment(id);
     }
   },
 });

@@ -14,7 +14,7 @@
         />
       </q-card-actions>
     </q-card>
-    <q-card bordered class="q-my-md">
+    <q-card bordered class="q-mt-md">
       <q-card-section>
         <room-list />
       </q-card-section>
