@@ -1,13 +1,27 @@
 <script setup lang="ts">
 import DepartmentForm from 'components/department/DepartmentForm.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useDepartmentStore } from 'stores/department-store';
 
 const route = useRoute();
 const router = useRouter();
 
 const loading = ref(false);
 const departmentId = typeof route.params.id == 'string' ? route.params.id : '';
+
+const { getDepartment } = useDepartmentStore();
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    await getDepartment(departmentId);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+});
 
 const save = () => {
   router.push({

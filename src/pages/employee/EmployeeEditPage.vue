@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import EmployeeForm from 'components/employee/EmployeeForm.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useEmployeeStore } from 'stores/employee-store';
 
 const route = useRoute();
 const router = useRouter();
@@ -9,6 +10,19 @@ const router = useRouter();
 const loading = ref(false);
 
 const employeeId = typeof route.params.id == 'string' ? route.params.id : '';
+
+const { getEmployeeDetail } = useEmployeeStore();
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    await getEmployeeDetail(employeeId);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+});
 
 const save = () => {
   router.push({
