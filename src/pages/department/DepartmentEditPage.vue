@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DepartmentForm from 'components/department/DepartmentForm.vue';
-import { ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
