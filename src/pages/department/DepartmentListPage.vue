@@ -81,6 +81,7 @@ export default defineComponent({
   async mounted() {
     this.loading = true
     try {
+      this.reset()
       await delay(1000)
       await this.getDepartmentList()
     } catch (error) {
@@ -90,7 +91,7 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions(useDepartmentStore, ['getDepartmentList']),
+    ...mapActions(useDepartmentStore, ['getDepartmentList', 'reset']),
     toCreatePage() {
       this.$router.push({ name: 'department-create' })
     },

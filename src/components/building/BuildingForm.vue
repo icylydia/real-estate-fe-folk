@@ -1,6 +1,6 @@
 <template>
   <div class="text-h6">
-    物件基本情報{{readonly ? '（閲覧）' : '（編集）'}}
+    物件基本情報{{ readonly ? '（閲覧）' : '（編集）' }}
   </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newBuilding">
