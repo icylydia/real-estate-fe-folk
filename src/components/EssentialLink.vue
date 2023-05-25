@@ -1,8 +1,27 @@
 <template>
+  <q-expansion-item
+    expand-separator
+    :icon="icon"
+    :label="title"
+    :caption="caption"
+    :header-inset-level="insetLevel"
+    v-if="subMenu.length > 0"
+  >
+<q-list>
+    <essential-link
+      v-for="(link, index) in subMenu"
+      :key="index"
+      v-bind="link"
+      :inset-level="insetLevel + 0.5"
+    />
+    </q-list>
+  </q-expansion-item>
   <q-item
     clickable
     tag="a"
     :href="link"
+    v-else
+    :inset-level="insetLevel"
   >
     <q-item-section
       v-if="icon"
@@ -26,7 +45,7 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      required: true
+      default: ''
     },
 
     caption: {
@@ -42,6 +61,16 @@ export default defineComponent({
     icon: {
       type: String,
       default: ''
+    },
+
+    insetLevel: {
+      type: Number,
+      default: 0
+    },
+
+    subMenu: {
+      type: Array,
+      default: () => []
     }
   }
 });

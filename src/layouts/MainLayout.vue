@@ -36,9 +36,9 @@
       bordered
     >
       <q-list>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
+        <essential-link
+          v-for="(link, index) in essentialLinks"
+          :key="index"
           v-bind="link"
         />
       </q-list>
@@ -84,22 +84,38 @@ export default defineComponent({
           title: 'ダッシュボード',
           caption: '稼働状況一覧',
           icon: 'sym_r_monitoring',
-          link: this.$router.resolve({ name: 'home' }).href
+          link: this.$router.resolve({ name: 'home' }).href,
         },
         {
           title: '物件管理',
           icon: 'sym_r_home_work',
-          link: this.$router.resolve({ name: 'building-list' }).href
+          link: this.$router.resolve({ name: 'building-list' }).href,
+        },
+        {
+          title: '契約管理',
+          icon: 'sym_r_edit_document',
+          subMenu: [
+            {
+              title: '賃貸借契約',
+              icon: 'sym_r_event',
+              subMenu: [
+                {
+                  title: '契約一覧',
+                  link: this.$router.resolve({ name: 'contract-list' }).href,
+                },
+              ],
+            },
+          ],
         },
         {
           title: '部署管理',
           icon: 'sym_r_tenancy',
-          link: this.$router.resolve({ name: 'department-list' }).href
+          link: this.$router.resolve({ name: 'department-list' }).href,
         },
         {
           title: '社員管理',
           icon: 'sym_r_group',
-          link: this.$router.resolve({ name: 'employee-list' }).href
+          link: this.$router.resolve({ name: 'employee-list' }).href,
         },
       ]
     }
