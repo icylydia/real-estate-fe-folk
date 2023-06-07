@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
-import { TenantInRequest, TenantInResponse } from 'src/api';
+import { TenantDetailResponse, TenantInRequest, TenantInResponse } from 'src/api';
 
 export type TenantFormModel = Partial<
-  TenantInRequest & TenantInResponse
+  TenantInRequest & TenantInResponse & TenantDetailResponse
 >
 
 export const useTenantStore = defineStore('tenant', {
@@ -15,6 +15,9 @@ export const useTenantStore = defineStore('tenant', {
     async getTenantList() {
       const resp = await api.getTenants();
       this.tenantList = resp.items || [];
+    },
+    async getTenant(id: string) {
+      this.formModel = await api.getTenant(id);
     },
     reset() {
       this.tenantList = [];

@@ -58,7 +58,7 @@ const columns: QTableProps['columns'] = [
 ];
 
 const { rentalContractList: contracts } = storeToRefs(useContractStore());
-const { getRentalContractList, reset: resetRentalContractList } = useContractStore();
+const { getRentalContractList, reset: resetRentalContractList, statusToChipProps } = useContractStore();
 const loading = ref(false);
 
 const loadContracts = async () => {
@@ -76,41 +76,6 @@ const loadContracts = async () => {
 onMounted(async () => {
   await loadContracts();
 });
-
-const statusToChipProps = (status: string) => {
-  switch (status) {
-    case 'draft':
-      return {
-        label: '下書き',
-        color: 'grey',
-      };
-    case 'beforeStart':
-      return {
-        label: '実行待ち',
-        color: 'orange',
-      };
-    case 'active':
-      return {
-        label: '実行中',
-        color: 'green',
-      };
-    case 'completed':
-      return {
-        label: '完了済み',
-        color: 'blue',
-      };
-    case 'canceled':
-      return {
-        label: 'キャンセル済み',
-        color: 'red',
-      };
-    default:
-      return {
-        label: '不明',
-        color: 'grey',
-      };
-  }
-};
 
 const contractDetail = (key: string) => {
   console.log(key);
