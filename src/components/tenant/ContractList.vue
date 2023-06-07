@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { QTableProps } from 'quasar';
 import { RentalContractInResponse } from 'src/api';
 import { useContractStore } from 'stores/contract-store';
+import { useRouter } from 'vue-router';
 
 const tenantStore = useTenantStore();
 const { statusToChipProps } = useContractStore();
@@ -53,6 +54,31 @@ const columns: QTableProps['columns'] = [
     align: 'right',
   },
 ];
+
+const router = useRouter();
+const toContractDetail = (id?: string) => {
+  if (!id) return;
+  router.push({
+    name: 'contract-detail',
+    params: { id },
+  });
+};
+
+const toContractEdit = (id?: string) => {
+  if (!id) return;
+  router.push({
+    name: 'contract-edit',
+    params: { id },
+  });
+};
+
+const promptToUpdateContract = (id?: string) => {
+  if (!id) return;
+  router.push({
+    name: 'contract-prompt-update',
+    params: { id },
+  });
+};
 </script>
 
 <template>
@@ -95,11 +121,36 @@ const columns: QTableProps['columns'] = [
         </a>
       </q-td>
     </template>
-    <template #[`body-cell-status`]="{ row }">
+    <template #[`body-cell-status`]="{ row }: { row: RentalContractInResponse }">
       <q-td>
         <q-chip
           v-bind="statusToChipProps(row.status)"
         />
+      </q-td>
+    </template>
+    <template #[`body-cell-actions`]="{ row }: { row: RentalContractInResponse }">
+      <q-td class="text-right">
+        <q-btn icon="sym_r_more_horiz" flat>
+          <q-menu>
+            <q-list>
+              <q-item dense clickable @click="toContractDetail(row.id)">
+                <q-item-section>
+                  <q-item-label>詳細</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item dense clickable @click="toContractEdit(row.id)">
+                <q-item-section>
+                  <q-item-label>編集</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item dense clickable @click="promptToUpdateContract(row.id)">
+                <q-item-section>
+                  <q-item-label>更新を促す</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-td>
     </template>
   </q-table>

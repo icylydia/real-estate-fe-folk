@@ -42,12 +42,12 @@ const { selectOptions: genderOptions } = useGender()
       <q-item-section>
         <q-select
           v-model="tenant.gender"
-          use-chips
           label="性別"
           :readonly="readonly"
           emit-value
           map-options
           :options="genderOptions"
+          clearable
         >
         </q-select>
       </q-item-section>

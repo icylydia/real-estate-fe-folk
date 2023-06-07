@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
-import { ContractBase, RentalContractInResponse } from "src/api";
+import { ContractBase, RentalContractInResponse } from 'src/api';
 
 export const useContractStore = defineStore('contract', {
   state: () => ({
