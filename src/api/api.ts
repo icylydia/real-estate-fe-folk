@@ -626,6 +626,12 @@ export interface EmployeeBase {
    */
   lastName?: string;
   /**
+   * 性别 - `male`: 男性 - `female`: 女性 - `other`: 其他 - `<null>`: 未知
+   * @type {string}
+   * @memberof EmployeeBase
+   */
+  gender?: EmployeeBase.GenderEnum;
+  /**
    * 邮箱
    * @type {string}
    * @memberof EmployeeBase
@@ -644,6 +650,22 @@ export interface EmployeeBase {
    */
   birthday?: string;
 }
+
+/**
+ * @export
+ * @namespace EmployeeBase
+ */
+export namespace EmployeeBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum GenderEnum {
+    Male = <any> 'male',
+    Female = <any> 'female',
+    Other = <any> 'other'
+  }
+}
 /**
  *
  * @export
@@ -656,6 +678,13 @@ export interface EmployeeInRequest extends EmployeeBase {
    * @memberof EmployeeInRequest
    */
   departmentId?: string;
+}
+
+/**
+ * @export
+ * @namespace EmployeeInRequest
+ */
+export namespace EmployeeInRequest {
 }
 /**
  *
@@ -675,6 +704,13 @@ export interface EmployeeInResponse extends EmployeeBase {
    * @memberof EmployeeInResponse
    */
   department?: DepartmentBase;
+}
+
+/**
+ * @export
+ * @namespace EmployeeInResponse
+ */
+export namespace EmployeeInResponse {
 }
 /**
  * 登录成功返回结果
@@ -902,6 +938,12 @@ export interface RoomBase {
    */
   extraArea?: number;
   /**
+   * 合同续约提醒时间(N月前)/契約更新リマインド(Nヶ月前)
+   * @type {number}
+   * @memberof RoomBase
+   */
+  contractRenewRemindBefore?: number;
+  /**
    * 备注/備考
    * @type {string}
    * @memberof RoomBase
@@ -958,6 +1000,119 @@ export interface RoomInResponse extends RoomBase {
  * @namespace RoomInResponse
  */
 export namespace RoomInResponse {
+}
+/**
+ * 租客
+ * @export
+ * @interface TenantBase
+ */
+export interface TenantBase {
+  /**
+   * 姓
+   * @type {string}
+   * @memberof TenantBase
+   */
+  firstName?: string;
+  /**
+   * 名
+   * @type {string}
+   * @memberof TenantBase
+   */
+  lastName?: string;
+  /**
+   * 性别 - `male`: 男性 - `female`: 女性 - `other`: 其他 - `<null>`: 未知
+   * @type {string}
+   * @memberof TenantBase
+   */
+  gender?: TenantBase.GenderEnum;
+  /**
+   * 邮箱
+   * @type {string}
+   * @memberof TenantBase
+   */
+  email?: string;
+  /**
+   * 电话
+   * @type {string}
+   * @memberof TenantBase
+   */
+  phone?: string;
+}
+
+/**
+ * @export
+ * @namespace TenantBase
+ */
+export namespace TenantBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum GenderEnum {
+    Male = <any> 'male',
+    Female = <any> 'female',
+    Other = <any> 'other'
+  }
+}
+/**
+ *
+ * @export
+ * @interface TenantDetailResponse
+ */
+export interface TenantDetailResponse extends TenantInResponse {
+  /**
+   *
+   * @type {Array<RentalContractInResponse>}
+   * @memberof TenantDetailResponse
+   */
+  contracts?: Array<RentalContractInResponse>;
+}
+/**
+ *
+ * @export
+ * @interface TenantInRequest
+ */
+export interface TenantInRequest extends TenantBase {
+}
+
+/**
+ * @export
+ * @namespace TenantInRequest
+ */
+export namespace TenantInRequest {
+}
+/**
+ *
+ * @export
+ * @interface TenantInResponse
+ */
+export interface TenantInResponse extends TenantBase {
+  /**
+   * 租客ID
+   * @type {string}
+   * @memberof TenantInResponse
+   */
+  id?: string;
+}
+
+/**
+ * @export
+ * @namespace TenantInResponse
+ */
+export namespace TenantInResponse {
+}
+/**
+ *
+ * @export
+ * @interface TenantListResponse
+ */
+export interface TenantListResponse extends PaginationResponse {
+  /**
+   * 数据列表
+   * @type {Array<TenantInResponse>}
+   * @memberof TenantListResponse
+   */
+  items?: Array<TenantInResponse>;
 }
 /**
  * 电车线路
@@ -1227,6 +1382,49 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 新建租客
+     * @summary 新建租客
+     * @param {TenantInRequest} body 租客信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createTenant(body: TenantInRequest, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling createTenant.');
+      }
+      const localVarPath = `/tenant`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"TenantInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID删除建筑
      * @summary 删除建筑
      * @param {string} id 建筑ID
@@ -1359,6 +1557,46 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteRoom.');
       }
       const localVarPath = `/room/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据ID删除租客
+     * @summary 删除租客
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteTenant(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling deleteTenant.');
+      }
+      const localVarPath = `/tenant/{id}`
         .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
@@ -1836,6 +2074,95 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID获取租客详情
+     * @summary 租客详情
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenant(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling getTenant.');
+      }
+      const localVarPath = `/tenant/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据条件获取租客列表
+     * @summary 租客列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenants(itemsPerPage?: number, page?: number, query?: string, options: any = {}): FetchArgs {
+      const localVarPath = `/tenants`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      if (itemsPerPage !== undefined) {
+        localVarQueryParameter['itemsPerPage'] = itemsPerPage;
+      }
+
+      if (page !== undefined) {
+        localVarQueryParameter['page'] = page;
+      }
+
+      if (query !== undefined) {
+        localVarQueryParameter['query'] = query;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 获取地铁线路详情
      * @summary 获取地铁线路详情
      * @param {number} id 地铁线路ID
@@ -2137,6 +2464,55 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         options: localVarRequestOptions,
       };
     },
+    /**
+     * 根据ID更新租客
+     * @summary 更新租客
+     * @param {TenantInRequest} body 租客信息
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateTenant(body: TenantInRequest, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateTenant.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling updateTenant.');
+      }
+      const localVarPath = `/tenant/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"TenantInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   }
 };
 
@@ -2223,6 +2599,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 新建租客
+     * @summary 新建租客
+     * @param {TenantInRequest} body 租客信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createTenant(body: TenantInRequest, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<TenantInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).createTenant(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID删除建筑
      * @summary 删除建筑
      * @param {string} id 建筑ID
@@ -2288,6 +2683,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      */
     deleteRoom(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
       const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).deleteRoom(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据ID删除租客
+     * @summary 删除租客
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteTenant(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).deleteTenant(id, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -2511,6 +2925,46 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID获取租客详情
+     * @summary 租客详情
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenant(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<TenantDetailResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getTenant(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据条件获取租客列表
+     * @summary 租客列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenants(itemsPerPage?: number, page?: number, query?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<TenantListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getTenants(itemsPerPage, page, query, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 获取地铁线路详情
      * @summary 获取地铁线路详情
      * @param {number} id 地铁线路ID
@@ -2646,6 +3100,26 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         });
       };
     },
+    /**
+     * 根据ID更新租客
+     * @summary 更新租客
+     * @param {TenantInRequest} body 租客信息
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateTenant(body: TenantInRequest, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<TenantDetailResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateTenant(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
   }
 };
 
@@ -2696,6 +3170,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).createRoom(body, options)(fetch, basePath);
     },
     /**
+     * 新建租客
+     * @summary 新建租客
+     * @param {TenantInRequest} body 租客信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createTenant(body: TenantInRequest, options?: any) {
+      return DefaultApiFp(configuration).createTenant(body, options)(fetch, basePath);
+    },
+    /**
      * 根据ID删除建筑
      * @summary 删除建筑
      * @param {string} id 建筑ID
@@ -2734,6 +3218,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     deleteRoom(id: string, options?: any) {
       return DefaultApiFp(configuration).deleteRoom(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID删除租客
+     * @summary 删除租客
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteTenant(id: string, options?: any) {
+      return DefaultApiFp(configuration).deleteTenant(id, options)(fetch, basePath);
     },
     /**
      * 根据邮政编码获取地址
@@ -2849,6 +3343,28 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).getRoom(id, options)(fetch, basePath);
     },
     /**
+     * 根据ID获取租客详情
+     * @summary 租客详情
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenant(id: string, options?: any) {
+      return DefaultApiFp(configuration).getTenant(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据条件获取租客列表
+     * @summary 租客列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenants(itemsPerPage?: number, page?: number, query?: string, options?: any) {
+      return DefaultApiFp(configuration).getTenants(itemsPerPage, page, query, options)(fetch, basePath);
+    },
+    /**
      * 获取地铁线路详情
      * @summary 获取地铁线路详情
      * @param {number} id 地铁线路ID
@@ -2921,6 +3437,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
     updateRoom(body: RoomInRequest, id: string, options?: any) {
       return DefaultApiFp(configuration).updateRoom(body, id, options)(fetch, basePath);
     },
+    /**
+     * 根据ID更新租客
+     * @summary 更新租客
+     * @param {TenantInRequest} body 租客信息
+     * @param {string} id 租客ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateTenant(body: TenantInRequest, id: string, options?: any) {
+      return DefaultApiFp(configuration).updateTenant(body, id, options)(fetch, basePath);
+    },
   };
 };
 
@@ -2980,6 +3507,18 @@ export class DefaultApi extends BaseAPI {
   }
 
   /**
+   * 新建租客
+   * @summary 新建租客
+   * @param {TenantInRequest} body 租客信息
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createTenant(body: TenantInRequest, options?: any) {
+    return DefaultApiFp(this.configuration).createTenant(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
    * 根据ID删除建筑
    * @summary 删除建筑
    * @param {string} id 建筑ID
@@ -3025,6 +3564,18 @@ export class DefaultApi extends BaseAPI {
    */
   public deleteRoom(id: string, options?: any) {
     return DefaultApiFp(this.configuration).deleteRoom(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID删除租客
+   * @summary 删除租客
+   * @param {string} id 租客ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteTenant(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).deleteTenant(id, options)(this.fetch, this.basePath);
   }
 
   /**
@@ -3163,6 +3714,32 @@ export class DefaultApi extends BaseAPI {
   }
 
   /**
+   * 根据ID获取租客详情
+   * @summary 租客详情
+   * @param {string} id 租客ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getTenant(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).getTenant(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据条件获取租客列表
+   * @summary 租客列表
+   * @param {number} [itemsPerPage] 每页条数
+   * @param {number} [page] 页码
+   * @param {string} [query] 查询条件
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getTenants(itemsPerPage?: number, page?: number, query?: string, options?: any) {
+    return DefaultApiFp(this.configuration).getTenants(itemsPerPage, page, query, options)(this.fetch, this.basePath);
+  }
+
+  /**
    * 获取地铁线路详情
    * @summary 获取地铁线路详情
    * @param {number} id 地铁线路ID
@@ -3247,6 +3824,19 @@ export class DefaultApi extends BaseAPI {
    */
   public updateRoom(body: RoomInRequest, id: string, options?: any) {
     return DefaultApiFp(this.configuration).updateRoom(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID更新租客
+   * @summary 更新租客
+   * @param {TenantInRequest} body 租客信息
+   * @param {string} id 租客ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateTenant(body: TenantInRequest, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).updateTenant(body, id, options)(this.fetch, this.basePath);
   }
 
 }

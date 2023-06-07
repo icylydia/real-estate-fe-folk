@@ -96,6 +96,26 @@ const routes: RouteRecordRaw[] = [
         name: 'employee-edit',
         component: () => import('pages/employee/EmployeeEditPage.vue'),
       },
+      {
+        path: 'tenants',
+        name: 'tenant-list',
+        component: () => import('pages/tenant/TenantListPage.vue'),
+      },
+      {
+        path: 'tenants/new',
+        name: 'tenant-create',
+        component: () => import('pages/tenant/TenantCreatePage.vue'),
+      },
+      {
+        path: 'tenants/:id',
+        name: 'tenant-detail',
+        component: () => import('pages/tenant/TenantDetailPage.vue'),
+      },
+      {
+        path: 'tenants/:id/edit',
+        name: 'tenant-edit',
+        component: () => import('pages/tenant/TenantEditPage.vue'),
+      },
     ],
     meta: {
       requiresAuth: true,
