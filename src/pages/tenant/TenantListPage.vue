@@ -2,10 +2,10 @@
 import { onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useTenantStore } from 'stores/tenant-store';
-import { TenantBase, TenantInResponse } from 'src/api';
+import { TenantInResponse } from 'src/api';
 import { useRouter } from 'vue-router';
 import { QTableProps } from 'quasar';
-import GenderEnum = TenantBase.GenderEnum;
+import { useGender } from 'src/utils/gender';
 
 const loading = ref(false);
 
@@ -93,21 +93,7 @@ const search = async () => {
   await loadTenants()
 };
 
-const describeGender = (key?: TenantBase.GenderEnum): string => {
-  if (!key) {
-    return '不明';
-  }
-  switch (key) {
-    case GenderEnum.Male:
-      return '男性';
-    case GenderEnum.Female:
-      return '女性';
-    case GenderEnum.Other:
-      return 'その他';
-    default:
-      return '不明';
-  }
-}
+const { describe: describeGender } = useGender();
 </script>
 
 <template>

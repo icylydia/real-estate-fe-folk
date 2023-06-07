@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
-import { TenantInResponse } from 'src/api';
+import { TenantInRequest, TenantInResponse } from 'src/api';
+
+export type TenantFormModel = Partial<
+  TenantInRequest & TenantInResponse
+>
 
 export const useTenantStore = defineStore('tenant', {
   state: () => ({
     tenantList: [] as TenantInResponse[],
+    formModel: {} as TenantFormModel,
   }),
   actions: {
     async getTenantList() {
