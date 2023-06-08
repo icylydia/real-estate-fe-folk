@@ -590,6 +590,12 @@ export interface DepartmentInResponse extends DepartmentBase {
   id?: string;
   /**
    *
+   * @type {DepartmentInResponse}
+   * @memberof DepartmentInResponse
+   */
+  parent?: DepartmentInResponse;
+  /**
+   *
    * @type {EmployeeBase}
    * @memberof DepartmentInResponse
    */
@@ -625,6 +631,18 @@ export interface EmployeeBase {
    * @memberof EmployeeBase
    */
   lastName?: string;
+  /**
+   * 名（假名）
+   * @type {string}
+   * @memberof EmployeeBase
+   */
+  firstNameKana?: string;
+  /**
+   * 姓（假名）
+   * @type {string}
+   * @memberof EmployeeBase
+   */
+  lastNameKana?: string;
   /**
    * 性别 - `male`: 男性 - `female`: 女性 - `other`: 其他 - `<null>`: 未知
    * @type {string}
@@ -673,11 +691,11 @@ export namespace EmployeeBase {
  */
 export interface EmployeeInRequest extends EmployeeBase {
   /**
-   * 部门ID
-   * @type {string}
+   * 部门ID列表
+   * @type {Array<string>}
    * @memberof EmployeeInRequest
    */
-  departmentId?: string;
+  departmentId?: Array<string>;
 }
 
 /**
@@ -699,11 +717,11 @@ export interface EmployeeInResponse extends EmployeeBase {
    */
   id?: string;
   /**
-   *
-   * @type {DepartmentBase}
+   * 员工所属部门
+   * @type {Array<DepartmentInResponse>}
    * @memberof EmployeeInResponse
    */
-  department?: DepartmentBase;
+  departments?: Array<DepartmentInResponse>;
 }
 
 /**
@@ -997,10 +1015,28 @@ export interface Prefecture {
 export interface RentalContractBase extends ContractBase {
   /**
    *
-   * @type {RentalContractBaseTenant}
+   * @type {TenantInResponse}
    * @memberof RentalContractBase
    */
-  tenant?: RentalContractBaseTenant;
+  tenant?: TenantInResponse;
+  /**
+   * 是否提示续租
+   * @type {boolean}
+   * @memberof RentalContractBase
+   */
+  promptRemind?: boolean;
+  /**
+   * 提前几个月提示续租
+   * @type {number}
+   * @memberof RentalContractBase
+   */
+  promptRemindMonths?: number;
+  /**
+   * 提示续租状态 - `beforeStart`: 未到提示日期 - `active`: 未提示/催促待ち - `completed`: 已完成/催促済み - `canceled`: 已取消/キャンセル済み
+   * @type {string}
+   * @memberof RentalContractBase
+   */
+  promptRemindStatus?: RentalContractBase.PromptRemindStatusEnum;
 }
 
 /**
@@ -1008,31 +1044,16 @@ export interface RentalContractBase extends ContractBase {
  * @namespace RentalContractBase
  */
 export namespace RentalContractBase {
-}
-/**
- * 承租人
- * @export
- * @interface RentalContractBaseTenant
- */
-export interface RentalContractBaseTenant {
   /**
-   * 承租人姓名
-   * @type {string}
-   * @memberof RentalContractBaseTenant
+   * @export
+   * @enum {string}
    */
-  name?: string;
-  /**
-   * 承租人电话
-   * @type {string}
-   * @memberof RentalContractBaseTenant
-   */
-  phone?: string;
-  /**
-   * 承租人邮箱
-   * @type {string}
-   * @memberof RentalContractBaseTenant
-   */
-  email?: string;
+  export enum PromptRemindStatusEnum {
+    BeforeStart = <any> 'beforeStart',
+    Active = <any> 'active',
+    Completed = <any> 'completed',
+    Canceled = <any> 'canceled'
+  }
 }
 /**
  *
@@ -1040,6 +1061,13 @@ export interface RentalContractBaseTenant {
  * @interface RentalContractInRequest
  */
 export interface RentalContractInRequest extends RentalContractBase {
+}
+
+/**
+ * @export
+ * @namespace RentalContractInRequest
+ */
+export namespace RentalContractInRequest {
 }
 /**
  *
@@ -1065,6 +1093,13 @@ export interface RentalContractInResponse extends RentalContractBase {
    * @memberof RentalContractInResponse
    */
   room?: RoomInResponse;
+}
+
+/**
+ * @export
+ * @namespace RentalContractInResponse
+ */
+export namespace RentalContractInResponse {
 }
 /**
  *

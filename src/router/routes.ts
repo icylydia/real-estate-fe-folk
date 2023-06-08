@@ -58,6 +58,31 @@ const routes: RouteRecordRaw[] = [
         name: 'contract-list',
         component: () => import('pages/contract/ContractListPage.vue'),
       },
+      {
+        path: 'contracts/new',
+        name: 'contract-create',
+        component: () => import('pages/ConstructingPage.vue'),
+      },
+      {
+        path: 'contracts/:id',
+        name: 'contract-detail',
+        component: () => import('pages/ConstructingPage.vue'),
+      },
+      {
+        path: 'contracts/:id/edit',
+        name: 'contract-edit',
+        component: () => import('pages/ConstructingPage.vue'),
+      },
+      {
+        path: 'contracts/:id/promptToUpdate',
+        name: 'contract-prompt-update',
+        component: () => import('pages/ConstructingPage.vue'),
+      },
+      {
+        path: 'management-contracts',
+        name: 'management-contract-list',
+        component: () => import('pages/ConstructingPage.vue'),
+      },
       // 部署
       {
         path: 'departments',

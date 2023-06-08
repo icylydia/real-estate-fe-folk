@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
-import { ContractBase, RentalContractInResponse } from 'src/api';
+import { ContractBase, RentalContractBase, RentalContractInResponse } from "src/api";
 
 export const useContractStore = defineStore('contract', {
   state: () => ({
@@ -54,5 +54,31 @@ export const useContractStore = defineStore('contract', {
           };
       }
     },
+    promptRemindStatusToChipProps(status?: RentalContractBase.PromptRemindStatusEnum) {
+      if (!status) {
+        return null;
+      }
+      switch (status) {
+        case RentalContractBase.PromptRemindStatusEnum.BeforeStart:
+          return null;
+        case RentalContractBase.PromptRemindStatusEnum.Active:
+          return {
+            label: '催促待ち',
+            color: 'red',
+          };
+        case RentalContractBase.PromptRemindStatusEnum.Completed:
+          return {
+            label: '催促済み',
+            color: 'green',
+          };
+        case RentalContractBase.PromptRemindStatusEnum.Canceled:
+          return {
+            label: 'キャンセル済み',
+            color: 'green',
+          };
+        default:
+          return null;
+      }
+    }
   }
 });

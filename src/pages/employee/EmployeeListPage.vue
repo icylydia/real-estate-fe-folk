@@ -6,10 +6,14 @@ import { QTableProps } from 'quasar';
 import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const toCreatePage = () => {
-  router.push({
-    name: 'employee-create'
-  });
+const toCreatePage = async () => {
+  try {
+    await router.push({
+      name: 'employee-create'
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const loading = ref(false);
@@ -46,8 +50,8 @@ const columns: QTableProps['columns'] = [
   },
   {
     label: '部署',
-    field: 'department',
-    name: 'department',
+    field: 'departments',
+    name: 'departments',
     sortable: false,
     align: 'left',
   },
@@ -60,25 +64,33 @@ const columns: QTableProps['columns'] = [
   },
 ];
 
-const employeeDetail = (key: number) => {
-  router.push({
-    name: 'employee-detail',
-    params: {
-      id: key,
-    },
-  });
+const employeeDetail = async (key: string) => {
+  try {
+    await router.push({
+      name: 'employee-detail',
+      params: {
+        id: key,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-const editEmployee = (key: number) => {
-  router.push({
-    name: 'employee-edit',
-    params: {
-      id: key,
-    },
-  });
+const editEmployee = async (key: string) => {
+  try {
+    await router.push({
+      name: 'employee-edit',
+      params: {
+        id: key,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-const removeEmployee = (key: number) => {
+const removeEmployee = (key: string) => {
   console.log('remove employee', key);
 };
 </script>
@@ -112,12 +124,19 @@ const removeEmployee = (key: number) => {
         >
           <template #[`body-cell-name`]="{ row }: { row: EmployeeModel }">
             <q-td>
-              {{ row.lastName }} {{ row.firstName }}
+              <a
+                :href="$router.resolve({
+                  name: 'employee-detail',
+                  params: { id: row.id },
+                }).href"
+              >
+                {{ row.lastName }} {{ row.firstName }}
+              </a>
             </q-td>
           </template>
-          <template #[`body-cell-department`]="{ row }: { row: EmployeeModel }">
+          <template #[`body-cell-departments`]="{ row }: { row: EmployeeModel }">
             <q-td>
-              {{ row.department.name }}
+              {{ row.departments.map((department) => department.name).join(', ') }}
             </q-td>
           </template>
           <template #[`body-cell-actions`]="{ key }">

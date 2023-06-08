@@ -7,7 +7,7 @@ import { useContractStore } from 'stores/contract-store';
 import { useRouter } from 'vue-router';
 
 const tenantStore = useTenantStore();
-const { statusToChipProps } = useContractStore();
+const { statusToChipProps, promptRemindStatusToChipProps } = useContractStore();
 const contracts = computed(() => tenantStore.formModel.contracts);
 
 const columns: QTableProps['columns'] = [
@@ -47,6 +47,13 @@ const columns: QTableProps['columns'] = [
     align: 'left',
   },
   {
+    label: '催促状況',
+    field: 'promptRemindStatus',
+    name: 'promptRemindStatus',
+    sortable: false,
+    align: 'left',
+  },
+  {
     label: '操作',
     field: 'actions',
     name: 'actions',
@@ -56,28 +63,40 @@ const columns: QTableProps['columns'] = [
 ];
 
 const router = useRouter();
-const toContractDetail = (id?: string) => {
+const toContractDetail = async (id?: string) => {
   if (!id) return;
-  router.push({
-    name: 'contract-detail',
-    params: { id },
-  });
+  try {
+    await router.push({
+      name: 'contract-detail',
+      params: { id },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-const toContractEdit = (id?: string) => {
+const toContractEdit = async (id?: string) => {
   if (!id) return;
-  router.push({
-    name: 'contract-edit',
-    params: { id },
-  });
+  try {
+    await router.push({
+      name: 'contract-edit',
+      params: { id },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-const promptToUpdateContract = (id?: string) => {
+const promptToUpdateContract = async (id?: string) => {
   if (!id) return;
-  router.push({
-    name: 'contract-prompt-update',
-    params: { id },
-  });
+  try {
+    await router.push({
+      name: 'contract-prompt-update',
+      params: { id },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 </script>
 
@@ -125,6 +144,15 @@ const promptToUpdateContract = (id?: string) => {
       <q-td>
         <q-chip
           v-bind="statusToChipProps(row.status)"
+        />
+      </q-td>
+    </template>
+    <template #[`body-cell-promptRemindStatus`]="{ row }: { row: RentalContractInResponse }">
+      <q-td>
+        <q-chip
+          v-if="promptRemindStatusToChipProps(row.promptRemindStatus)"
+          :label="promptRemindStatusToChipProps(row.promptRemindStatus)!.label"
+          :color="promptRemindStatusToChipProps(row.promptRemindStatus)!.color"
         />
       </q-td>
     </template>

@@ -110,6 +110,16 @@ export default defineComponent({
                 },
               ],
             },
+            {
+              title: '管理委託契約',
+              icon: 'sym_r_event',
+              subMenu: [
+                {
+                  title: '契約一覧',
+                  link: this.$router.resolve({ name: 'management-contract-list' }).href,
+                },
+              ],
+            },
           ],
         },
         {

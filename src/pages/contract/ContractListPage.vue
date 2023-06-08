@@ -4,15 +4,9 @@ import { useContractStore } from 'stores/contract-store';
 import { QTableProps } from 'quasar';
 import { onMounted, ref } from 'vue';
 import { RentalContractInResponse } from 'src/api';
+import { useRouter } from 'vue-router';
 
 const columns: QTableProps['columns'] = [
-  {
-    label: '契約番号',
-    field: 'id',
-    name: 'id',
-    sortable: false,
-    align: 'left',
-  },
   {
     label: '物件名',
     field: row => row.building.name,
@@ -24,6 +18,13 @@ const columns: QTableProps['columns'] = [
     label: '部屋番号',
     field: row => row.room.name,
     name: 'roomName',
+    sortable: false,
+    align: 'left',
+  },
+  {
+    label: '入居者',
+    field: 'tenant',
+    name: 'tenant',
     sortable: false,
     align: 'left',
   },
@@ -49,6 +50,13 @@ const columns: QTableProps['columns'] = [
     align: 'left',
   },
   {
+    label: '催促状況',
+    field: 'promptRemindStatus',
+    name: 'promptRemindStatus',
+    sortable: false,
+    align: 'left',
+  },
+  {
     label: '操作',
     field: 'actions',
     name: 'actions',
@@ -58,7 +66,12 @@ const columns: QTableProps['columns'] = [
 ];
 
 const { rentalContractList: contracts } = storeToRefs(useContractStore());
-const { getRentalContractList, reset: resetRentalContractList, statusToChipProps } = useContractStore();
+const {
+  getRentalContractList,
+  reset: resetRentalContractList,
+  statusToChipProps,
+  promptRemindStatusToChipProps,
+} = useContractStore();
 const loading = ref(false);
 
 const loadContracts = async () => {
@@ -77,16 +90,52 @@ onMounted(async () => {
   await loadContracts();
 });
 
-const contractDetail = (key: string) => {
-  console.log(key);
+const router = useRouter();
+
+const toContractDetail = async (id?: string) => {
+  if (!id) return;
+  try {
+    await router.push({
+      name: 'contract-detail',
+      params: { id },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-const editContract = (key: string) => {
-  console.log(key);
+const toContractEdit = async (id?: string) => {
+  if (!id) return;
+  try {
+    await router.push({
+      name: 'contract-edit',
+      params: { id },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-const newContract = () => {
-  console.log('new');
+const promptToUpdateContract = async (id?: string) => {
+  if (!id) return;
+  try {
+    await router.push({
+      name: 'contract-prompt-update',
+      params: { id },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const toNewContract = async () => {
+  try {
+    await router.push({
+      name: 'contract-create',
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 
@@ -125,7 +174,7 @@ const search = async () => {
               color="primary"
               icon="sym_r_add"
               label="新規契約"
-              @click="newContract"
+              @click="toNewContract"
             />
           </template>
           <template #[`body-cell-buildingName`]="{ row }: { row: RentalContractInResponse }">
@@ -152,6 +201,18 @@ const search = async () => {
               </a>
             </q-td>
           </template>
+          <template #[`body-cell-tenant`]="{ row }: { row: RentalContractInResponse }">
+            <q-td>
+              <a
+                :href="$router.resolve({
+                  name: 'tenant-detail',
+                  params: { id: row.tenant!.id },
+                }).href"
+              >
+                {{ row.tenant.lastName }} {{ row.tenant.firstName }}
+              </a>
+            </q-td>
+          </template>
           <template #[`body-cell-status`]="{ row }">
             <q-td>
               <q-chip
@@ -159,10 +220,38 @@ const search = async () => {
               />
             </q-td>
           </template>
+          <template #[`body-cell-promptRemindStatus`]="{ row }: { row: RentalContractInResponse }">
+            <q-td>
+              <q-chip
+                v-if="promptRemindStatusToChipProps(row.promptRemindStatus)"
+                :label="promptRemindStatusToChipProps(row.promptRemindStatus)!.label"
+                :color="promptRemindStatusToChipProps(row.promptRemindStatus)!.color"
+              />
+            </q-td>
+          </template>
           <template #[`body-cell-actions`]="{ key }">
             <q-td class="text-right">
-              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="contractDetail(key)" />
-              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editContract(key)" />
+              <q-btn icon="sym_r_more_horiz" flat>
+                <q-menu>
+                  <q-list>
+                    <q-item dense clickable @click="toContractDetail(key)">
+                      <q-item-section>
+                        <q-item-label>詳細</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item dense clickable @click="toContractEdit(key)">
+                      <q-item-section>
+                        <q-item-label>編集</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item dense clickable @click="promptToUpdateContract(key)">
+                      <q-item-section>
+                        <q-item-label>更新を促す</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
             </q-td>
           </template>
         </q-table>

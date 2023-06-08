@@ -23,13 +23,6 @@ const columns: QTableProps['columns'] = [
     align: 'left',
   },
   {
-    label: '部署',
-    field: 'department',
-    name: 'department',
-    sortable: false,
-    align: 'left',
-  },
-  {
     label: '操作',
     field: 'actions',
     name: 'actions',
@@ -40,22 +33,30 @@ const columns: QTableProps['columns'] = [
 
 const router = useRouter();
 
-const employeeDetail = (key: number) => {
-  router.push({
-    name: 'employee-detail',
-    params: {
-      id: key,
-    },
-  });
+const employeeDetail = async (key: number) => {
+  try {
+    await router.push({
+      name: 'employee-detail',
+      params: {
+        id: key,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-const editEmployee = (key: number) => {
-  router.push({
-    name: 'employee-edit',
-    params: {
-      id: key,
-    },
-  });
+const editEmployee = async (key: number) => {
+  try {
+    await router.push({
+      name: 'employee-edit',
+      params: {
+        id: key,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const removeEmployee = (key: number) => {
@@ -80,19 +81,20 @@ const removeEmployee = (key: number) => {
     </template>
     <template #[`body-cell-name`]="{ row }: { row: EmployeeModel }">
       <q-td>
-        {{ row.lastName }} {{ row.firstName }}
-      </q-td>
-    </template>
-    <template #[`body-cell-department`]="{ row }: { row: EmployeeModel }">
-      <q-td>
-        {{ row.department.name }}
+        <a
+          :href="$router.resolve({
+                  name: 'employee-detail',
+                  params: { id: row.id },
+                }).href"
+        >
+          {{ row.lastName }} {{ row.firstName }}
+        </a>
       </q-td>
     </template>
     <template #[`body-cell-actions`]="{ key }">
       <q-td class="text-right">
         <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="employeeDetail(key)" />
         <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editEmployee(key)" />
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeEmployee(key)" />
       </q-td>
     </template>
   </q-table>

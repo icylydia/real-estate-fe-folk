@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useDepartmentStore } from 'stores/department-store';
-import { EmployeeBase } from 'src/api';
+import { DepartmentInResponse, EmployeeBase } from 'src/api';
 import { ref } from 'vue';
 import { useEmployeeStore } from 'stores/employee-store';
 
@@ -18,7 +18,7 @@ defineProps({
 
 const { formModel: department } = storeToRefs(useDepartmentStore());
 
-const options = ref<EmployeeBase[] | undefined>(undefined);
+const leaderOptions = ref<EmployeeBase[] | undefined>(undefined);
 enum EmployeeLoadingStatus {
   BeforeLoad = 0,
   Loading = 1,
@@ -31,7 +31,7 @@ const employeeLoadingStatus = ref<EmployeeLoadingStatus>(EmployeeLoadingStatus.B
 const { getEmployeeList } = useEmployeeStore();
 const { list: employees } = storeToRefs(useEmployeeStore());
 
-const filterFn = (val: string, update: () => void) => {
+const leaderFilter = (val: string, update: () => void) => {
   if (
     employeeLoadingStatus.value === EmployeeLoadingStatus.BeforeLoad
     || employeeLoadingStatus.value === EmployeeLoadingStatus.Aborted
@@ -40,7 +40,7 @@ const filterFn = (val: string, update: () => void) => {
     getEmployeeList()
       .then(() => {
         employeeLoadingStatus.value = EmployeeLoadingStatus.Loaded;
-        options.value = employees.value;
+        leaderOptions.value = employees.value;
         update();
       })
       .catch(() => {
@@ -48,11 +48,50 @@ const filterFn = (val: string, update: () => void) => {
       });
   }
   if (val === '') {
-    options.value = employees.value;
+    leaderOptions.value = employees.value;
   } else {
-    options.value = employees.value.filter((v) => {
+    leaderOptions.value = employees.value.filter((v) => {
       const fullName = v.lastName ?? '' + v.firstName ?? '';
       return fullName.toLowerCase().indexOf(val.toLowerCase()) > -1;
+    });
+  }
+  update();
+}
+
+const parentDepartmentOptions = ref<DepartmentInResponse[] | undefined>(undefined);
+enum DepartmentLoadingStatus {
+  BeforeLoad = 0,
+  Loading = 1,
+  Loaded = 2,
+  Aborted = 3,
+}
+const { getDepartmentList } = useDepartmentStore();
+const { list: parentDepartments } = storeToRefs(useDepartmentStore());
+
+const departmentLoadingStatus = ref<DepartmentLoadingStatus>(DepartmentLoadingStatus.BeforeLoad);
+
+const departmentFilter = (val: string, update: () => void) => {
+  if (
+    departmentLoadingStatus.value === DepartmentLoadingStatus.BeforeLoad
+    || departmentLoadingStatus.value === DepartmentLoadingStatus.Aborted
+  ) {
+    departmentLoadingStatus.value = DepartmentLoadingStatus.Loading;
+    getDepartmentList()
+      .then(() => {
+        departmentLoadingStatus.value = DepartmentLoadingStatus.Loaded;
+        parentDepartmentOptions.value = parentDepartments.value;
+        update();
+      })
+      .catch(() => {
+        departmentLoadingStatus.value = DepartmentLoadingStatus.Aborted;
+      });
+  }
+  if (val === '') {
+    parentDepartmentOptions.value = parentDepartments.value;
+  } else {
+    parentDepartmentOptions.value = parentDepartments.value.filter((v) => {
+      const name = v.name ?? '';
+      return name.toLowerCase().indexOf(val.toLowerCase()) > -1;
     });
   }
   update();
@@ -71,6 +110,22 @@ const filterFn = (val: string, update: () => void) => {
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
+        <q-select
+          v-model="department.parent"
+          use-chips
+          label="親部署"
+          :options="parentDepartmentOptions"
+          :option-label="(option: DepartmentInResponse) => option.name ?? ''"
+          option-value="id"
+          @filter="departmentFilter"
+          :readonly="readonly"
+          use-input
+        >
+        </q-select>
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
         <q-input v-model="department.name" label="部署名" :readonly="readonly" />
       </q-item-section>
     </q-item>
@@ -80,10 +135,10 @@ const filterFn = (val: string, update: () => void) => {
           v-model="department.leader"
           use-chips
           label="部署リーダー"
-          :options="options"
+          :options="leaderOptions"
           :option-label="(option: EmployeeBase) => option.lastName + ' ' + option.firstName"
           option-value="id"
-          @filter="filterFn"
+          @filter="leaderFilter"
           :readonly="readonly"
           use-input
         >
