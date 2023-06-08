@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
-import { ContractBase, RentalContractBase, RentalContractInResponse } from "src/api";
+import { ContractBase, RentalContractBase, RentalContractInResponse } from 'src/api';
 
 export const useContractStore = defineStore('contract', {
   state: () => ({
@@ -9,7 +9,7 @@ export const useContractStore = defineStore('contract', {
   actions: {
     async getRentalContractList() {
       const resp = await api.getRentalContracts();
-      this.rentalContractList = resp.items || [];
+      this.rentalContractList = resp.items ?? [];
     },
     reset() {
       this.rentalContractList = [];

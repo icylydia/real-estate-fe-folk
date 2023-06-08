@@ -58,10 +58,6 @@ const editEmployee = async (key: number) => {
     console.error(e);
   }
 };
-
-const removeEmployee = (key: number) => {
-  console.log('remove employee', key);
-};
 </script>
 
 <template>

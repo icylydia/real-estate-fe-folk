@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useExpenseStore } from 'stores/expense-store';
-import { usePayment } from "src/utils/payment";
+import { usePayment } from 'src/utils/payment';
 
 defineProps({
   readonly: {
