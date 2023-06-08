@@ -113,6 +113,22 @@ export default defineComponent({
           ],
         },
         {
+          title: '収支管理',
+          icon: 'sym_r_currency_exchange',
+          subMenu: [
+            {
+              title: '収入一覧',
+              icon: 'sym_r_trending_up',
+              link: this.$router.resolve({ name: 'income-list' }).href,
+            },
+            {
+              title: '支出一覧',
+              icon: 'sym_r_trending_down',
+              link: this.$router.resolve({ name: 'expense-list' }).href,
+            },
+          ],
+        },
+        {
           title: '部署管理',
           icon: 'sym_r_tenancy',
           link: this.$router.resolve({ name: 'department-list' }).href,
@@ -127,9 +143,13 @@ export default defineComponent({
   },
 
   methods: {
-    logout () {
+    async logout () {
       logout()
-      this.$router.push({ name: 'login' })
+      try {
+        await this.$router.push({ name: 'login' })
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 });

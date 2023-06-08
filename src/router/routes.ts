@@ -16,6 +16,7 @@ const routes: RouteRecordRaw[] = [
         name: 'home',
         component: () => import('pages/ConstructingPage.vue'),
       },
+      // 物件
       {
         path: 'buildings',
         name: 'building-list',
@@ -51,11 +52,13 @@ const routes: RouteRecordRaw[] = [
         name: 'room-edit',
         component: () => import('pages/room/RoomEditPage.vue'),
       },
+      // 契約
       {
         path: 'contracts',
         name: 'contract-list',
         component: () => import('pages/contract/ContractListPage.vue'),
       },
+      // 部署
       {
         path: 'departments',
         name: 'department-list',
@@ -76,6 +79,7 @@ const routes: RouteRecordRaw[] = [
         name: 'department-edit',
         component: () => import('pages/department/DepartmentEditPage.vue'),
       },
+      // 社員
       {
         path: 'employees',
         name: 'employee-list',
@@ -96,6 +100,7 @@ const routes: RouteRecordRaw[] = [
         name: 'employee-edit',
         component: () => import('pages/employee/EmployeeEditPage.vue'),
       },
+      // 入居者
       {
         path: 'tenants',
         name: 'tenant-list',
@@ -115,6 +120,48 @@ const routes: RouteRecordRaw[] = [
         path: 'tenants/:id/edit',
         name: 'tenant-edit',
         component: () => import('pages/tenant/TenantEditPage.vue'),
+      },
+      // 収支
+      {
+        path: 'incomes',
+        name: 'income-list',
+        component: () => import('pages/income/IncomeListPage.vue'),
+      },
+      {
+        path: 'incomes/new',
+        name: 'income-create',
+        component: () => import('pages/income/IncomeCreatePage.vue'),
+      },
+      {
+        path: 'incomes/:id',
+        name: 'income-detail',
+        component: () => import('pages/income/IncomeDetailPage.vue'),
+      },
+      {
+        path: 'incomes/:id/edit',
+        name: 'income-edit',
+        component: () => import('pages/income/IncomeEditPage.vue'),
+      },
+      // 支出
+      {
+        path: 'expenses',
+        name: 'expense-list',
+        component: () => import('pages/expense/ExpenseListPage.vue'),
+      },
+      {
+        path: 'expenses/new',
+        name: 'expense-create',
+        component: () => import('pages/expense/ExpenseCreatePage.vue'),
+      },
+      {
+        path: 'expenses/:id',
+        name: 'expense-detail',
+        component: () => import('pages/expense/ExpenseDetailPage.vue'),
+      },
+      {
+        path: 'expenses/:id/edit',
+        name: 'expense-edit',
+        component: () => import('pages/expense/ExpenseEditPage.vue'),
       },
     ],
     meta: {

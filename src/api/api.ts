@@ -713,6 +713,114 @@ export interface EmployeeInResponse extends EmployeeBase {
 export namespace EmployeeInResponse {
 }
 /**
+ *
+ * @export
+ * @interface ExpenseBase
+ */
+export interface ExpenseBase extends PaymentBase {
+}
+
+/**
+ * @export
+ * @namespace ExpenseBase
+ */
+export namespace ExpenseBase {
+}
+/**
+ *
+ * @export
+ * @interface ExpenseDetailResponse
+ */
+export interface ExpenseDetailResponse extends ExpenseInResponse {
+}
+/**
+ *
+ * @export
+ * @interface ExpenseInRequest
+ */
+export interface ExpenseInRequest extends ExpenseBase {
+}
+/**
+ *
+ * @export
+ * @interface ExpenseInResponse
+ */
+export interface ExpenseInResponse extends ExpenseBase {
+  /**
+   * 支出ID
+   * @type {string}
+   * @memberof ExpenseInResponse
+   */
+  id?: string;
+}
+/**
+ *
+ * @export
+ * @interface ExpenseListResponse
+ */
+export interface ExpenseListResponse extends PaginationResponse {
+  /**
+   * 数据列表
+   * @type {Array<ExpenseInResponse>}
+   * @memberof ExpenseListResponse
+   */
+  items?: Array<ExpenseInResponse>;
+}
+/**
+ *
+ * @export
+ * @interface IncomeBase
+ */
+export interface IncomeBase extends PaymentBase {
+}
+
+/**
+ * @export
+ * @namespace IncomeBase
+ */
+export namespace IncomeBase {
+}
+/**
+ *
+ * @export
+ * @interface IncomeDetailResponse
+ */
+export interface IncomeDetailResponse extends IncomeInResponse {
+}
+/**
+ *
+ * @export
+ * @interface IncomeInRequest
+ */
+export interface IncomeInRequest extends IncomeBase {
+}
+/**
+ *
+ * @export
+ * @interface IncomeInResponse
+ */
+export interface IncomeInResponse extends IncomeBase {
+  /**
+   * 收入ID
+   * @type {string}
+   * @memberof IncomeInResponse
+   */
+  id?: string;
+}
+/**
+ *
+ * @export
+ * @interface IncomeListResponse
+ */
+export interface IncomeListResponse extends PaginationResponse {
+  /**
+   * 数据列表
+   * @type {Array<IncomeInResponse>}
+   * @memberof IncomeListResponse
+   */
+  items?: Array<IncomeInResponse>;
+}
+/**
  * 登录成功返回结果
  * @export
  * @interface LoginSuccessResponse
@@ -761,6 +869,106 @@ export interface PaginationResponse {
    * @memberof PaginationResponse
    */
   items?: Array<any>;
+}
+/**
+ *
+ * @export
+ * @interface PaymentBase
+ */
+export interface PaymentBase {
+  /**
+   * 支付标题
+   * @type {string}
+   * @memberof PaymentBase
+   */
+  title?: string;
+  /**
+   * 支付类别 - `monthlyRent`: [收入] 月租/月額賃料 - `securityDeposit`: [收入] 押金/敷金 - `keyMoney`: [收入] 礼金/礼金 - `cleaningFee`: [收入/支出] 清洁费/清掃料金 - `ownerBenefits`: [支出] 房东收益/オーナー収益 - `securityDepositRefund`: [支出] 押金退还/敷金返還 - `other`: [收入/支出] 其他/その他
+   * @type {string}
+   * @memberof PaymentBase
+   */
+  category?: PaymentBase.CategoryEnum;
+  /**
+   * 支付方式 - `cash`: 现金 - `withDraw`: 自动转账/口座引落 - `transfer`: 银行转账/振込 - `convenienceStore`: 便利店缴费/コンビニ - `creditCard`: 信用卡缴费/クレジットカード - `other`: 其他
+   * @type {string}
+   * @memberof PaymentBase
+   */
+  paymentMethod?: PaymentBase.PaymentMethodEnum;
+  /**
+   * 支付金额
+   * @type {number}
+   * @memberof PaymentBase
+   */
+  amount?: number;
+  /**
+   * 支付日期
+   * @type {string}
+   * @memberof PaymentBase
+   */
+  date?: string;
+  /**
+   * 备注
+   * @type {string}
+   * @memberof PaymentBase
+   */
+  note?: string;
+  /**
+   * 建筑ID
+   * @type {number}
+   * @memberof PaymentBase
+   */
+  buildingId?: number;
+  /**
+   * 房间ID
+   * @type {number}
+   * @memberof PaymentBase
+   */
+  roomId?: number;
+  /**
+   * 租客ID
+   * @type {number}
+   * @memberof PaymentBase
+   */
+  tenantId?: number;
+  /**
+   * 房东ID
+   * @type {number}
+   * @memberof PaymentBase
+   */
+  ownerId?: number;
+}
+
+/**
+ * @export
+ * @namespace PaymentBase
+ */
+export namespace PaymentBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum CategoryEnum {
+    MonthlyRent = <any> 'monthlyRent',
+    SecurityDeposit = <any> 'securityDeposit',
+    KeyMoney = <any> 'keyMoney',
+    CleaningFee = <any> 'cleaningFee',
+    OwnerBenefits = <any> 'ownerBenefits',
+    SecurityDepositRefund = <any> 'securityDepositRefund',
+    KeyMoneyRefund = <any> 'keyMoneyRefund',
+    Other = <any> 'other'
+  }
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum PaymentMethodEnum {
+    Cash = <any> 'cash',
+    WithDraw = <any> 'withDraw',
+    Transfer = <any> 'transfer',
+    ConvenienceStore = <any> 'convenienceStore',
+    CreditCard = <any> 'creditCard',
+    Other = <any> 'other'
+  }
 }
 /**
  * 都道府县
@@ -1339,6 +1547,92 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 新建支出
+     * @summary 新建支出
+     * @param {ExpenseInRequest} body 支出信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createExpense(body: ExpenseInRequest, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling createExpense.');
+      }
+      const localVarPath = `/expense`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"ExpenseInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 新建收入
+     * @summary 新建收入
+     * @param {IncomeInRequest} body 收入信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createIncome(body: IncomeInRequest, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling createIncome.');
+      }
+      const localVarPath = `/income`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"IncomeInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 新建房间
      * @summary 新建房间
      * @param {RoomInRequest} body 房间信息
@@ -1517,6 +1811,86 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteEmployee.');
       }
       const localVarPath = `/employee/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据ID删除支出
+     * @summary 删除支出
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteExpense(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling deleteExpense.');
+      }
+      const localVarPath = `/expense/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据ID删除收入
+     * @summary 删除收入
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteIncome(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling deleteIncome.');
+      }
+      const localVarPath = `/income/{id}`
         .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
@@ -1928,6 +2302,204 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
           ? configuration.accessToken("oauth2", [])
           : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据ID获取支出详情
+     * @summary 支出详情
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getExpense(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling getExpense.');
+      }
+      const localVarPath = `/expense/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据条件获取支出列表
+     * @summary 支出列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {number} [year] 年份
+     * @param {number} [month] 月份
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getExpenses(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options: any = {}): FetchArgs {
+      const localVarPath = `/expenses`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      if (itemsPerPage !== undefined) {
+        localVarQueryParameter['itemsPerPage'] = itemsPerPage;
+      }
+
+      if (page !== undefined) {
+        localVarQueryParameter['page'] = page;
+      }
+
+      if (year !== undefined) {
+        localVarQueryParameter['year'] = year;
+      }
+
+      if (month !== undefined) {
+        localVarQueryParameter['month'] = month;
+      }
+
+      if (query !== undefined) {
+        localVarQueryParameter['query'] = query;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据ID获取收入详情
+     * @summary 收入详情
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getIncome(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling getIncome.');
+      }
+      const localVarPath = `/income/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据条件获取收入列表
+     * @summary 收入列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {number} [year] 年份
+     * @param {number} [month] 月份
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options: any = {}): FetchArgs {
+      const localVarPath = `/incomes`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      if (itemsPerPage !== undefined) {
+        localVarQueryParameter['itemsPerPage'] = itemsPerPage;
+      }
+
+      if (page !== undefined) {
+        localVarQueryParameter['page'] = page;
+      }
+
+      if (year !== undefined) {
+        localVarQueryParameter['year'] = year;
+      }
+
+      if (month !== undefined) {
+        localVarQueryParameter['month'] = month;
+      }
+
+      if (query !== undefined) {
+        localVarQueryParameter['query'] = query;
       }
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
@@ -2416,6 +2988,104 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID更新支出
+     * @summary 更新支出
+     * @param {ExpenseInRequest} body 支出信息
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpense(body: ExpenseInRequest, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateExpense.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling updateExpense.');
+      }
+      const localVarPath = `/expense/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"ExpenseInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据ID更新收入
+     * @summary 更新收入
+     * @param {IncomeInRequest} body 收入信息
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncome(body: IncomeInRequest, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateIncome.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling updateIncome.');
+      }
+      const localVarPath = `/income/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"IncomeInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID更新房间
      * @summary 更新房间
      * @param {RoomInRequest} body 房间信息
@@ -2580,6 +3250,44 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 新建支出
+     * @summary 新建支出
+     * @param {ExpenseInRequest} body 支出信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createExpense(body: ExpenseInRequest, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<ExpenseInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).createExpense(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 新建收入
+     * @summary 新建收入
+     * @param {IncomeInRequest} body 收入信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createIncome(body: IncomeInRequest, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<IncomeInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).createIncome(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 新建房间
      * @summary 新建房间
      * @param {RoomInRequest} body 房间信息
@@ -2664,6 +3372,44 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      */
     deleteEmployee(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
       const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).deleteEmployee(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据ID删除支出
+     * @summary 删除支出
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteExpense(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).deleteExpense(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据ID删除收入
+     * @summary 删除收入
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteIncome(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).deleteIncome(id, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -2854,6 +3600,90 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      */
     getEmployees(options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<Array<EmployeeInResponse>> {
       const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getEmployees(options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据ID获取支出详情
+     * @summary 支出详情
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getExpense(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<ExpenseDetailResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getExpense(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据条件获取支出列表
+     * @summary 支出列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {number} [year] 年份
+     * @param {number} [month] 月份
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getExpenses(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<ExpenseListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getExpenses(itemsPerPage, page, year, month, query, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据ID获取收入详情
+     * @summary 收入详情
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getIncome(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<IncomeDetailResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getIncome(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据条件获取收入列表
+     * @summary 收入列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {number} [year] 年份
+     * @param {number} [month] 月份
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<IncomeListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getIncomes(itemsPerPage, page, year, month, query, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -3081,6 +3911,46 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID更新支出
+     * @summary 更新支出
+     * @param {ExpenseInRequest} body 支出信息
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpense(body: ExpenseInRequest, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<ExpenseDetailResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateExpense(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据ID更新收入
+     * @summary 更新收入
+     * @param {IncomeInRequest} body 收入信息
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncome(body: IncomeInRequest, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<IncomeDetailResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateIncome(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID更新房间
      * @summary 更新房间
      * @param {RoomInRequest} body 房间信息
@@ -3160,6 +4030,26 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).createEmployee(body, options)(fetch, basePath);
     },
     /**
+     * 新建支出
+     * @summary 新建支出
+     * @param {ExpenseInRequest} body 支出信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createExpense(body: ExpenseInRequest, options?: any) {
+      return DefaultApiFp(configuration).createExpense(body, options)(fetch, basePath);
+    },
+    /**
+     * 新建收入
+     * @summary 新建收入
+     * @param {IncomeInRequest} body 收入信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createIncome(body: IncomeInRequest, options?: any) {
+      return DefaultApiFp(configuration).createIncome(body, options)(fetch, basePath);
+    },
+    /**
      * 新建房间
      * @summary 新建房间
      * @param {RoomInRequest} body 房间信息
@@ -3208,6 +4098,26 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     deleteEmployee(id: string, options?: any) {
       return DefaultApiFp(configuration).deleteEmployee(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID删除支出
+     * @summary 删除支出
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteExpense(id: string, options?: any) {
+      return DefaultApiFp(configuration).deleteExpense(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID删除收入
+     * @summary 删除收入
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteIncome(id: string, options?: any) {
+      return DefaultApiFp(configuration).deleteIncome(id, options)(fetch, basePath);
     },
     /**
      * 根据ID删除房间
@@ -3308,6 +4218,54 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     getEmployees(options?: any) {
       return DefaultApiFp(configuration).getEmployees(options)(fetch, basePath);
+    },
+    /**
+     * 根据ID获取支出详情
+     * @summary 支出详情
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getExpense(id: string, options?: any) {
+      return DefaultApiFp(configuration).getExpense(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据条件获取支出列表
+     * @summary 支出列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {number} [year] 年份
+     * @param {number} [month] 月份
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getExpenses(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any) {
+      return DefaultApiFp(configuration).getExpenses(itemsPerPage, page, year, month, query, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID获取收入详情
+     * @summary 收入详情
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getIncome(id: string, options?: any) {
+      return DefaultApiFp(configuration).getIncome(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据条件获取收入列表
+     * @summary 收入列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {number} [year] 年份
+     * @param {number} [month] 月份
+     * @param {string} [query] 查询条件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any) {
+      return DefaultApiFp(configuration).getIncomes(itemsPerPage, page, year, month, query, options)(fetch, basePath);
     },
     /**
      * 获取所有的都道府县
@@ -3427,6 +4385,28 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).updateEmployee(body, id, options)(fetch, basePath);
     },
     /**
+     * 根据ID更新支出
+     * @summary 更新支出
+     * @param {ExpenseInRequest} body 支出信息
+     * @param {string} id 支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpense(body: ExpenseInRequest, id: string, options?: any) {
+      return DefaultApiFp(configuration).updateExpense(body, id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID更新收入
+     * @summary 更新收入
+     * @param {IncomeInRequest} body 收入信息
+     * @param {string} id 收入ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncome(body: IncomeInRequest, id: string, options?: any) {
+      return DefaultApiFp(configuration).updateIncome(body, id, options)(fetch, basePath);
+    },
+    /**
      * 根据ID更新房间
      * @summary 更新房间
      * @param {RoomInRequest} body 房间信息
@@ -3495,6 +4475,30 @@ export class DefaultApi extends BaseAPI {
   }
 
   /**
+   * 新建支出
+   * @summary 新建支出
+   * @param {ExpenseInRequest} body 支出信息
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createExpense(body: ExpenseInRequest, options?: any) {
+    return DefaultApiFp(this.configuration).createExpense(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 新建收入
+   * @summary 新建收入
+   * @param {IncomeInRequest} body 收入信息
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createIncome(body: IncomeInRequest, options?: any) {
+    return DefaultApiFp(this.configuration).createIncome(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
    * 新建房间
    * @summary 新建房间
    * @param {RoomInRequest} body 房间信息
@@ -3552,6 +4556,30 @@ export class DefaultApi extends BaseAPI {
    */
   public deleteEmployee(id: string, options?: any) {
     return DefaultApiFp(this.configuration).deleteEmployee(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID删除支出
+   * @summary 删除支出
+   * @param {string} id 支出ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteExpense(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).deleteExpense(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID删除收入
+   * @summary 删除收入
+   * @param {string} id 收入ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteIncome(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).deleteIncome(id, options)(this.fetch, this.basePath);
   }
 
   /**
@@ -3672,6 +4700,62 @@ export class DefaultApi extends BaseAPI {
    */
   public getEmployees(options?: any) {
     return DefaultApiFp(this.configuration).getEmployees(options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID获取支出详情
+   * @summary 支出详情
+   * @param {string} id 支出ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getExpense(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).getExpense(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据条件获取支出列表
+   * @summary 支出列表
+   * @param {number} [itemsPerPage] 每页条数
+   * @param {number} [page] 页码
+   * @param {number} [year] 年份
+   * @param {number} [month] 月份
+   * @param {string} [query] 查询条件
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getExpenses(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any) {
+    return DefaultApiFp(this.configuration).getExpenses(itemsPerPage, page, year, month, query, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID获取收入详情
+   * @summary 收入详情
+   * @param {string} id 收入ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getIncome(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).getIncome(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据条件获取收入列表
+   * @summary 收入列表
+   * @param {number} [itemsPerPage] 每页条数
+   * @param {number} [page] 页码
+   * @param {number} [year] 年份
+   * @param {number} [month] 月份
+   * @param {string} [query] 查询条件
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any) {
+    return DefaultApiFp(this.configuration).getIncomes(itemsPerPage, page, year, month, query, options)(this.fetch, this.basePath);
   }
 
   /**
@@ -3811,6 +4895,32 @@ export class DefaultApi extends BaseAPI {
    */
   public updateEmployee(body: EmployeeInRequest, id: string, options?: any) {
     return DefaultApiFp(this.configuration).updateEmployee(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID更新支出
+   * @summary 更新支出
+   * @param {ExpenseInRequest} body 支出信息
+   * @param {string} id 支出ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateExpense(body: ExpenseInRequest, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).updateExpense(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID更新收入
+   * @summary 更新收入
+   * @param {IncomeInRequest} body 收入信息
+   * @param {string} id 收入ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateIncome(body: IncomeInRequest, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).updateIncome(body, id, options)(this.fetch, this.basePath);
   }
 
   /**

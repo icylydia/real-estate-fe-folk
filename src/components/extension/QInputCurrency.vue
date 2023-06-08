@@ -19,12 +19,14 @@ export default defineComponent({
   emits: ['update:modelValue'],
   computed: {
     formattedValue(): string {
-      return Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(this.modelValue);
+      let value = this.modelValue;
+      if (!this.modelValue) value = 0;
+      return Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(value);
     },
   },
   methods: {
     handleUpdateModelValue(value: string) {
-      const parsedValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
+      const parsedValue = parseInt(value.replace(/\D/g, ''), 10);
       this.$emit('update:modelValue', parsedValue);
     },
   },

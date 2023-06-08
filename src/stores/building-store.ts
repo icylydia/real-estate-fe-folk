@@ -44,7 +44,7 @@ export const useBuildingStore = defineStore('building', {
         query.name,
         query.location,
       );
-      this.list = resp.items || [];
+      this.list = resp.items ?? [];
     },
 
     async getBuildingDetail(id: string) {
@@ -61,7 +61,7 @@ export const useBuildingStore = defineStore('building', {
       if (!postalCode) {
         return false;
       }
-      return postalCode.match(/^\d{3}-\d{4}$/) !== null;
+      return RegExp(/^\d{3}-\d{4}$/).exec(postalCode) !== null;
     },
 
     async updateAddressFromPostalCode() {
