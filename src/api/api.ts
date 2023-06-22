@@ -513,7 +513,7 @@ export interface ContractBase {
    */
   endDate?: string;
   /**
-   * 合同状态 - `draft`: 草稿/下書き - `beforeStart`: 待执行/実行待ち - `active`: 执行中/実行中 - `completed`: 已完成/完了済み - `canceled`: 已取消/キャンセル済み
+   * 合同状态 - `beforeStart`: 预定签约/契約予定 - `active`: 签约中/契約中 - `toBeFinished`: 预定解约/解約予定 - `finished`: 已解约/解約済み
    * @type {string}
    * @memberof ContractBase
    */
@@ -530,11 +530,10 @@ export namespace ContractBase {
    * @enum {string}
    */
   export enum StatusEnum {
-    Draft = <any> 'draft',
     BeforeStart = <any> 'beforeStart',
     Active = <any> 'active',
-    Completed = <any> 'completed',
-    Canceled = <any> 'canceled'
+    ToBeFinished = <any> 'toBeFinished',
+    Finished = <any> 'finished'
   }
 }
 /**
@@ -735,6 +734,91 @@ export interface EmployeeInResponse extends EmployeeBase {
  * @namespace EmployeeInResponse
  */
 export namespace EmployeeInResponse {
+}
+/**
+ *
+ * @export
+ * @interface EntrustContractBase
+ */
+export interface EntrustContractBase extends ContractBase {
+  /**
+   *
+   * @type {TenantInResponse}
+   * @memberof EntrustContractBase
+   */
+  owner?: TenantInResponse;
+  /**
+   * 收益类型 - `fixed`: 固定金额/定額 - `percentage`: 百分比/割合
+   * @type {string}
+   * @memberof EntrustContractBase
+   */
+  benefitType?: EntrustContractBase.BenefitTypeEnum;
+  /**
+   * 收益金额
+   * @type {number}
+   * @memberof EntrustContractBase
+   */
+  benefitAmount?: number;
+  /**
+   * 收益百分比
+   * @type {number}
+   * @memberof EntrustContractBase
+   */
+  benefitPercentage?: number;
+}
+
+/**
+ * @export
+ * @namespace EntrustContractBase
+ */
+export namespace EntrustContractBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum BenefitTypeEnum {
+    Fixed = <any> 'fixed',
+    Percentage = <any> 'percentage'
+  }
+}
+/**
+ *
+ * @export
+ * @interface EntrustContractInResponse
+ */
+export interface EntrustContractInResponse extends EntrustContractBase {
+  /**
+   * 合同ID
+   * @type {string}
+   * @memberof EntrustContractInResponse
+   */
+  id?: string;
+  /**
+   *
+   * @type {BuildingInResponse}
+   * @memberof EntrustContractInResponse
+   */
+  building?: BuildingInResponse;
+}
+
+/**
+ * @export
+ * @namespace EntrustContractInResponse
+ */
+export namespace EntrustContractInResponse {
+}
+/**
+ *
+ * @export
+ * @interface EntrustContractListResponse
+ */
+export interface EntrustContractListResponse extends PaginationResponse {
+  /**
+   * 数据列表
+   * @type {Array<EntrustContractInResponse>}
+   * @memberof EntrustContractListResponse
+   */
+  items?: Array<EntrustContractInResponse>;
 }
 /**
  *
@@ -1038,7 +1122,7 @@ export interface RentalContractBase extends ContractBase {
    */
   promptRemindMonths?: number;
   /**
-   * 提示续租状态 - `beforeStart`: 未到提示日期 - `active`: 未提示/催促待ち - `completed`: 已完成/催促済み - `canceled`: 已取消/キャンセル済み
+   * 提示续租状态 - `beforeStart`: 未到提示日期 - `active`: 需要提示更新/要通知 - `completed`: 已提示更新/通知済み
    * @type {string}
    * @memberof RentalContractBase
    */
@@ -1057,8 +1141,7 @@ export namespace RentalContractBase {
   export enum PromptRemindStatusEnum {
     BeforeStart = <any> 'beforeStart',
     Active = <any> 'active',
-    Completed = <any> 'completed',
-    Canceled = <any> 'canceled'
+    Completed = <any> 'completed'
   }
 }
 /**
@@ -2343,6 +2426,60 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
           ? configuration.accessToken("oauth2", [])
           : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据条件获取委托管理合同列表
+     * @summary 委托管理合同列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {string} [buildingId] 建筑ID
+     * @param {string} [ownerId] 房东ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getEntrustContracts(itemsPerPage?: number, page?: number, buildingId?: string, ownerId?: string, options: any = {}): FetchArgs {
+      const localVarPath = `/entrust-contracts`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      if (itemsPerPage !== undefined) {
+        localVarQueryParameter['itemsPerPage'] = itemsPerPage;
+      }
+
+      if (page !== undefined) {
+        localVarQueryParameter['page'] = page;
+      }
+
+      if (buildingId !== undefined) {
+        localVarQueryParameter['buildingId'] = buildingId;
+      }
+
+      if (ownerId !== undefined) {
+        localVarQueryParameter['ownerId'] = ownerId;
       }
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
@@ -3652,6 +3789,28 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据条件获取委托管理合同列表
+     * @summary 委托管理合同列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {string} [buildingId] 建筑ID
+     * @param {string} [ownerId] 房东ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getEntrustContracts(itemsPerPage?: number, page?: number, buildingId?: string, ownerId?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<EntrustContractListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getEntrustContracts(itemsPerPage, page, buildingId, ownerId, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID获取支出详情
      * @summary 支出详情
      * @param {string} id 支出ID
@@ -4261,6 +4420,19 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).getEmployees(options)(fetch, basePath);
     },
     /**
+     * 根据条件获取委托管理合同列表
+     * @summary 委托管理合同列表
+     * @param {number} [itemsPerPage] 每页条数
+     * @param {number} [page] 页码
+     * @param {string} [buildingId] 建筑ID
+     * @param {string} [ownerId] 房东ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getEntrustContracts(itemsPerPage?: number, page?: number, buildingId?: string, ownerId?: string, options?: any) {
+      return DefaultApiFp(configuration).getEntrustContracts(itemsPerPage, page, buildingId, ownerId, options)(fetch, basePath);
+    },
+    /**
      * 根据ID获取支出详情
      * @summary 支出详情
      * @param {string} id 支出ID
@@ -4741,6 +4913,21 @@ export class DefaultApi extends BaseAPI {
    */
   public getEmployees(options?: any) {
     return DefaultApiFp(this.configuration).getEmployees(options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据条件获取委托管理合同列表
+   * @summary 委托管理合同列表
+   * @param {number} [itemsPerPage] 每页条数
+   * @param {number} [page] 页码
+   * @param {string} [buildingId] 建筑ID
+   * @param {string} [ownerId] 房东ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getEntrustContracts(itemsPerPage?: number, page?: number, buildingId?: string, ownerId?: string, options?: any) {
+    return DefaultApiFp(this.configuration).getEntrustContracts(itemsPerPage, page, buildingId, ownerId, options)(this.fetch, this.basePath);
   }
 
   /**

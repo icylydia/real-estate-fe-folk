@@ -106,7 +106,7 @@ export default defineComponent({
               subMenu: [
                 {
                   title: '契約一覧',
-                  link: this.$router.resolve({ name: 'contract-list' }).href,
+                  link: this.$router.resolve({ name: 'rental-contract-list' }).href,
                 },
               ],
             },
@@ -116,7 +116,7 @@ export default defineComponent({
               subMenu: [
                 {
                   title: '契約一覧',
-                  link: this.$router.resolve({ name: 'management-contract-list' }).href,
+                  link: this.$router.resolve({ name: 'entrust-contract-list' }).href,
                 },
               ],
             },

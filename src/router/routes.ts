@@ -54,9 +54,9 @@ const routes: RouteRecordRaw[] = [
       },
       // 契約
       {
-        path: 'contracts',
-        name: 'contract-list',
-        component: () => import('pages/contract/ContractListPage.vue'),
+        path: 'rental-contracts',
+        name: 'rental-contract-list',
+        component: () => import('pages/contract/RentalContractListPage.vue'),
       },
       {
         path: 'contracts/new',
@@ -79,9 +79,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/ConstructingPage.vue'),
       },
       {
-        path: 'management-contracts',
-        name: 'management-contract-list',
-        component: () => import('pages/ConstructingPage.vue'),
+        path: 'entrust-contracts',
+        name: 'entrust-contract-list',
+        component: () => import('pages/contract/EntrustContractListPage.vue'),
       },
       // 部署
       {

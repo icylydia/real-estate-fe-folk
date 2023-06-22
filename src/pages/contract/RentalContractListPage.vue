@@ -151,7 +151,7 @@ const search = async () => {
       <q-card-section>
         <q-table
           flat
-          title="契約一覧"
+          title="賃貸借契約一覧"
           :rows="contracts"
           :columns="columns"
           row-key="id"
