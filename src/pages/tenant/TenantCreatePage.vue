@@ -2,8 +2,8 @@
 import TenantForm from 'components/tenant/TenantForm.vue';
 import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
-import { useTenantStore } from "stores/tenant-store";
-import { storeToRefs } from "pinia";
+import { useTenantStore } from 'stores/tenant-store';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
 
