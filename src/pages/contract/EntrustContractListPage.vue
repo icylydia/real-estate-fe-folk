@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { storeToRefs } from "pinia";
-import { useContractStore } from "stores/contract-store";
-import { QTableProps } from "quasar";
-import { useRouter } from "vue-router";
-import { EntrustContractBase, EntrustContractInResponse } from "src/api";
+import { onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useContractStore } from 'stores/contract-store';
+import { QTableProps } from 'quasar';
+import { useRouter } from 'vue-router';
+import { EntrustContractBase, EntrustContractInResponse } from 'src/api';
 
 const loading = ref(false);
 
@@ -52,6 +52,13 @@ const columns: QTableProps['columns'] = [
     sortable: false,
     align: 'left',
   },
+  {
+    label: '操作',
+    field: 'actions',
+    name: 'actions',
+    sortable: false,
+    align: 'right',
+  },
 ];
 
 const loadContracts = async () => {
@@ -84,6 +91,34 @@ const toNewContract = async () => {
   } catch (e) {
     console.error(e);
   }
+};
+
+const toContractDetail = async (id?: string) => {
+  if (!id) return;
+  try {
+    await router.push({
+      name: 'contract-detail',
+      params: { id },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const toContractEdit = async (id?: string) => {
+  if (!id) return;
+  try {
+    await router.push({
+      name: 'contract-edit',
+      params: { id },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const archiveContract = async (id?: string) => {
+  console.log(id);
 };
 </script>
 
@@ -165,6 +200,31 @@ const toNewContract = async () => {
               <q-chip
                 v-bind="statusToChipProps(row.status)"
               />
+            </q-td>
+          </template>
+          <template #[`body-cell-actions`]="{ key }">
+            <q-td class="text-right">
+              <q-btn icon="sym_r_more_horiz" flat>
+                <q-menu>
+                  <q-list>
+                    <q-item dense clickable @click="toContractDetail(key)">
+                      <q-item-section>
+                        <q-item-label>詳細</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item dense clickable @click="toContractEdit(key)">
+                      <q-item-section>
+                        <q-item-label>編集</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item dense clickable @click="archiveContract(key)">
+                      <q-item-section>
+                        <q-item-label>削除</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
             </q-td>
           </template>
         </q-table>

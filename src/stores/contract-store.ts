@@ -6,7 +6,7 @@ import {
   EntrustContractInResponse,
   RentalContractBase,
   RentalContractInResponse
-} from "src/api";
+} from 'src/api';
 
 export const useContractStore = defineStore('contract', {
   state: () => ({

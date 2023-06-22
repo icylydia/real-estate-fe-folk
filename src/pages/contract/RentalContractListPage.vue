@@ -143,6 +143,10 @@ const searchText = ref('');
 const search = async () => {
   await loadContracts()
 };
+
+const archiveContract = async (id?: string) => {
+  console.log(id);
+};
 </script>
 
 <template>
@@ -247,6 +251,11 @@ const search = async () => {
                     <q-item dense clickable @click="promptToUpdateContract(key)">
                       <q-item-section>
                         <q-item-label>更新を促す</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item dense clickable @click="archiveContract(key)">
+                      <q-item-section>
+                        <q-item-label>削除</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
