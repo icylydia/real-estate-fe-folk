@@ -1,9 +1,5 @@
-type OptionType = {
-  label: string;
-  value: string;
-}
 export const useGender = () => {
-  const selectOptions: OptionType[] = [
+  const selectOptions: { label: string, value: string }[] = [
     {
       label: '男性',
       value: 'male',

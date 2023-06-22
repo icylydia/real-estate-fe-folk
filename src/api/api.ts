@@ -619,6 +619,81 @@ export interface DepartmentInResponse extends DepartmentBase {
   subDepartments?: Array<DepartmentInResponse>;
 }
 /**
+ * 租客
+ * @export
+ * @interface EmergencyContactBase
+ */
+export interface EmergencyContactBase {
+  /**
+   * 姓
+   * @type {string}
+   * @memberof EmergencyContactBase
+   */
+  firstName?: string;
+  /**
+   * 名
+   * @type {string}
+   * @memberof EmergencyContactBase
+   */
+  lastName?: string;
+  /**
+   * 性别 - `male`: 男性 - `female`: 女性 - `other`: 其他 - `<null>`: 未知
+   * @type {string}
+   * @memberof EmergencyContactBase
+   */
+  gender?: EmergencyContactBase.GenderEnum;
+  /**
+   * 邮箱
+   * @type {string}
+   * @memberof EmergencyContactBase
+   */
+  email?: string;
+  /**
+   * 电话
+   * @type {string}
+   * @memberof EmergencyContactBase
+   */
+  phone?: string;
+  /**
+   * 与本人的关系/本人との関係 - `spouse`: 配偶/配偶者 - `family`: 家人/家族 - `friend`: 朋友/友人 - `other`: 其他/その他
+   * @type {string}
+   * @memberof EmergencyContactBase
+   */
+  relationship?: EmergencyContactBase.RelationshipEnum;
+  /**
+   * 与本人的关系描述/本人との関係の説明
+   * @type {string}
+   * @memberof EmergencyContactBase
+   */
+  otherRelationshipDescription?: string;
+}
+
+/**
+ * @export
+ * @namespace EmergencyContactBase
+ */
+export namespace EmergencyContactBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum GenderEnum {
+    Male = <any> 'male',
+    Female = <any> 'female',
+    Other = <any> 'other'
+  }
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum RelationshipEnum {
+    Spouse = <any> 'spouse',
+    Family = <any> 'family',
+    Friend = <any> 'friend',
+    Other = <any> 'other'
+  }
+}
+/**
  * 员工
  * @export
  * @interface EmployeeBase
@@ -1405,6 +1480,30 @@ export interface TenantBase {
    * @memberof TenantBase
    */
   phone?: string;
+  /**
+   *
+   * @type {AddressInResponse}
+   * @memberof TenantBase
+   */
+  address?: AddressInResponse;
+  /**
+   *
+   * @type {EmergencyContactBase}
+   * @memberof TenantBase
+   */
+  emergencyContact?: EmergencyContactBase;
+  /**
+   * 担保公司状态/保証会社の状態 - `none`: 无/なし - `pending`: 待审核/審査待ち - `joined`: 已加入/加入済 - `rejected`: 被拒绝/審査拒否
+   * @type {string}
+   * @memberof TenantBase
+   */
+  guarantorCompanyStatus?: TenantBase.GuarantorCompanyStatusEnum;
+  /**
+   * 担保公司名称/保証会社名
+   * @type {string}
+   * @memberof TenantBase
+   */
+  guarantorCompanyName?: string;
 }
 
 /**
@@ -1420,6 +1519,16 @@ export namespace TenantBase {
     Male = <any> 'male',
     Female = <any> 'female',
     Other = <any> 'other'
+  }
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum GuarantorCompanyStatusEnum {
+    None = <any> 'none',
+    Pending = <any> 'pending',
+    Joined = <any> 'joined',
+    Rejected = <any> 'rejected'
   }
 }
 /**

@@ -10,8 +10,15 @@ const loading = ref(false);
 const route = useRoute()
 const tenantId = ref(route.params.id)
 const router = useRouter()
-const toEdit = () => {
-  router.push({ name: 'tenant-edit', params: { id: tenantId.value } });
+const toEdit = async () => {
+  try {
+    if (typeof tenantId.value != 'string') {
+      throw new Error('Invalid tenant id');
+    }
+    await router.push({ name: 'tenant-edit', params: { id: tenantId.value } });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const { getTenant, reset } = useTenantStore();
@@ -36,7 +43,7 @@ onMounted(async () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <tenant-form readonly />
+        <tenant-form readonly v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

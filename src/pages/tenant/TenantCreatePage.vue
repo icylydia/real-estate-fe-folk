@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import TenantForm from 'components/tenant/TenantForm.vue';
 import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
+import { useTenantStore } from "stores/tenant-store";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
 
-const save = () => {
-  router.push({ name: 'tenant-list' });
+const save = async () => {
+  await router.push({ name: 'tenant-list' });
 };
+
+const { reset } = useTenantStore();
+const { formModel } = storeToRefs(useTenantStore());
+onMounted(() => {
+  reset();
+  formModel.value.emergencyContact = {};
+});
 </script>
 
 <template>

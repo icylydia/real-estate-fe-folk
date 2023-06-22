@@ -1,0 +1,29 @@
+export const useTenant = () => {
+  const guarantorCompanyStatusOptions: { label: string, value: string }[] = [
+    {
+      label: 'なし',
+      value: 'none',
+    },
+    {
+      label: '審査待ち',
+      value: 'pending',
+    },
+    {
+      label: '加入済',
+      value: 'joined',
+    },
+    {
+      label: '審査拒否',
+      value: 'rejected',
+    },
+  ];
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const describeGuarantorCompanyStatus = (value?: any): string => {
+    const target = guarantorCompanyStatusOptions.find(option => option.value === value);
+    return target ? target.label : '未知';
+  }
+  return {
+    guarantorCompanyStatusOptions,
+    describeGuarantorCompanyStatus,
+  }
+}
