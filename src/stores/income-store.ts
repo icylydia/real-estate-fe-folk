@@ -8,6 +8,7 @@ interface GetIncomeListRequest {
   page?: number;
   year?: number;
   month?: number;
+  onlyUnconfirmed?: boolean;
   query?: string;
 }
 
@@ -22,11 +23,15 @@ export const useIncomeStore = defineStore('income', {
   }),
   actions: {
     reset() {
+      this.searchParams = {
+        itemsPerPage: 15,
+        page: 1,
+        onlyUnconfirmed: false,
+      };
       this.list = [];
       this.formModel = {};
     },
     async getIncomeList(params: GetIncomeListRequest) {
-      this.reset();
       const defaultParams: GetIncomeListRequest = {
         itemsPerPage: 15,
         page: 1,
@@ -37,12 +42,12 @@ export const useIncomeStore = defineStore('income', {
         query.page,
         query.year,
         query.month,
+        query.onlyUnconfirmed,
         query.query,
       );
       this.list = resp.items ?? [];
     },
     async getIncome(id: string) {
-      this.reset();
       this.formModel = await api.getIncome(id);
     }
   },

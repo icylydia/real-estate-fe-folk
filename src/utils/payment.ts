@@ -79,17 +79,17 @@ export const usePayment = () => {
       case 'unconfirmed':
         return {
           description: '未確認',
-          color: 'red',
+          color: 'warning',
         };
       case 'confirmed':
         return {
           description: '確認済み',
-          color: 'green',
+          color: 'positive',
         };
       case 'rejected':
         return {
           description: '却下',
-          color: 'grey',
+          color: 'negative',
         };
       default:
         return {

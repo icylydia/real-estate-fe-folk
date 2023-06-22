@@ -2674,11 +2674,12 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
      * @param {number} [page] 页码
      * @param {number} [year] 年份
      * @param {number} [month] 月份
+     * @param {boolean} [onlyUnconfirmed] 只显示未确认的收入
      * @param {string} [query] 查询条件
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options: any = {}): FetchArgs {
+    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, onlyUnconfirmed?: boolean, query?: string, options: any = {}): FetchArgs {
       const localVarPath = `/incomes`;
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
@@ -2710,6 +2711,10 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       if (month !== undefined) {
         localVarQueryParameter['month'] = month;
+      }
+
+      if (onlyUnconfirmed !== undefined) {
+        localVarQueryParameter['onlyUnconfirmed'] = onlyUnconfirmed;
       }
 
       if (query !== undefined) {
@@ -3914,12 +3919,13 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      * @param {number} [page] 页码
      * @param {number} [year] 年份
      * @param {number} [month] 月份
+     * @param {boolean} [onlyUnconfirmed] 只显示未确认的收入
      * @param {string} [query] 查询条件
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<IncomeListResponse> {
-      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getIncomes(itemsPerPage, page, year, month, query, options);
+    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, onlyUnconfirmed?: boolean, query?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<IncomeListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getIncomes(itemsPerPage, page, year, month, onlyUnconfirmed, query, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -4509,12 +4515,13 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      * @param {number} [page] 页码
      * @param {number} [year] 年份
      * @param {number} [month] 月份
+     * @param {boolean} [onlyUnconfirmed] 只显示未确认的收入
      * @param {string} [query] 查询条件
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any) {
-      return DefaultApiFp(configuration).getIncomes(itemsPerPage, page, year, month, query, options)(fetch, basePath);
+    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, onlyUnconfirmed?: boolean, query?: string, options?: any) {
+      return DefaultApiFp(configuration).getIncomes(itemsPerPage, page, year, month, onlyUnconfirmed, query, options)(fetch, basePath);
     },
     /**
      * 获取所有的都道府县
@@ -5013,13 +5020,14 @@ export class DefaultApi extends BaseAPI {
    * @param {number} [page] 页码
    * @param {number} [year] 年份
    * @param {number} [month] 月份
+   * @param {boolean} [onlyUnconfirmed] 只显示未确认的收入
    * @param {string} [query] 查询条件
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any) {
-    return DefaultApiFp(this.configuration).getIncomes(itemsPerPage, page, year, month, query, options)(this.fetch, this.basePath);
+  public getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, onlyUnconfirmed?: boolean, query?: string, options?: any) {
+    return DefaultApiFp(this.configuration).getIncomes(itemsPerPage, page, year, month, onlyUnconfirmed, query, options)(this.fetch, this.basePath);
   }
 
   /**

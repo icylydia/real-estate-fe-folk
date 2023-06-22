@@ -56,6 +56,19 @@ onMounted(async () => {
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
+        <template v-if="!loading && income.confirmStatus == IncomeInResponse.ConfirmStatusEnum.Unconfirmed">
+          <q-btn
+            style="width: 100px"
+            color="primary"
+            label="承認"
+          />
+          <q-btn
+            style="width: 100px"
+            color="negative"
+            label="拒否"
+          />
+          <q-separator vertical class="q-mx-lg" />
+        </template>
         <q-btn
           style="width: 100px"
           color="primary"
@@ -69,19 +82,6 @@ onMounted(async () => {
           label="編集"
           @click="toEdit"
         />
-        <template v-if="!loading && income.confirmStatus == IncomeInResponse.ConfirmStatusEnum.Unconfirmed">
-          <q-separator vertical class="q-mx-lg" />
-          <q-btn
-            style="width: 100px"
-            color="primary"
-            label="承認"
-          />
-          <q-btn
-            style="width: 100px"
-            color="negative"
-            label="拒否"
-          />
-        </template>
       </q-card-actions>
     </q-card>
   </q-page>

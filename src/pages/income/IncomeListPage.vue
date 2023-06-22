@@ -54,12 +54,13 @@ const columns: QTableProps['columns'] = [
   },
 ];
 
-const { getIncomeList } = useIncomeStore();
+const { reset, getIncomeList } = useIncomeStore();
 const { list: rows, searchParams } = storeToRefs(useIncomeStore());
 
 onMounted(async () => {
   try {
     loading.value = true;
+    reset();
     await getIncomeList({});
   } catch (e) {
     console.error(e);
@@ -71,6 +72,7 @@ onMounted(async () => {
 const search = async () => {
   try {
     loading.value = true;
+    selectedRows.value = [];
     await getIncomeList(searchParams.value);
   } catch (e) {
     console.error(e);
@@ -125,6 +127,8 @@ const {
   describeCategory: describeIncomeCategory,
   describeIncomeConfirmStatus: describeConfirmStatus,
 } = usePayment();
+
+const selectedRows = ref<IncomeInResponse[]>([]);
 </script>
 
 <template>
@@ -141,6 +145,10 @@ const {
             <q-input
               v-model="searchParams.month"
               label="月"
+            />
+            <q-checkbox
+              v-model="searchParams.onlyUnconfirmed"
+              label="未確認のみ"
             />
             <q-input
               v-model="searchParams.query"
@@ -170,11 +178,18 @@ const {
               :pagination="{
                 rowsPerPage: 15,
               }"
+              selection="multiple"
+              v-model:selected="selectedRows"
             >
               <template #top-left>
                 <div class="text-h6">収入一覧</div>
               </template>
               <template #top-right>
+                <template v-if="selectedRows.length > 0">
+                  <q-btn label="一括承認" color="primary" class="float-right text-capitalize shadow-3 q-mx-sm" icon="sym_r_check" />
+                  <q-btn label="一括拒否" color="negative" class="float-right text-capitalize shadow-3" icon="sym_r_do_not_disturb_on" />
+                  <q-separator vertical class="q-mx-lg" />
+                </template>
                 <q-btn label="新規" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="toCreate()" />
               </template>
               <template #[`body-cell-category`]="{ row }: { row: IncomeInResponse }">
