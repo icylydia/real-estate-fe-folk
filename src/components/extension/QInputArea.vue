@@ -21,12 +21,17 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    precision: {
+      type: Number,
+      default: 2,
+    },
   },
   emits: ['update:modelValue'],
   methods: {
     handleUpdateModelValue(value: string) {
-      const parsedValue = Number(value.replace(/[^0-9.]/g, ''));
-      this.$emit('update:modelValue', parsedValue);
+      const parsedValue = Number(value.replace(/[^0-9.]/g, '')).toFixed(this.precision);
+      const parsedValueNumber = Number(parsedValue);
+      this.$emit('update:modelValue', parsedValueNumber);
     },
   },
 });
