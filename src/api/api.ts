@@ -895,6 +895,13 @@ export namespace IncomeBase {
  */
 export interface IncomeDetailResponse extends IncomeInResponse {
 }
+
+/**
+ * @export
+ * @namespace IncomeDetailResponse
+ */
+export namespace IncomeDetailResponse {
+}
 /**
  *
  * @export
@@ -914,6 +921,28 @@ export interface IncomeInResponse extends IncomeBase {
    * @memberof IncomeInResponse
    */
   id?: string;
+  /**
+   * 收入确认状态/確認狀態 - unconfirmed: 未确认/未確認 - confirmed: 已确认/確認済み - rejected: 已拒绝/却下
+   * @type {string}
+   * @memberof IncomeInResponse
+   */
+  confirmStatus?: IncomeInResponse.ConfirmStatusEnum;
+}
+
+/**
+ * @export
+ * @namespace IncomeInResponse
+ */
+export namespace IncomeInResponse {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum ConfirmStatusEnum {
+    Unconfirmed = <any> 'unconfirmed',
+    Confirmed = <any> 'confirmed',
+    Rejected = <any> 'rejected'
+  }
 }
 /**
  *
@@ -997,11 +1026,17 @@ export interface PaymentBase {
    */
   category?: PaymentBase.CategoryEnum;
   /**
-   * 支付方式 - `cash`: 现金 - `withDraw`: 自动转账/口座引落 - `transfer`: 银行转账/振込 - `convenienceStore`: 便利店缴费/コンビニ - `creditCard`: 信用卡缴费/クレジットカード - `other`: 其他
+   * 支付方式 - `cash`: 现金 - `withDraw`: 自动转账/口座引落 - `transfer`: 银行转账/振込 - `agent`: 代理收费/収納代行 - `convenienceStore`: 便利店缴费/コンビニ - `creditCard`: 信用卡缴费/クレジットカード - `other`: 其他
    * @type {string}
    * @memberof PaymentBase
    */
   paymentMethod?: PaymentBase.PaymentMethodEnum;
+  /**
+   * 其他支付方式描述
+   * @type {string}
+   * @memberof PaymentBase
+   */
+  otherPaymentDescription?: string;
   /**
    * 支付金额
    * @type {number}
@@ -1073,6 +1108,7 @@ export namespace PaymentBase {
     Cash = <any> 'cash',
     WithDraw = <any> 'withDraw',
     Transfer = <any> 'transfer',
+    Agent = <any> 'agent',
     ConvenienceStore = <any> 'convenienceStore',
     CreditCard = <any> 'creditCard',
     Other = <any> 'other'

@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useIncomeStore } from 'stores/income-store';
 import { usePayment } from 'src/utils/payment';
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
+import { PaymentBase } from 'src/api';
 
 defineProps({
   readonly: {
@@ -66,6 +67,11 @@ const {
           >
           </q-select>
         </q-item-section>
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input v-model="income.otherPaymentDescription" label="支払方法" :readonly="readonly || income.paymentMethod != PaymentBase.PaymentMethodEnum.Other" />
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">

@@ -36,7 +36,14 @@ const columns: QTableProps['columns'] = [
     field: 'date',
     name: 'date',
     sortable: false,
-    align: 'right',
+    align: 'left',
+  },
+  {
+    label: '確認状態',
+    field: 'confirmStatus',
+    name: 'confirmStatus',
+    sortable: false,
+    align: 'left',
   },
   {
     label: '操作',
@@ -114,7 +121,10 @@ const remove = (id: number) => {
   console.log(id);
 };
 
-const { describeCategory: describeIncomeCategory } = usePayment();
+const {
+  describeCategory: describeIncomeCategory,
+  describeIncomeConfirmStatus: describeConfirmStatus,
+} = usePayment();
 </script>
 
 <template>
@@ -175,6 +185,11 @@ const { describeCategory: describeIncomeCategory } = usePayment();
               <template #[`body-cell-amount`]="{ row }: { row: IncomeInResponse }">
                 <q-td class="text-right">
                   {{ $filters.jpyCurrency(row.amount) }}
+                </q-td>
+              </template>
+              <template #[`body-cell-confirmStatus`]="{ row }: { row: IncomeInResponse }">
+                <q-td>
+                  {{ describeConfirmStatus(row.confirmStatus) }}
                 </q-td>
               </template>
               <template #[`body-cell-actions`]="{ key }">

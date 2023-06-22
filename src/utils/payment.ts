@@ -52,6 +52,10 @@ export const usePayment = () => {
       value: 'transfer',
     },
     {
+      label: '収納代行',
+      value: 'agent',
+    },
+    {
       label: 'コンビニ',
       value: 'convenienceStore',
     },
@@ -69,11 +73,25 @@ export const usePayment = () => {
     const target = categoryOptions.find(option => option.value === value);
     return target ? target.label : '未知';
   }
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const describeIncomeConfirmStatus = (value?: any): string => {
+    switch (value) {
+      case 'unconfirmed':
+        return '未確認';
+      case 'confirmed':
+        return '確認済み';
+      case 'rejected':
+        return '却下';
+      default:
+        return '未知';
+    }
+  }
   return {
     categoryOptions,
     incomeCategoryOptions,
     expenseCategoryOptions,
     paymentMethodOptions,
     describeCategory,
+    describeIncomeConfirmStatus,
   }
 }
