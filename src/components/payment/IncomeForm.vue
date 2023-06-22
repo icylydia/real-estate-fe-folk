@@ -21,12 +21,20 @@ const { formModel: income } = storeToRefs(useIncomeStore());
 const {
   incomeCategoryOptions: categoryOptions,
   paymentMethodOptions,
+  describeIncomeConfirmStatus,
 } = usePayment();
 </script>
 
 <template>
-  <div class="text-h6">
-    収入基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+  <div class="row justify-between">
+    <div class="text-h6">
+      収入基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+    </div>
+    <q-badge
+      v-if="!newIncome"
+      :color="describeIncomeConfirmStatus(income.confirmStatus).color"
+      :label="describeIncomeConfirmStatus(income.confirmStatus).description"
+    />
   </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newIncome">
@@ -111,7 +119,3 @@ const {
     </q-item>
   </q-list>
 </template>
-
-<style scoped lang="scss">
-
-</style>

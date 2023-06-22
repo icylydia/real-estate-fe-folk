@@ -189,7 +189,10 @@ const {
               </template>
               <template #[`body-cell-confirmStatus`]="{ row }: { row: IncomeInResponse }">
                 <q-td>
-                  {{ describeConfirmStatus(row.confirmStatus) }}
+                  <q-chip
+                    :label="describeConfirmStatus(row.confirmStatus).description"
+                    :color="describeConfirmStatus(row.confirmStatus).color"
+                  />
                 </q-td>
               </template>
               <template #[`body-cell-actions`]="{ key }">

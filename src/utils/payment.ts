@@ -74,16 +74,28 @@ export const usePayment = () => {
     return target ? target.label : '未知';
   }
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const describeIncomeConfirmStatus = (value?: any): string => {
+  const describeIncomeConfirmStatus = (value?: any): { description: string, color: string} => {
     switch (value) {
       case 'unconfirmed':
-        return '未確認';
+        return {
+          description: '未確認',
+          color: 'red',
+        };
       case 'confirmed':
-        return '確認済み';
+        return {
+          description: '確認済み',
+          color: 'green',
+        };
       case 'rejected':
-        return '却下';
+        return {
+          description: '却下',
+          color: 'grey',
+        };
       default:
-        return '未知';
+        return {
+          description: '未知',
+          color: 'brown',
+        };
     }
   }
   return {

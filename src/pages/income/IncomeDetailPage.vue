@@ -3,6 +3,8 @@ import IncomeForm from 'components/payment/IncomeForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useIncomeStore } from 'stores/income-store';
+import { storeToRefs } from 'pinia';
+import { IncomeInResponse } from 'src/api';
 
 const router = useRouter();
 const route = useRoute();
@@ -31,6 +33,7 @@ const backToList = async () => {
 const loading = ref(false);
 
 const { getIncome } = useIncomeStore();
+const { formModel: income } = storeToRefs(useIncomeStore());
 
 onMounted(async () => {
   loading.value = true;
@@ -66,6 +69,19 @@ onMounted(async () => {
           label="編集"
           @click="toEdit"
         />
+        <template v-if="!loading && income.confirmStatus == IncomeInResponse.ConfirmStatusEnum.Unconfirmed">
+          <q-separator vertical class="q-mx-lg" />
+          <q-btn
+            style="width: 100px"
+            color="primary"
+            label="承認"
+          />
+          <q-btn
+            style="width: 100px"
+            color="negative"
+            label="拒否"
+          />
+        </template>
       </q-card-actions>
     </q-card>
   </q-page>
