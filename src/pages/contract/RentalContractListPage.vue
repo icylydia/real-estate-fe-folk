@@ -143,6 +143,7 @@ const searchText = ref('');
 const search = async () => {
   await loadContracts()
 };
+const includeArchive = ref(false);
 
 const archiveContract = async (id?: string) => {
   console.log(id);
@@ -162,6 +163,11 @@ const archiveContract = async (id?: string) => {
           :loading="loading"
         >
           <template #top-right>
+            <q-checkbox
+              v-model="includeArchive"
+              label="アーカイブを含む"
+              class="q-mr-sm"
+            />
             <q-input
               outlined
               dense
