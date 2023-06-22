@@ -343,6 +343,12 @@ export interface BuildingBase {
    */
   floorAreaRatio?: number;
   /**
+   * 提示更新/催促期間（N月前）
+   * @type {number}
+   * @memberof BuildingBase
+   */
+  promptUpdate?: number;
+  /**
    * 备注/備考
    * @type {string}
    * @memberof BuildingBase
