@@ -18,7 +18,11 @@ defineProps({
   },
 });
 
-const { validatePostalCode, updateAddressFromPostalCode } = useTenantStore();
+const {
+  validatePostalCode,
+  updateAddressFromPostalCode,
+  updateEmergencyContactAddressFromPostalCode,
+} = useTenantStore();
 const { formModel: tenant } = storeToRefs(useTenantStore());
 const { selectOptions: genderOptions } = useGender();
 const {
@@ -28,7 +32,7 @@ const {
 const { selectOptions: relationshipOptions } = useEmergencyContact();
 const $q = useQuasar();
 
-const searchAddress = async () => {
+const searchAddress = async (callback: () => Promise<void>) => {
   if (!validatePostalCode()) {
     $q.notify({
       type: 'negative',
@@ -37,7 +41,7 @@ const searchAddress = async () => {
     return;
   }
   try {
-    await updateAddressFromPostalCode();
+    await callback();
   } catch (e) {
     //
   }
@@ -158,7 +162,7 @@ const filterGuarantorCompanyFn = (val: string, update: (callbackFn: () => void) 
           color="primary"
           label="住所検索"
           icon="sym_r_location_on"
-          @click="searchAddress"
+          @click="searchAddress(updateAddressFromPostalCode)"
           :disable="readonly"
         />
       </q-item-section>
@@ -234,6 +238,48 @@ const filterGuarantorCompanyFn = (val: string, update: (callbackFn: () => void) 
     <q-item class="col-12">
       <q-item-section>
         <q-input v-model="tenant.emergencyContact!.email" label="メールアドレス" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input
+          v-model="tenant.emergencyContact!.address!.postalCode"
+          label="郵便番号"
+          placeholder="xxx-xxxx"
+          :readonly="readonly"
+        />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-btn
+          class="q-mr-sm"
+          color="primary"
+          label="住所検索"
+          icon="sym_r_location_on"
+          @click="searchAddress(updateEmergencyContactAddressFromPostalCode)"
+          :disable="readonly"
+        />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input v-model="tenant.emergencyContact!.address!.prefecture" label="都道府県" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input v-model="tenant.emergencyContact!.address!.detailAddress1" label="市区町村" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-12">
+      <q-item-section>
+        <q-input v-model="tenant.emergencyContact!.address!.detailAddress2" label="丁目" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-12">
+      <q-item-section>
+        <q-input v-model="tenant.emergencyContact!.address!.detailAddress3" label="それ以降の住所" :readonly="readonly" />
       </q-item-section>
     </q-item>
   </q-list>
