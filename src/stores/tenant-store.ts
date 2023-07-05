@@ -11,6 +11,9 @@ const defaultFormModel: TenantFormModel = {
   emergencyContact: {
     address: {},
   },
+  workplace: {
+    address: {},
+  },
 }
 
 export const useTenantStore = defineStore('tenant', {
@@ -70,6 +73,27 @@ export const useTenantStore = defineStore('tenant', {
       const originalPostalCode = this.formModel.emergencyContact?.address?.postalCode;
       this.formModel.emergencyContact = {
         ...this.formModel.emergencyContact,
+        address: {
+          postalCode: originalPostalCode,
+          ...addressExceptPostalCode,
+        }
+      }
+    },
+    async updateWorkplaceAddressFromPostalCode() {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const postalCode = this.formModel.workplace!.address!.postalCode!;
+      const resp = await api.getAddressByPostalCode(postalCode);
+      this.setWorkplaceAddressExceptPostalCode(resp)
+    },
+    setWorkplaceAddressExceptPostalCode(address: AddressInResponse) {
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        postalCode,
+        ...addressExceptPostalCode
+      } = address;
+      const originalPostalCode = this.formModel.workplace?.address?.postalCode;
+      this.formModel.workplace = {
+        ...this.formModel.workplace,
         address: {
           postalCode: originalPostalCode,
           ...addressExceptPostalCode,

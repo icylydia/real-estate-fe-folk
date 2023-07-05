@@ -22,6 +22,7 @@ const {
   validatePostalCode,
   updateAddressFromPostalCode,
   updateEmergencyContactAddressFromPostalCode,
+  updateWorkplaceAddressFromPostalCode,
 } = useTenantStore();
 const { formModel: tenant } = storeToRefs(useTenantStore());
 const { selectOptions: genderOptions } = useGender();
@@ -141,6 +142,7 @@ const filterGuarantorCompanyFn = (val: string, update: (callbackFn: () => void) 
       </q-item-section>
     </q-item>
   </q-list>
+  <q-separator class="q-my-md" />
   <div class="text-h6">
     住所情報{{ readonly ? '（閲覧）' : '（編集）'}}
   </div>
@@ -188,6 +190,7 @@ const filterGuarantorCompanyFn = (val: string, update: (callbackFn: () => void) 
       </q-item-section>
     </q-item>
   </q-list>
+  <q-separator class="q-my-md" />
   <div class="text-h6">
     緊急連絡先情報{{ readonly ? '（閲覧）' : '（編集）'}}
   </div>
@@ -280,6 +283,64 @@ const filterGuarantorCompanyFn = (val: string, update: (callbackFn: () => void) 
     <q-item class="col-12">
       <q-item-section>
         <q-input v-model="tenant.emergencyContact!.address!.detailAddress3" label="それ以降の住所" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+  </q-list>
+  <q-separator class="q-my-md" />
+  <div class="text-h6">
+    勤務先情報{{ readonly ? '（閲覧）' : '（編集）'}}
+  </div>
+  <q-list class="row">
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input v-model="tenant.workplace!.name" label="会社名" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input v-model="tenant.workplace!.phone" label="電話番号" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input
+          v-model="tenant.workplace!.address!.postalCode"
+          label="郵便番号"
+          placeholder="xxx-xxxx"
+          :readonly="readonly"
+        />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-btn
+          class="q-mr-sm"
+          color="primary"
+          label="住所検索"
+          icon="sym_r_location_on"
+          @click="searchAddress(updateWorkplaceAddressFromPostalCode)"
+          :disable="readonly"
+        />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input v-model="tenant.workplace!.address!.prefecture" label="都道府県" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item-section>
+        <q-input v-model="tenant.workplace!.address!.detailAddress1" label="市区町村" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-12">
+      <q-item-section>
+        <q-input v-model="tenant.workplace!.address!.detailAddress2" label="丁目" :readonly="readonly" />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-12">
+      <q-item-section>
+        <q-input v-model="tenant.workplace!.address!.detailAddress3" label="それ以降の住所" :readonly="readonly" />
       </q-item-section>
     </q-item>
   </q-list>
