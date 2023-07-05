@@ -69,6 +69,19 @@ onMounted(async () => {
           />
           <q-separator vertical class="q-mx-lg" />
         </template>
+        <template v-if="!loading && income.confirmStatus == IncomeInResponse.ConfirmStatusEnum.Rejected">
+          <q-btn
+            style="width: 100px"
+            color="primary"
+            label="承認"
+          />
+          <q-btn
+            style="width: 100px"
+            color="negative"
+            label="削除"
+          />
+          <q-separator vertical class="q-mx-lg" />
+        </template>
         <q-btn
           style="width: 100px"
           color="primary"
