@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useTenant } from 'src/utils/tenant';
 import { useEmergencyContact } from 'src/utils/emergency-contact';
 import { useQuasar } from 'quasar';
+import { ref } from 'vue';
 
 defineProps({
   readonly: {
@@ -22,6 +23,7 @@ const { formModel: tenant } = storeToRefs(useTenantStore());
 const { selectOptions: genderOptions } = useGender();
 const {
   guarantorCompanyStatusOptions,
+  guarantorCompanyOptions,
 } = useTenant();
 const { selectOptions: relationshipOptions } = useEmergencyContact();
 const $q = useQuasar();
@@ -40,6 +42,25 @@ const searchAddress = async () => {
     //
   }
 };
+
+const filteredGuarantorCompanyOptions = ref<string[]>(guarantorCompanyOptions);
+const createGuarantorCompanyOption = (val: string, done: (item: string, mode: string) => void) => {
+  if (val.length > 0) {
+    if (!guarantorCompanyOptions.includes(val)) {
+      done(val, 'add-unique')
+    }
+  }
+}
+const filterGuarantorCompanyFn = (val: string, update: (callbackFn: () => void) => void) => {
+  update(() => {
+    if (val === '') {
+      filteredGuarantorCompanyOptions.value = guarantorCompanyOptions
+      return
+    }
+    const needle = val.toLowerCase()
+    filteredGuarantorCompanyOptions.value = guarantorCompanyOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+  })
+}
 </script>
 
 <template>
@@ -102,7 +123,17 @@ const searchAddress = async () => {
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
-        <q-input v-model="tenant.guarantorCompanyName" label="保証会社名" :readonly="readonly" />
+        <q-select
+          v-model="tenant.guarantorCompanyName"
+          label="保証会社名"
+          :readonly="readonly"
+          use-input
+          input-debounce="0"
+          :options="filteredGuarantorCompanyOptions"
+          clearable
+          @new-value="createGuarantorCompanyOption"
+          @filter="filterGuarantorCompanyFn"
+        />
       </q-item-section>
     </q-item>
   </q-list>

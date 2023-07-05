@@ -22,8 +22,16 @@ export const useTenant = () => {
     const target = guarantorCompanyStatusOptions.find(option => option.value === value);
     return target ? target.label : '未知';
   }
+  const guarantorCompanyOptions: Array<string> = [
+    '日本賃貸保証',
+    'SBIギャランティ',
+    'レジデンシャルパートナーズ',
+    'ニッポンインシュア',
+    '日本賃貸住宅保証機構',
+  ];
   return {
     guarantorCompanyStatusOptions,
     describeGuarantorCompanyStatus,
+    guarantorCompanyOptions,
   }
 }
