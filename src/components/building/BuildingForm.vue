@@ -186,6 +186,9 @@
     :columns="regularExpenseColumns"
     flat
     hide-pagination
+    :pagination="{
+      rowsPerPage: 0,
+    }"
   >
     <template #[`body-cell-months`]="{ row }: { row: RegularExpenseBase }">
       <q-td>
