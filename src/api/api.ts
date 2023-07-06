@@ -429,6 +429,12 @@ export interface BuildingInRequest extends BuildingBase {
    * @memberof BuildingInRequest
    */
   accesses?: Array<AccessInRequest>;
+  /**
+   * 常规费用/定期費用
+   * @type {Array<RegularExpenseBase>}
+   * @memberof BuildingInRequest
+   */
+  regularExpenses?: Array<RegularExpenseBase>;
 }
 
 /**
@@ -461,6 +467,12 @@ export interface BuildingInResponse extends BuildingBase {
    * @memberof BuildingInResponse
    */
   accesses?: Array<AccessInResponse>;
+  /**
+   * 常规费用/定期費用
+   * @type {Array<RegularExpenseBase>}
+   * @memberof BuildingInResponse
+   */
+  regularExpenses?: Array<RegularExpenseBase>;
 }
 
 /**
@@ -1214,6 +1226,25 @@ export interface Prefecture {
    * @memberof Prefecture
    */
   name?: string;
+}
+/**
+ *
+ * @export
+ * @interface RegularExpenseBase
+ */
+export interface RegularExpenseBase {
+  /**
+   * 項目
+   * @type {string}
+   * @memberof RegularExpenseBase
+   */
+  name?: string;
+  /**
+   *
+   * @type {Array<number>}
+   * @memberof RegularExpenseBase
+   */
+  months?: Array<number>;
 }
 /**
  *

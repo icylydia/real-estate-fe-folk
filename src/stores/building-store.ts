@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
 import _ from 'lodash';
-import { AddressInResponse, BuildingDetailResponse, BuildingInRequest, BuildingInResponse } from 'src/api';
+import {
+  AddressInResponse,
+  BuildingDetailResponse,
+  BuildingInRequest,
+  BuildingInResponse,
+  RegularExpenseBase
+} from 'src/api';
 
 export type BuildingFormModel = Partial<
   BuildingInRequest & BuildingDetailResponse
@@ -24,11 +30,16 @@ export const useBuildingStore = defineStore('building', {
     searchParams: {} as GetBuildingListRequest,
     list: [] as BuildingInResponse[],
     formModel: defaultFormModel,
+    regularExpenseModel: {} as RegularExpenseBase,
   }),
   actions: {
     reset() {
       this.list = [];
       this.formModel = defaultFormModel;
+    },
+
+    resetRegularExpenseModel() {
+      this.regularExpenseModel = {} as RegularExpenseBase;
     },
 
     async getBuildingList(params: GetBuildingListRequest) {
@@ -82,6 +93,7 @@ export const useBuildingStore = defineStore('building', {
         postalCode: originalPostalCode,
         ...addressExceptPostalCode,
       }
-    }
+    },
+
   },
 });

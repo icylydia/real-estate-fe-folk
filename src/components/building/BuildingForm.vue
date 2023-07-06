@@ -119,6 +119,7 @@
       </q-item-section>
     </q-item>
   </q-list>
+  <q-separator class="q-my-md" />
   <div class="q-mt-md text-h6">
     物件位置情報{{readonly ? '（閲覧）' : '（編集）'}}
   </div>
@@ -166,11 +167,58 @@
       </q-item-section>
     </q-item>
   </q-list>
+  <q-separator class="q-mt-md" />
+  <div class="fit row wrap justify-between items-start content-start">
+    <div class="q-mt-md text-h6">
+      経常支出{{readonly ? '（閲覧）' : '（編集）'}}
+    </div>
+    <q-btn
+      v-if="!readonly"
+      class="q-mt-md"
+      color="primary"
+      label="追加"
+      icon="sym_r_add"
+      @click="showAddingDialog"
+    />
+  </div>
+  <q-table
+    :rows="building.regularExpenses"
+    :columns="regularExpenseColumns"
+    flat
+    hide-pagination
+  >
+    <template #[`body-cell-months`]="{ row }: { row: RegularExpenseBase }">
+      <q-td>
+        {{ row.months?.join(', ') }}
+      </q-td>
+    </template>
+    <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: Number }">
+      <q-td class="text-right">
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRegularExpense(rowIndex)" />
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRegularExpense(rowIndex)" />
+      </q-td>
+    </template>
+  </q-table>
+  <regular-expense-dialog
+    ref="regularExpenseDialog"
+    :show="showDialog"
+    :mode="dialogMode"
+    @update:show="showDialog = $event"
+    @submit="handleDialogSubmit"
+  />
 </template>
 
 <script lang="ts" setup>
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
 import QInputArea from 'components/extension/QInputArea.vue';
+import { QTableProps } from 'quasar';
+import { RegularExpenseBase } from 'src/api';
+import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
+import RegularExpenseDialog from 'components/building/RegularExpenseDialog.vue';
+import _ from 'lodash';
+
+const { formModel: building } = storeToRefs(useBuildingStore());
 
 const buildingStructureOptions = [
   {
@@ -252,12 +300,75 @@ const landUseZoneOptions = [
     value: 'industrial',
   },
 ]
+
+const regularExpenseColumns: QTableProps['columns'] = [
+  {
+    name: 'name',
+    label: '項目',
+    field: 'name',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'months',
+    label: '月',
+    field: 'months',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'actions',
+    label: '操作',
+    field: 'actions',
+    align: 'right',
+    sortable: false,
+  },
+]
+
+const { regularExpenseModel: regularExpense } = storeToRefs(useBuildingStore());
+const { resetRegularExpenseModel } = useBuildingStore();
+const showDialog = ref(false);
+const dialogMode = ref<'add' | 'edit'>('add');
+const editingIndex = ref<number | null>(null);
+
+const showAddingDialog = () => {
+  resetRegularExpenseModel();
+  dialogMode.value = 'add';
+  showDialog.value = true;
+}
+
+const handleDialogSubmit = (regularExpense: RegularExpenseBase) => {
+  if (dialogMode.value === 'add') {
+    building.value.regularExpenses?.push(regularExpense);
+  } else {
+    const index = editingIndex.value;
+    if (index === null) {
+      return;
+    }
+    building.value.regularExpenses?.splice(index, 1, regularExpense);
+  }
+}
+
+const removeRegularExpense = (index: number) => {
+  building.value.regularExpenses?.splice(index, 1);
+}
+
+const editRegularExpense = (index: number) => {
+  const model = building.value.regularExpenses?.[index];
+  if (!model) {
+    return;
+  }
+  editingIndex.value = index;
+  regularExpense.value = _.cloneDeep(model);
+  dialogMode.value = 'edit';
+  showDialog.value = true;
+}
 </script>
 
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
+import { mapActions } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 
 export default defineComponent({
@@ -289,10 +400,5 @@ export default defineComponent({
       }
     },
   },
-  computed: {
-    ...mapState(useBuildingStore, {
-      building: 'formModel',
-    })
-  }
 });
 </script>
