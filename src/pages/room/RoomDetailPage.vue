@@ -22,6 +22,11 @@
         />
       </q-card-actions>
     </q-card>
+    <q-card bordered class="q-mt-md">
+      <q-card-section>
+        <file-list />
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 
@@ -30,10 +35,11 @@ import { defineComponent } from 'vue';
 import RoomForm from 'components/room/RoomForm.vue';
 import { useRoomStore } from 'stores/room-store';
 import { mapActions, mapState } from 'pinia';
+import FileList from 'components/room/FileList.vue';
 
 export default defineComponent({
   name: 'RoomDetailPage',
-  components: { RoomForm },
+  components: { FileList, RoomForm },
   data() {
     return {
       loading: false,

@@ -6,11 +6,18 @@ import {
   BuildingDetailResponse,
   BuildingInRequest,
   BuildingInResponse,
+  ModelFile,
   RegularExpenseBase
 } from 'src/api';
 
 export type BuildingFormModel = Partial<
   BuildingInRequest & BuildingDetailResponse
+>
+
+export type FileModel = Partial<
+  ModelFile & {
+    file: File;
+  }
 >
 
 const defaultFormModel: BuildingFormModel = {
@@ -31,6 +38,7 @@ export const useBuildingStore = defineStore('building', {
     list: [] as BuildingInResponse[],
     formModel: defaultFormModel,
     regularExpenseModel: {} as RegularExpenseBase,
+    fileModel: {} as FileModel,
   }),
   actions: {
     reset() {
@@ -40,6 +48,10 @@ export const useBuildingStore = defineStore('building', {
 
     resetRegularExpenseModel() {
       this.regularExpenseModel = {} as RegularExpenseBase;
+    },
+
+    resetFileModel() {
+      this.fileModel = {} as FileModel;
     },
 
     async getBuildingList(params: GetBuildingListRequest) {
