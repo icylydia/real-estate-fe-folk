@@ -92,6 +92,11 @@ export default defineComponent({
           link: this.$router.resolve({ name: 'building-list' }).href,
         },
         {
+          title: 'オーナー管理',
+          icon: 'sym_r_productivity',
+          link: this.$router.resolve({ name: 'owner-list' }).href,
+        },
+        {
           title: '入居者管理',
           icon: 'sym_r_family_restroom',
           link: this.$router.resolve({ name: 'tenant-list' }).href,

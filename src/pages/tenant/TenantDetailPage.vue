@@ -62,7 +62,3 @@ onMounted(async () => {
     </q-card>
   </q-page>
 </template>
-
-<style scoped lang="scss">
-
-</style>

@@ -125,6 +125,27 @@ const routes: RouteRecordRaw[] = [
         name: 'employee-edit',
         component: () => import('pages/employee/EmployeeEditPage.vue'),
       },
+      // オーナー
+      {
+        path: 'owners',
+        name: 'owner-list',
+        component: () => import('pages/owner/OwnerListPage.vue'),
+      },
+      {
+        path: 'owners/new',
+        name: 'owner-create',
+        component: () => import('pages/owner/OwnerCreatePage.vue'),
+      },
+      {
+        path: 'owners/:id',
+        name: 'owner-detail',
+        component: () => import('pages/owner/OwnerDetailPage.vue'),
+      },
+      {
+        path: 'owners/:id/edit',
+        name: 'owner-edit',
+        component: () => import('pages/owner/OwnerEditPage.vue'),
+      },
       // 入居者
       {
         path: 'tenants',

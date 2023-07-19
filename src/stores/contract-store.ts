@@ -95,12 +95,12 @@ export const useContractStore = defineStore('contract', {
         case EntrustContractBase.BenefitTypeEnum.Fixed:
           return {
             label: '定額',
-            color: 'primary',
+            color: 'pink',
           }
         case EntrustContractBase.BenefitTypeEnum.Percentage:
           return {
             label: '割合',
-            color: 'primary',
+            color: 'light-blue',
           }
         default:
           return null;
