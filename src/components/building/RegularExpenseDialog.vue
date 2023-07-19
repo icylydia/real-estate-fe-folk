@@ -42,7 +42,18 @@ const filterNameFn = (val: string, update: (callbackFn: () => void) => void) => 
   })
 };
 
-
+const onMonthChange = (values: number[]) => {
+  let inOrder = true;
+  for (let i = 0; i < values.length - 1; i++) {
+    if (values[i] + 1 !== values[i + 1]) {
+      inOrder = false;
+      break;
+    }
+  }
+  if (!inOrder) {
+    values.sort((a, b) => a - b);
+  }
+};
 </script>
 
 <template>
@@ -82,6 +93,7 @@ const filterNameFn = (val: string, update: (callbackFn: () => void) => void) => 
                     :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
                     clearable
                     multiple
+                    @update:model-value="onMonthChange"
                   />
                 </q-item-section>
               </q-item>

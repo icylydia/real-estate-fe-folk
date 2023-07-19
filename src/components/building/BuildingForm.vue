@@ -221,6 +221,17 @@ import { ref } from 'vue';
 import RegularExpenseDialog from 'components/building/RegularExpenseDialog.vue';
 import _ from 'lodash';
 
+const props = defineProps({
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  newBuilding: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const { formModel: building } = storeToRefs(useBuildingStore());
 
 const buildingStructureOptions = [
@@ -304,29 +315,34 @@ const landUseZoneOptions = [
   },
 ]
 
-const regularExpenseColumns: QTableProps['columns'] = [
-  {
-    name: 'name',
-    label: '項目',
-    field: 'name',
-    align: 'left',
-    sortable: false,
-  },
-  {
-    name: 'months',
-    label: '月',
-    field: 'months',
-    align: 'left',
-    sortable: false,
-  },
-  {
-    name: 'actions',
-    label: '操作',
-    field: 'actions',
-    align: 'right',
-    sortable: false,
-  },
-]
+const regularExpenseColumns: QTableProps['columns'] = (() => {
+  let columns: QTableProps['columns'] = [
+    {
+      name: 'name',
+      label: '項目',
+      field: 'name',
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'months',
+      label: '月',
+      field: 'months',
+      align: 'left',
+      sortable: false,
+    },
+  ];
+  if (!props.readonly) {
+    columns.push({
+      name: 'actions',
+      label: '操作',
+      field: 'actions',
+      align: 'right',
+      sortable: false,
+    });
+  }
+  return columns;
+})()
 
 const { regularExpenseModel: regularExpense } = storeToRefs(useBuildingStore());
 const { resetRegularExpenseModel } = useBuildingStore();
@@ -376,16 +392,6 @@ import { useBuildingStore } from 'stores/building-store';
 
 export default defineComponent({
   name: 'BuildingForm',
-  props: {
-    readonly: {
-      type: Boolean,
-      default: false,
-    },
-    newBuilding: {
-      type: Boolean,
-      default: false,
-    },
-  },
   methods: {
     ...mapActions(useBuildingStore, ['validatePostalCode', 'updateAddressFromPostalCode']),
     async searchAddress() {
