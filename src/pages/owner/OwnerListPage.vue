@@ -2,10 +2,10 @@
 import { onMounted, ref } from 'vue';
 import { useOwnerStore } from 'stores/owner-store';
 import { storeToRefs } from 'pinia';
-import { QTableProps } from "quasar";
-import { useGender } from "src/utils/gender";
-import { useRouter } from "vue-router";
-import { TenantInResponse } from "src/api";
+import { QTableProps } from 'quasar';
+import { useGender } from 'src/utils/gender';
+import { useRouter } from 'vue-router';
+import { TenantInResponse } from 'src/api';
 
 const loading = ref(false)
 const { ownerList: owners } = storeToRefs(useOwnerStore());

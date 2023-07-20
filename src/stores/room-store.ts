@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ModelFile, RoomInRequest, RoomInResponse } from "src/api";
+import { ModelFile, RoomInRequest, RoomInResponse } from 'src/api';
 import { api } from 'boot/api';
 
 export type RoomFormModel = Partial<

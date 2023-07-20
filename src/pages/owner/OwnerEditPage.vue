@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useOwnerStore } from 'stores/owner-store';
-import OwnerForm from "components/owner/OwnerForm.vue";
+import OwnerForm from 'components/owner/OwnerForm.vue';
 
 const loading = ref(false);
 

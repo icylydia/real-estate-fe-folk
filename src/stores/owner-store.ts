@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { OwnerDetailResponse, OwnerInRequest, OwnerInResponse } from "src/api";
+import { OwnerDetailResponse, OwnerInRequest, OwnerInResponse } from 'src/api';
 import { api } from 'boot/api';
 
 export type OwnerFormModel = Partial<
