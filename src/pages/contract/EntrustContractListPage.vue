@@ -176,7 +176,7 @@ const archiveContract = async (id?: string) => {
             <q-td>
               <a
                 :href="$router.resolve({
-                  name: 'tenant-detail',
+                  name: 'owner-detail',
                   params: { id: row.owner!.id },
                 }).href"
               >

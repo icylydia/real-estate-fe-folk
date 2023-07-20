@@ -81,12 +81,6 @@ export default defineComponent({
     return {
       essentialLinks: [
         {
-          title: 'ダッシュボード',
-          caption: '稼働状況一覧',
-          icon: 'sym_r_monitoring',
-          link: this.$router.resolve({ name: 'home' }).href,
-        },
-        {
           title: '物件管理',
           icon: 'sym_r_home_work',
           link: this.$router.resolve({ name: 'building-list' }).href,
