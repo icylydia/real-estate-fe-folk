@@ -51,7 +51,7 @@ const columns: QTableProps['columns'] = [
     no-data-label="契約がありません"
   >
     <template #top-left>
-      <div class="text-h6">契約一覧</div>
+      <div class="text-h6">管理委託契約</div>
     </template>
     <template #[`body-cell-benefitType`]="{ row }: { row: EntrustContractInResponse }">
       <q-td>

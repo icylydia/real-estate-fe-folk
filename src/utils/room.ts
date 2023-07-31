@@ -39,7 +39,7 @@ export const useRoom = () => {
     switch (status) {
       case RoomInResponse.ContractStatusEnum.Signed:
         return {
-          label: '契約済み',
+          label: '契約中',
           color: 'blue',
         }
       case RoomInResponse.ContractStatusEnum.Empty:
