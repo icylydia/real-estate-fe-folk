@@ -56,6 +56,10 @@ const editOwner = (key: string) => {
   });
 };
 
+const removeOwner = (key: string) => {
+  console.log(`removeOwner: ${key}`);
+};
+
 const columns: QTableProps['columns'] = [
   {
     label: 'オーナー名',
@@ -148,6 +152,7 @@ const columns: QTableProps['columns'] = [
             <q-td class="text-right">
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="ownerDetail(key)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editOwner(key)" />
+              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeOwner(key)" />
             </q-td>
           </template>
         </q-table>

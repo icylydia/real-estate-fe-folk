@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import ContractList from 'components/owner/ContractList.vue';
+import BuildingList from 'components/owner/BuildingList.vue';
 import OwnerForm from 'components/owner/OwnerForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useOwnerStore } from 'stores/owner-store';
@@ -57,7 +57,7 @@ onMounted(async () => {
     </q-card>
     <q-card bordered class="q-mt-md" v-if="!loading">
       <q-card-section>
-        <contract-list />
+        <building-list />
       </q-card-section>
     </q-card>
   </q-page>
