@@ -42,17 +42,17 @@ export const useContractStore = defineStore('contract', {
         case ContractBase.StatusEnum.Active:
           return {
             label: '契約中',
-            color: 'green',
+            color: 'blue',
           };
         case ContractBase.StatusEnum.ToBeRenewed:
           return {
             label: '再契約予定',
-            color: 'blue',
+            color: 'amber',
           }
         case ContractBase.StatusEnum.ToBeTerminated:
           return {
             label: '解約予定',
-            color: 'amber',
+            color: 'green',
           };
         case ContractBase.StatusEnum.Terminated:
           return {

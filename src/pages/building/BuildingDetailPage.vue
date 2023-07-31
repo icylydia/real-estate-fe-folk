@@ -21,6 +21,11 @@
     </q-card>
     <q-card bordered class="q-mt-md">
       <q-card-section>
+        <contract-list />
+      </q-card-section>
+    </q-card>
+    <q-card bordered class="q-mt-md">
+      <q-card-section>
         <file-list />
       </q-card-section>
     </q-card>
@@ -33,11 +38,12 @@ import { mapActions, mapState } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 import BuildingForm from 'components/building/BuildingForm.vue';
 import RoomList from 'components/building/RoomList.vue';
+import ContractList from 'components/building/EntrustContractList.vue';
 import FileList from 'components/building/FileList.vue';
 
 export default defineComponent({
   name: 'BuildingDetailPage',
-  components: { FileList, RoomList, BuildingForm },
+  components: { FileList, RoomList, BuildingForm, ContractList },
   async mounted() {
     try {
       await this.getBuildingDetail(this.buildingId);

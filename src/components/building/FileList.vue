@@ -64,7 +64,7 @@ const columns: QTableProps['columns'] = [
     :grid="$q.screen.lt.md"
     hide-bottom
     :pagination="{
-      rowsPerPage: 5,
+      rowsPerPage: 0,
     }"
     no-data-label="ファイルがありません"
   >

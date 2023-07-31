@@ -16,6 +16,13 @@
     <template #top-right>
       <q-btn label="追加" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="createRoom()" />
     </template>
+    <template #[`body-cell-contractStatus`]="{ row }: { row: RoomInResponse }">
+      <q-td>
+        <q-chip
+          v-bind="contractStatusToChipProps(row.contractStatus)"
+        />
+      </q-td>
+    </template>
     <template #[`body-cell-layout`]="{ row }: { row: RoomInResponse }">
       <q-td>
         {{ row.roomLayoutNumber }}{{ row.roomLayoutUnit }}
@@ -39,12 +46,22 @@
 <script setup lang="ts">
 import { QTableProps } from 'quasar';
 import { RoomInResponse } from 'src/api';
+import { useRoom } from 'src/utils/room';
+
+const { contractStatusToChipProps } = useRoom();
 
 const columns: QTableProps['columns'] = [
   {
     label: '部屋名',
     field: 'name',
     name: 'name',
+    sortable: false,
+    align: 'left',
+  },
+  {
+    label: '契約状況',
+    field: 'contractStatus',
+    name: 'contractStatus',
     sortable: false,
     align: 'left',
   },

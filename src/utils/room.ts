@@ -1,3 +1,5 @@
+import { RoomInResponse } from "src/api";
+
 export const useRoom = () => {
   const fileCategoryOptions:  { label: string, value: string }[] = [
     {
@@ -33,7 +35,27 @@ export const useRoom = () => {
       value: 'other',
     },
   ];
+  const contractStatusToChipProps = (status?: RoomInResponse.ContractStatusEnum) => {
+    switch (status) {
+      case RoomInResponse.ContractStatusEnum.Signed:
+        return {
+          label: '契約済み',
+          color: 'blue',
+        }
+      case RoomInResponse.ContractStatusEnum.Empty:
+        return {
+          label: '空室',
+          color: 'green',
+        }
+      default:
+        return {
+          label: '不明',
+          color: 'grey',
+        }
+    }
+  }
   return {
     fileCategoryOptions,
+    contractStatusToChipProps,
   }
 }
