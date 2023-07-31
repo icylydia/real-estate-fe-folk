@@ -1,4 +1,4 @@
-import { RoomInResponse } from "src/api";
+import { RoomInResponse } from 'src/api';
 
 export const useRoom = () => {
   const fileCategoryOptions:  { label: string, value: string }[] = [
