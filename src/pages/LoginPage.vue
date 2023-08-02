@@ -106,7 +106,7 @@ const onSubmit = handleSubmit(async (values) => {
       refreshToken: loginResponse.refreshToken,
     }
     login(user)
-    await router.push({ name: 'home' });
+    await router.push({ name: 'building-list' });
   } catch (e) {
     toastHandler(e);
   }
