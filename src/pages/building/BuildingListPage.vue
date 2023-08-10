@@ -1,3 +1,127 @@
+<script lang="ts" setup>
+import { BuildingInResponse } from 'src/api';
+import { QTable, QTableProps } from 'quasar';
+import { computed, onMounted, Ref, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
+import { useBuildingStore } from 'stores/building-store';
+
+const columns: QTableProps['columns'] = [
+  {
+    name: 'name',
+    label: '物件名',
+    field: 'name',
+    sortable: false,
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: '価格',
+    field: 'price',
+    sortable: false,
+    align: 'right',
+  },
+  {
+    name: 'address',
+    label: '所在地',
+    field: 'address',
+    sortable: false,
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: '操作',
+    field: 'actions',
+    sortable: false,
+    align: 'right',
+  },
+];
+
+type Pagination = {
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  rowsPerPage?: number;
+  rowsNumber?: number;
+};
+
+const pagination: Ref<Pagination> = ref({
+  sortBy: undefined,
+  descending: false,
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: 0,
+});
+
+const paginationMax = computed(() => {
+  if (!pagination.value.rowsPerPage || !pagination.value.rowsNumber) {
+    return 0;
+  }
+  return Math.ceil(pagination.value.rowsNumber / pagination.value.rowsPerPage)
+});
+
+const loading = ref(false);
+
+const tableRef = ref<QTable | null>(null);
+
+onMounted(async () => {
+  tableRef.value?.requestServerInteraction();
+});
+
+const { getBuildingList } = useBuildingStore();
+const { searchParams, list: rows } = storeToRefs(useBuildingStore());
+
+const search = async () => {
+  tableRef.value?.requestServerInteraction({ pagination: { page: 1 } });
+};
+
+const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
+  try {
+    loading.value = true;
+    const { page, rowsPerPage } = _pagination;
+    const reqParams = {
+      page,
+      itemsPerPage: rowsPerPage,
+      ...searchParams.value,
+    };
+    const pageMeta = await getBuildingList(reqParams);
+    pagination.value = {
+      sortBy: undefined,
+      descending: false,
+      page: pageMeta.currentPage ?? 1,
+      rowsPerPage: pageMeta.itemsPerPage ?? 10,
+      rowsNumber: pageMeta.total ?? 0,
+    };
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const onPageChange = async () => {
+  tableRef.value?.requestServerInteraction({ pagination: pagination.value });
+};
+
+const router = useRouter();
+
+const create = () => {
+  router.push({ name: 'building-create' })
+};
+
+const detail = (key: string) => {
+  router.push({ name: 'building-detail', params: { id: key } })
+};
+
+const edit = (key: string) => {
+  router.push({ name: 'building-edit', params: { id: key } })
+};
+
+const remove = (rowIndex: number) => {
+  console.log('remove', rowIndex)
+};
+</script>
+
 <template>
   <q-page padding>
     <div class="row q-col-gutter-md">
@@ -35,9 +159,10 @@
               :columns="columns"
               :rows="rows"
               row-key="id"
-              :pagination="{
-                rowsPerPage: 15,
-              }"
+              hide-pagination
+              v-model:pagination="pagination"
+              @request="onRequest"
+              ref="tableRef"
             >
               <template #top-left>
                 <div class="text-h6">物件一覧</div>
@@ -63,106 +188,18 @@
                 </q-td>
               </template>
             </q-table>
+            <div class="row justify-center q-my-md">
+              <q-pagination
+                v-model="pagination.page"
+                color="primary"
+                :max="paginationMax"
+                max-pages="9"
+                @update:model-value="onPageChange"
+              />
+            </div>
           </q-card-section>
         </q-card>
       </div>
     </div>
   </q-page>
 </template>
-
-<script lang="ts" setup>
-import { BuildingInResponse } from 'src/api';
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { QTableProps } from 'quasar';
-import { mapActions, mapState } from 'pinia';
-import { useBuildingStore } from 'stores/building-store';
-
-const columns: QTableProps['columns'] = [
-  {
-    name: 'name',
-    label: '物件名',
-    field: 'name',
-    sortable: false,
-    align: 'left',
-  },
-  {
-    name: 'price',
-    label: '価格',
-    field: 'price',
-    sortable: false,
-    align: 'right',
-  },
-  {
-    name: 'address',
-    label: '所在地',
-    field: 'address',
-    sortable: false,
-    align: 'left',
-  },
-  {
-    name: 'actions',
-    label: '操作',
-    field: 'actions',
-    sortable: false,
-    align: 'right',
-  },
-]
-
-export default defineComponent({
-  name: 'BuildingListPage',
-  setup() {
-    return {
-      columns,
-    }
-  },
-  data() {
-    return {
-      loading: false,
-    }
-  },
-  async mounted() {
-    try {
-      this.loading = true;
-      await this.getBuildingList({});
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.loading = false;
-    }
-  },
-  methods: {
-    ...mapActions(useBuildingStore, ['getBuildingList']),
-    detail(key: string) {
-      this.$router.push({ name: 'building-detail', params: { id: key } })
-    },
-    edit(key: string) {
-      this.$router.push({ name: 'building-edit', params: { id: key } })
-    },
-    remove(rowIndex: number) {
-      console.log('remove', rowIndex)
-    },
-    create() {
-      this.$router.push({ name: 'building-create' })
-    },
-    async search() {
-      try {
-        this.loading = true;
-        await this.getBuildingList(this.searchParams);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        this.loading = false;
-      }
-    },
-  },
-  computed: {
-    ...mapState(useBuildingStore, {
-      rows: 'list',
-      searchParams: 'searchParams',
-    })
-  },
-});
-</script>

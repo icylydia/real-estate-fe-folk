@@ -501,10 +501,84 @@ export namespace BuildingInResponse {
 export interface BuildingListResponse extends PaginationResponse {
   /**
    * 数据列表
-   * @type {Array<BuildingInResponse>}
+   * @type {Array<BuildingListResponseData>}
    * @memberof BuildingListResponse
    */
-  items?: Array<BuildingInResponse>;
+  data?: Array<BuildingListResponseData>;
+}
+/**
+ * 地址
+ * @export
+ * @interface BuildingListResponseAddress
+ */
+export interface BuildingListResponseAddress {
+  /**
+   * 邮政编码
+   * @type {string}
+   * @memberof BuildingListResponseAddress
+   */
+  postalCode?: string;
+  /**
+   * 都道府县ID
+   * @type {number}
+   * @memberof BuildingListResponseAddress
+   */
+  prefectureId?: number;
+  /**
+   * 都道府县
+   * @type {string}
+   * @memberof BuildingListResponseAddress
+   */
+  prefecture?: string;
+  /**
+   * 市区町村
+   * @type {string}
+   * @memberof BuildingListResponseAddress
+   */
+  detailAddress1?: string;
+  /**
+   * 丁目・番地・号
+   * @type {string}
+   * @memberof BuildingListResponseAddress
+   */
+  detailAddress2?: string;
+  /**
+   * 建物名・部屋番号
+   * @type {string}
+   * @memberof BuildingListResponseAddress
+   */
+  detailAddress3?: string;
+}
+/**
+ *
+ * @export
+ * @interface BuildingListResponseData
+ */
+export interface BuildingListResponseData {
+  /**
+   * 建筑ID
+   * @type {number}
+   * @memberof BuildingListResponseData
+   */
+  id?: number;
+  /**
+   * 建筑名称
+   * @type {string}
+   * @memberof BuildingListResponseData
+   */
+  name?: string;
+  /**
+   * 建筑价格
+   * @type {number}
+   * @memberof BuildingListResponseData
+   */
+  price?: number;
+  /**
+   *
+   * @type {BuildingListResponseAddress}
+   * @memberof BuildingListResponseData
+   */
+  address?: BuildingListResponseAddress;
 }
 /**
  * 合同
@@ -1450,29 +1524,36 @@ export interface OwnerListResponse extends PaginationResponse {
  */
 export interface PaginationResponse {
   /**
+   *
+   * @type {PaginationResponsePagination}
+   * @memberof PaginationResponse
+   */
+  pagination?: PaginationResponsePagination;
+}
+/**
+ *
+ * @export
+ * @interface PaginationResponsePagination
+ */
+export interface PaginationResponsePagination {
+  /**
    * 每页条数
    * @type {number}
-   * @memberof PaginationResponse
+   * @memberof PaginationResponsePagination
    */
   itemsPerPage?: number;
   /**
    * 页码
    * @type {number}
-   * @memberof PaginationResponse
+   * @memberof PaginationResponsePagination
    */
-  page?: number;
+  currentPage?: number;
   /**
    * 总条数
    * @type {number}
-   * @memberof PaginationResponse
+   * @memberof PaginationResponsePagination
    */
-  totalItems?: number;
-  /**
-   * 数据列表
-   * @type {Array<any>}
-   * @memberof PaginationResponse
-   */
-  items?: Array<any>;
+  total?: number;
 }
 /**
  *

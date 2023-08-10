@@ -32,7 +32,6 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
       bordered
     >
       <q-list>
@@ -51,10 +50,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 import useApp from 'components/app/useApp';
 import { logout } from 'src/auth';
+import { storeToRefs } from 'pinia';
+import { useAppStore } from 'stores/app-store';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -64,7 +65,7 @@ export default defineComponent({
   },
 
   setup () {
-    const leftDrawerOpen = ref(false)
+    const { isSidebarOpen: leftDrawerOpen } = storeToRefs(useAppStore());
     const {appName, appVersion} = useApp()
 
     return {

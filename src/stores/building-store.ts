@@ -5,8 +5,9 @@ import {
   AddressInResponse,
   BuildingDetailResponse,
   BuildingInRequest,
-  BuildingInResponse,
+  BuildingListResponseData,
   ModelFile,
+  PaginationResponsePagination,
   RegularExpenseBase
 } from 'src/api';
 
@@ -35,7 +36,7 @@ interface GetBuildingListRequest {
 export const useBuildingStore = defineStore('building', {
   state: () => ({
     searchParams: {} as GetBuildingListRequest,
-    list: [] as BuildingInResponse[],
+    list: [] as BuildingListResponseData[],
     formModel: defaultFormModel,
     regularExpenseModel: {} as RegularExpenseBase,
     fileModel: {} as FileModel,
@@ -54,10 +55,10 @@ export const useBuildingStore = defineStore('building', {
       this.fileModel = {} as FileModel;
     },
 
-    async getBuildingList(params: GetBuildingListRequest) {
+    async getBuildingList(params: GetBuildingListRequest): Promise<PaginationResponsePagination> {
       this.reset();
       const defaultParams: GetBuildingListRequest = {
-        itemsPerPage: 15,
+        itemsPerPage: 10,
         page: 1,
       }
       const query = _.defaults(params, defaultParams)
@@ -67,7 +68,8 @@ export const useBuildingStore = defineStore('building', {
         query.name,
         query.location,
       );
-      this.list = resp.items ?? [];
+      this.list = resp.data ?? [];
+      return resp.pagination ?? {} as PaginationResponsePagination;
     },
 
     async getBuildingDetail(id: string) {
