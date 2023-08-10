@@ -79,8 +79,8 @@ import { AuthLoginBody } from 'src/api';
 const {appName, appVersion} = useApp();
 
 const validationSchema = toTypedSchema(object({
-  email: string().email().required().label('メールアドレス').default('test@email.com'),
-  password: string().required().min(6).label('パスワード').default('utz7_;a7Md'),
+  email: string().email().required().label('メールアドレス').default('nyamagishi@example.org'),
+  password: string().required().min(6).label('パスワード').default('c]X>7qaRMc$@lDR'),
 }));
 
 const { handleSubmit, isSubmitting } = useForm({
@@ -97,18 +97,22 @@ const onSubmit = handleSubmit(async (values) => {
       password: values.password,
     };
     const loginResponse = await api.login(payload);
-    if (!loginResponse.accessToken || !loginResponse.refreshToken) {
+    const token = loginResponse.data?.token;
+    if (!token) {
       toastHandler(new Error('ログインに失敗しました'));
       return
     }
-    const user = {
-      accessToken: loginResponse.accessToken,
-      refreshToken: loginResponse.refreshToken,
-    }
+    const user = { token }
     login(user)
     await router.push({ name: 'building-list' });
   } catch (e) {
-    toastHandler(e);
+    if (e instanceof Response && e.status === 401) {
+      toastHandler(new Error('メールアドレスまたはパスワードが間違っています'));
+      return
+    } else {
+      toastHandler(new Error('ログインに失敗しました'));
+      return
+    }
   }
 });
 </script>

@@ -1,8 +1,7 @@
 import { LocalStorage } from 'quasar';
 
 export interface User {
-  accessToken: string;
-  refreshToken: string;
+  token: string;
 }
 
 export const login = (user: User) => {
@@ -20,7 +19,7 @@ export const logout = () => {
 export const getToken = () => {
   const user = LocalStorage.getItem('user') as string;
   if (user) {
-    return JSON.parse(user).accessToken;
+    return JSON.parse(user).token;
   }
   return null;
 }

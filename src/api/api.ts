@@ -806,7 +806,7 @@ export interface EmployeeInRequest extends EmployeeBase {
    * @type {Array<string>}
    * @memberof EmployeeInRequest
    */
-  departmentId?: Array<string>;
+  departmentIds?: Array<string>;
 }
 
 /**
@@ -1227,17 +1227,24 @@ export interface IncomeListResponse extends PaginationResponse {
  */
 export interface LoginSuccessResponse {
   /**
+   *
+   * @type {LoginSuccessResponseData}
+   * @memberof LoginSuccessResponse
+   */
+  data?: LoginSuccessResponseData;
+}
+/**
+ *
+ * @export
+ * @interface LoginSuccessResponseData
+ */
+export interface LoginSuccessResponseData {
+  /**
    * JWT Token
    * @type {string}
-   * @memberof LoginSuccessResponse
+   * @memberof LoginSuccessResponseData
    */
-  accessToken?: string;
-  /**
-   * 用于刷新的Token
-   * @type {string}
-   * @memberof LoginSuccessResponse
-   */
-  refreshToken?: string;
+  token?: string;
 }
 /**
  *

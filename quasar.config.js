@@ -105,10 +105,9 @@ module.exports = configure(function (/* ctx */) {
       open: false, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'http://127.0.0.1:4010',
+          target: 'http://tenant1.real-estate-dev.alpha-technology.com:8000',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '')
-        }
+        },
       },
     },
 
