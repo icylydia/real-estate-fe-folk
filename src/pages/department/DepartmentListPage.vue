@@ -26,7 +26,9 @@
               <div class="text-subtitle1 text-weight-bold">
                 {{ node.name }}
                 <span class="text-subtitle2">
-                  (人数: {{ node.memberCount }}人, 責任者: {{ node.leader.lastName }} {{ node.leader.firstName }})
+                  (人数: {{ node.memberCount || 0 }}人,
+                  責任者: <template v-if="node.leader">{{ node.leader.lastName }} {{ node.leader.firstName }})</template>
+                  <template v-else>-)</template>
                 </span>
               </div>
               <div>

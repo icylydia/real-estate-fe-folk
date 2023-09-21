@@ -136,7 +136,7 @@ const removeEmployee = (key: string) => {
           </template>
           <template #[`body-cell-departments`]="{ row }: { row: EmployeeModel }">
             <q-td>
-              {{ row.departments.map((department) => department.name).join(', ') }}
+              {{ row.departments?.map((department) => department.name).join(', ') }}
             </q-td>
           </template>
           <template #[`body-cell-actions`]="{ key }">
