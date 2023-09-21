@@ -16,7 +16,7 @@ import * as url from "url";
 import * as isomorphicFetch from "isomorphic-fetch";
 import { Configuration } from "./configuration";
 
-const BASE_PATH = "http://localhost:4010/".replace(/\/+$/, "");
+const BASE_PATH = "https://virtserver.swaggerhub.com/ICYLYDIA_1/real-estate/0.1.3".replace(/\/+$/, "");
 
 /**
  *
@@ -501,10 +501,10 @@ export namespace BuildingInResponse {
 export interface BuildingListResponse extends PaginationResponse {
   /**
    * 数据列表
-   * @type {Array<BuildingListResponseData>}
+   * @type {Array<BuildingListResponseItems>}
    * @memberof BuildingListResponse
    */
-  data?: Array<BuildingListResponseData>;
+  items?: Array<BuildingListResponseItems>;
 }
 /**
  * 地址
@@ -552,31 +552,31 @@ export interface BuildingListResponseAddress {
 /**
  *
  * @export
- * @interface BuildingListResponseData
+ * @interface BuildingListResponseItems
  */
-export interface BuildingListResponseData {
+export interface BuildingListResponseItems {
   /**
    * 建筑ID
    * @type {number}
-   * @memberof BuildingListResponseData
+   * @memberof BuildingListResponseItems
    */
   id?: number;
   /**
    * 建筑名称
    * @type {string}
-   * @memberof BuildingListResponseData
+   * @memberof BuildingListResponseItems
    */
   name?: string;
   /**
    * 建筑价格
    * @type {number}
-   * @memberof BuildingListResponseData
+   * @memberof BuildingListResponseItems
    */
   price?: number;
   /**
    *
    * @type {BuildingListResponseAddress}
-   * @memberof BuildingListResponseData
+   * @memberof BuildingListResponseItems
    */
   address?: BuildingListResponseAddress;
 }

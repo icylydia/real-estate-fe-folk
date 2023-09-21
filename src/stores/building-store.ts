@@ -5,7 +5,7 @@ import {
   AddressInResponse,
   BuildingDetailResponse,
   BuildingInRequest,
-  BuildingListResponseData,
+  BuildingListResponseItems,
   ModelFile,
   PaginationResponsePagination,
   RegularExpenseBase
@@ -36,7 +36,7 @@ interface GetBuildingListRequest {
 export const useBuildingStore = defineStore('building', {
   state: () => ({
     searchParams: {} as GetBuildingListRequest,
-    list: [] as BuildingListResponseData[],
+    list: [] as BuildingListResponseItems[],
     formModel: defaultFormModel,
     regularExpenseModel: {} as RegularExpenseBase,
     fileModel: {} as FileModel,
@@ -68,7 +68,7 @@ export const useBuildingStore = defineStore('building', {
         query.name,
         query.location,
       );
-      this.list = resp.data ?? [];
+      this.list = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;
     },
 
