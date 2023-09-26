@@ -16,8 +16,6 @@ const save = async () => {
     return;
   }
   loading.value = true;
-  // sleep 2 seconds
-  await new Promise((resolve) => setTimeout(resolve, 2000));
   try {
     const data = validation.values;
     const newOwner = await useOwnerStore().createOwner(data);

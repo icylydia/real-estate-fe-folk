@@ -31,5 +31,8 @@ export const useOwnerStore = defineStore('owner', {
     async updateOwner(id: string, data: OwnerInRequest) {
       await api.updateOwner(data, id);
     },
+    async deleteOwner(id: string) {
+      await api.deleteOwner(id);
+    },
   },
 });

@@ -2,14 +2,14 @@
 import { onMounted, ref } from 'vue';
 import { useOwnerStore } from 'stores/owner-store';
 import { storeToRefs } from 'pinia';
-import { QTableProps } from 'quasar';
+import { QTableProps, useQuasar } from 'quasar';
 import { useGender } from 'src/utils/gender';
 import { useRouter } from 'vue-router';
-import { TenantInResponse } from 'src/api';
+import { OwnerInResponse, TenantInResponse } from 'src/api';
 
 const loading = ref(false)
 const { ownerList: owners } = storeToRefs(useOwnerStore());
-const { getOwnerList, reset: resetOwnerList } = useOwnerStore();
+const { getOwnerList, reset: resetOwnerList, deleteOwner } = useOwnerStore();
 
 const loadOwners = async () => {
   loading.value = true;
@@ -56,8 +56,27 @@ const editOwner = (key: string) => {
   });
 };
 
-const removeOwner = (key: string) => {
-  console.log(`removeOwner: ${key}`);
+const $q = useQuasar();
+
+const removeOwner = (owner: OwnerInResponse) => {
+  $q.dialog({
+    title: 'オーナー削除',
+    message: `オーナー「${owner.lastName} ${owner.firstName}」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!owner.id) {
+      return;
+    }
+    try {
+      await deleteOwner(owner.id);
+    } catch (e) {
+      console.error(e);
+    }
+
+    await loadOwners();
+  });
 };
 
 const columns: QTableProps['columns'] = [
@@ -148,11 +167,11 @@ const columns: QTableProps['columns'] = [
               {{ describeGender(row.gender) }}
             </q-td>
           </template>
-          <template #[`body-cell-actions`]="{ key }">
+          <template #[`body-cell-actions`]="{ key, row }">
             <q-td class="text-right">
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="ownerDetail(key)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editOwner(key)" />
-              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeOwner(key)" />
+              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeOwner(row)" />
             </q-td>
           </template>
         </q-table>
@@ -160,7 +179,3 @@ const columns: QTableProps['columns'] = [
     </q-card>
   </q-page>
 </template>
-
-<style scoped lang="scss">
-
-</style>
