@@ -13,7 +13,6 @@ export const useGender = () => {
       value: 'other',
     },
   ];
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const describe = (value?: any): string => {
     const target = selectOptions.find(option => option.value === value);
     return target ? target.label : '未知';

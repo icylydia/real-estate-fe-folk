@@ -68,12 +68,10 @@ export const usePayment = () => {
       value: 'other',
     },
   ];
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const describeCategory = (value?: any): string => {
     const target = categoryOptions.find(option => option.value === value);
     return target ? target.label : '未知';
   }
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const describeIncomeConfirmStatus = (value?: any): { description: string, color: string} => {
     switch (value) {
       case 'unconfirmed':

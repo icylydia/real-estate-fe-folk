@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useOwnerStore } from 'stores/owner-store';
+import { OwnerFormModel, useOwnerStore } from 'stores/owner-store';
 import OwnerForm from 'components/owner/OwnerForm.vue';
+import { FormValidationResult } from 'vee-validate';
+import { storeToRefs } from 'pinia';
 
 const loading = ref(false);
+const form = ref<InstanceType<typeof OwnerForm>>();
 
 const route = useRoute();
 const router = useRouter();
 const ownerId = typeof route.params.id == 'string' ? route.params.id : '';
-const { getOwner } = useOwnerStore();
+const { getOwner, updateOwner } = useOwnerStore();
+const { formModel: owner } = storeToRefs(useOwnerStore());
 
 onMounted(async () => {
   loading.value = true;
@@ -23,9 +27,27 @@ onMounted(async () => {
 });
 
 const save = () => {
-  router.push({
-    name: 'owner-detail',
-    params: { id: ownerId }
+  form.value?.validate().then(async (validation: FormValidationResult<any>) => {
+    if (!validation.valid) {
+      return;
+    }
+    loading.value = true;
+    try {
+      const data = validation.values;
+      const newOwner: OwnerFormModel = {
+        ...owner.value,
+        ...data,
+      };
+      await updateOwner(ownerId, newOwner);
+      await router.push({
+        name: 'owner-detail',
+        params: { id: ownerId }
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      loading.value = false;
+    }
   });
 };
 
@@ -42,7 +64,7 @@ const cancel = () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <owner-form />
+        <owner-form ref="form" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

@@ -17,7 +17,6 @@ export const useTenant = () => {
       value: 'rejected',
     },
   ];
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const describeGuarantorCompanyStatus = (value?: any): string => {
     const target = guarantorCompanyStatusOptions.find(option => option.value === value);
     return target ? target.label : '未知';

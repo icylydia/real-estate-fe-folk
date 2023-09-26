@@ -25,5 +25,11 @@ export const useOwnerStore = defineStore('owner', {
     async getOwner(id: string) {
       this.formModel = await api.getOwner(id);
     },
+    async createOwner(data: OwnerInRequest) {
+      return await api.createOwner(data);
+    },
+    async updateOwner(id: string, data: OwnerInRequest) {
+      await api.updateOwner(data, id);
+    },
   },
 });
