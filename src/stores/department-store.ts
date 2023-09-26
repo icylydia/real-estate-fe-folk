@@ -15,9 +15,9 @@ export const useDepartmentStore = defineStore('department', {
   actions: {
     reset() {
       this.list = [];
+      this.formModel = {};
     },
     async getDepartmentList() {
-      this.reset();
       this.list = await api.getDepartments();
     },
     getFlattenedDepartmentList() {
@@ -31,6 +31,9 @@ export const useDepartmentStore = defineStore('department', {
     },
     async getDepartment(id: string) {
       this.formModel = await api.getDepartment(id);
-    }
+    },
+    async createDepartment(data: DepartmentInRequest) {
+      return await api.createDepartment(data);
+    },
   },
 });

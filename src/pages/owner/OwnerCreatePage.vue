@@ -39,11 +39,9 @@ onMounted(() => {
 <template>
   <q-page padding>
     <q-card bordered>
-      <q-form>
-        <q-card-section>
-          <div class="text-h5">新規オーナー</div>
-        </q-card-section>
-      </q-form>
+      <q-card-section>
+        <div class="text-h5">新規オーナー</div>
+      </q-card-section>
       <q-separator></q-separator>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>

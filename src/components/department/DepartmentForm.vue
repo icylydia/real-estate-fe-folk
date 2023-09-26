@@ -2,10 +2,13 @@
 import { storeToRefs } from 'pinia';
 import { useDepartmentStore } from 'stores/department-store';
 import { DepartmentInResponse, EmployeeBase } from 'src/api';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useEmployeeStore } from 'stores/employee-store';
+import { toTypedSchema } from '@vee-validate/yup';
+import { object, string } from 'yup';
+import { Field, useForm } from 'vee-validate';
 
-defineProps({
+const props = defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -96,10 +99,33 @@ const departmentFilter = (val: string, update: () => void) => {
   }
   update();
 }
+
+// Form validation
+const validationSchema = toTypedSchema(object({
+  name: string().required().label('部署名'),
+  parent: object().nullable().label('親部署'),
+  leader: object().nullable().label('部署リーダー'),
+}));
+
+const initialValues: any = computed(() => {
+  if (props.newDepartment) {
+    return {};
+  }
+  return department.value;
+});
+
+const { validate } = useForm({
+  validationSchema,
+  initialValues,
+});
+
+defineExpose({
+  validate,
+});
 </script>
 
 <template>
-  <div class="text-h6">
+  <div class="text-h6" v-if="!newDepartment">
     部署基本情報{{ readonly ? '（閲覧）' : '（編集）' }}
   </div>
   <q-list class="row">
@@ -108,42 +134,61 @@ const departmentFilter = (val: string, update: () => void) => {
         <q-input v-model="department.id" label="部署ID" readonly />
       </q-item-section>
     </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-select
-          v-model="department.parent"
-          use-chips
-          label="親部署"
-          :options="parentDepartmentOptions"
-          :option-label="(option: DepartmentInResponse) => option.name ?? ''"
-          option-value="id"
-          @filter="departmentFilter"
-          :readonly="readonly"
-          use-input
-        >
-        </q-select>
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="department.name" label="部署名" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-select
-          v-model="department.leader"
-          use-chips
-          label="部署リーダー"
-          :options="leaderOptions"
-          :option-label="(option: EmployeeBase) => option.lastName + ' ' + option.firstName"
-          option-value="id"
-          @filter="leaderFilter"
-          :readonly="readonly"
-          use-input
-        >
-        </q-select>
-      </q-item-section>
-    </q-item>
+    <Field name="name" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="部署名"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="parent" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            use-chips
+            label="親部署"
+            :options="parentDepartmentOptions"
+            :option-label="(option: DepartmentInResponse) => option.name ?? ''"
+            option-value="id"
+            @filter="departmentFilter"
+            :readonly="readonly"
+            use-input
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="leader" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            use-chips
+            label="部署リーダー"
+            :options="leaderOptions"
+            :option-label="(option: EmployeeBase) => option.lastName + ' ' + option.firstName"
+            option-value="id"
+            @filter="leaderFilter"
+            :readonly="readonly"
+            use-input
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
   </q-list>
 </template>
