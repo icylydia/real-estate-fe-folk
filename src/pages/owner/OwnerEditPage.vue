@@ -12,13 +12,12 @@ const form = ref<InstanceType<typeof OwnerForm>>();
 const route = useRoute();
 const router = useRouter();
 const ownerId = typeof route.params.id == 'string' ? route.params.id : '';
-const { getOwner, updateOwner } = useOwnerStore();
 const { formModel: owner } = storeToRefs(useOwnerStore());
 
 onMounted(async () => {
   loading.value = true;
   try {
-    await getOwner(ownerId);
+    await useOwnerStore().getOwner(ownerId);
   } catch (error) {
     console.error(error);
   } finally {
@@ -26,29 +25,28 @@ onMounted(async () => {
   }
 });
 
-const save = () => {
-  form.value?.validate().then(async (validation: FormValidationResult<any>) => {
-    if (!validation.valid) {
-      return;
-    }
-    loading.value = true;
-    try {
-      const data = validation.values;
-      const newOwner: OwnerFormModel = {
-        ...owner.value,
-        ...data,
-      };
-      await updateOwner(ownerId, newOwner);
-      await router.push({
-        name: 'owner-detail',
-        params: { id: ownerId }
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      loading.value = false;
-    }
-  });
+const save = async () => {
+  const validation: FormValidationResult<any> = form.value?.validate();
+  if (!validation.valid) {
+    return;
+  }
+  loading.value = true;
+  try {
+    const data = validation.values;
+    const newOwner: OwnerFormModel = {
+      ...owner.value,
+      ...data,
+    };
+    await useOwnerStore().updateOwner(ownerId, newOwner);
+    await router.push({
+      name: 'owner-detail',
+      params: { id: ownerId }
+    });
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const cancel = () => {

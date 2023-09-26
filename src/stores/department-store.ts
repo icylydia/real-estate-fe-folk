@@ -35,5 +35,8 @@ export const useDepartmentStore = defineStore('department', {
     async createDepartment(data: DepartmentInRequest) {
       return await api.createDepartment(data);
     },
+    async updateDepartment(id: string, data: DepartmentInRequest) {
+      return await api.updateDepartment(data, id);
+    },
   },
 });
