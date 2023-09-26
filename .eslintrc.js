@@ -89,5 +89,8 @@ module.exports = {
 
     // allow explicit any
     '@typescript-eslint/no-explicit-any': 'off',
+
+    // allow ts-ignore
+    '@typescript-eslint/ban-ts-ignore': 'off',
   }
 }

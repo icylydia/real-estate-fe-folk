@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { EmployeeInResponse } from 'src/api';
+import { EmployeeInRequest, EmployeeInResponse } from 'src/api';
 import { api } from 'boot/api';
 
 export type EmployeeModel = Partial<
-  EmployeeInResponse
+  EmployeeInResponse & EmployeeInRequest
 >
 
 export const useEmployeeStore = defineStore('employee', {
@@ -21,6 +21,9 @@ export const useEmployeeStore = defineStore('employee', {
     },
     async getEmployeeDetail(id: string) {
       this.formModel = await api.getEmployee(id);
-    }
+    },
+    async createEmployee(data: EmployeeModel) {
+      return await api.createEmployee(data);
+    },
   }
 });

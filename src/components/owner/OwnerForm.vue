@@ -21,6 +21,9 @@ const props = defineProps({
 const { formModel: owner } = storeToRefs(useOwnerStore());
 const { selectOptions: genderOptions } = useGender();
 
+/**********************
+ * Form validation
+ **********************/
 const validationSchema = toTypedSchema(object({
   lastName: string().required().label('姓'),
   firstName: string().required().label('名'),
@@ -28,7 +31,7 @@ const validationSchema = toTypedSchema(object({
     'male', 'female', 'other',
   ]).nullable().label('性別'),
   phone: string()
-    .matches(/^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/, '電話番号の形式が正しくありません。')
+    .phone()
     .optional()
     .label('電話番号'),
   email: string().email().optional().label('メールアドレス'),
