@@ -7,3 +7,12 @@
 a {
   color: #9e9eff;
 }
+
+// Fix weird autofill when using Chrome autofill
+// https://github.com/quasarframework/quasar/issues/3860#issuecomment-1177300609
+input, select {
+  color: $input-text-color !important;
+  -webkit-text-fill-color: $input-text-color !important;
+  -webkit-background-clip: text !important;
+  background-clip:  text !important;
+}
