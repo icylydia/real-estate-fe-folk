@@ -1,21 +1,29 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import {computed, onMounted, Ref, ref} from 'vue';
 import { useOwnerStore } from 'stores/owner-store';
 import { storeToRefs } from 'pinia';
-import { QTableProps, useQuasar } from 'quasar';
+import {QTable, QTableProps, useQuasar} from 'quasar';
 import { useGender } from 'src/utils/gender';
 import { useRouter } from 'vue-router';
 import { OwnerInResponse, TenantInResponse } from 'src/api';
 
 const loading = ref(false)
+const tableRef = ref<QTable | null>(null);
 const { ownerList: owners } = storeToRefs(useOwnerStore());
-const { getOwnerList, reset: resetOwnerList, deleteOwner } = useOwnerStore();
+const { getOwnerList, deleteOwner } = useOwnerStore();
 
-const loadOwners = async () => {
-  loading.value = true;
+const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
   try {
-    resetOwnerList();
-    await getOwnerList();
+    loading.value = true;
+    const { page, rowsPerPage } = _pagination;
+    const pageMeta = await getOwnerList(rowsPerPage, page, searchText.value ?? null);
+    pagination.value = {
+      sortBy: undefined,
+      descending: false,
+      page: pageMeta.currentPage ?? 1,
+      rowsPerPage: pageMeta.itemsPerPage ?? 10,
+      rowsNumber: pageMeta.total ?? 0,
+    };
   } catch (e) {
     console.error(e);
   } finally {
@@ -24,12 +32,12 @@ const loadOwners = async () => {
 };
 
 onMounted(async () => {
-  await loadOwners();
+  tableRef.value?.requestServerInteraction();
 });
 
 const searchText = ref('');
 const search = async () => {
-  await loadOwners()
+  tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
 
 const { describe: describeGender } = useGender();
@@ -75,7 +83,7 @@ const removeOwner = (owner: OwnerInResponse) => {
       console.error(e);
     }
 
-    await loadOwners();
+    tableRef.value?.requestServerInteraction();
   });
 };
 
@@ -116,6 +124,33 @@ const columns: QTableProps['columns'] = [
     align: 'right',
   },
 ];
+
+type Pagination = {
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  rowsPerPage?: number;
+  rowsNumber?: number;
+};
+
+const pagination: Ref<Pagination> = ref({
+  sortBy: undefined,
+  descending: false,
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: 0,
+});
+
+const paginationMax = computed(() => {
+  if (!pagination.value.rowsPerPage || !pagination.value.rowsNumber) {
+    return 0;
+  }
+  return Math.ceil(pagination.value.rowsNumber / pagination.value.rowsPerPage)
+});
+const onPageChange = async () => {
+  tableRef.value?.requestServerInteraction({ pagination: pagination.value });
+};
+
 </script>
 
 <template>
@@ -129,6 +164,10 @@ const columns: QTableProps['columns'] = [
           :columns="columns"
           row-key="id"
           :loading="loading"
+          hide-pagination
+          v-model:pagination="pagination"
+          @request="onRequest"
+          ref="tableRef"
         >
           <template #top-right>
             <q-input
@@ -175,6 +214,15 @@ const columns: QTableProps['columns'] = [
             </q-td>
           </template>
         </q-table>
+        <div class="row justify-center q-my-md">
+          <q-pagination
+            v-model="pagination.page"
+            color="primary"
+            :max="paginationMax"
+            max-pages="9"
+            @update:model-value="onPageChange"
+          />
+        </div>
       </q-card-section>
     </q-card>
   </q-page>

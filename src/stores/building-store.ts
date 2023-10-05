@@ -56,7 +56,6 @@ export const useBuildingStore = defineStore('building', {
     },
 
     async getBuildingList(params: GetBuildingListRequest): Promise<PaginationResponsePagination> {
-      this.reset();
       const defaultParams: GetBuildingListRequest = {
         itemsPerPage: 10,
         page: 1,

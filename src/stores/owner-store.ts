@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { OwnerDetailResponse, OwnerInRequest, OwnerInResponse } from 'src/api';
+import {OwnerDetailResponse, OwnerInRequest, OwnerInResponse, PaginationResponsePagination} from 'src/api';
 import { api } from 'boot/api';
 
 export type OwnerFormModel = Partial<
@@ -18,9 +18,10 @@ export const useOwnerStore = defineStore('owner', {
       this.ownerList = [];
       this.formModel = defaultFormModel;
     },
-    async getOwnerList() {
-      const resp = await api.getOwners();
+    async getOwnerList(itemsPerPage?: number, page?: number, query?: string) {
+      const resp = await api.getOwners(itemsPerPage, page, query);
       this.ownerList = resp.items ?? [];
+      return resp.pagination ?? {} as PaginationResponsePagination;
     },
     async getOwner(id: string) {
       this.formModel = await api.getOwner(id);
