@@ -26,7 +26,7 @@ onMounted(async () => {
 });
 
 const save = async () => {
-  const validation: FormValidationResult<any> = form.value?.validate();
+  const validation: FormValidationResult<any> = await form.value?.validate();
   if (!validation.valid) {
     return;
   }
