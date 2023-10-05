@@ -89,8 +89,13 @@ const validationSchema = toTypedSchema(object({
   phone: string()
     .phone()
     .nullable()
+    .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
     .label('電話番号'),
-  birthday: string().birthday().nullable().label('生年月日'),
+  birthday: string()
+    .birthday()
+    .nullable()
+    .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
+    .label('生年月日'),
 }));
 
 const initialValues: any = computed( () => {

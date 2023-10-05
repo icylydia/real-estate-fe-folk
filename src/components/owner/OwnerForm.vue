@@ -29,12 +29,9 @@ const validationSchema = toTypedSchema(object({
   firstName: string().required().label('名'),
   gender: string().oneOf([
     'male', 'female', 'other',
-  ]).nullable().label('性別'),
-  phone: string()
-    .phone()
-    .optional()
-    .label('電話番号'),
-  email: string().email().optional().label('メールアドレス'),
+  ]).notRequired().label('性別'),
+  phone: string().phone().nullable().transform((value, originalValue) => String(originalValue).trim() === '' ? null : value).label('電話番号'),
+  email: string().email().notRequired().nullable().label('メールアドレス'),
 }));
 
 const initialValues: any = computed( () => {
