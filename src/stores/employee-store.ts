@@ -27,6 +27,9 @@ export const useEmployeeStore = defineStore('employee', {
     },
     async updateEmployee(id: string, data: EmployeeModel) {
       return await api.updateEmployee(data, id);
-    }
+    },
+    async deleteEmployee(id: string) {
+      return await api.deleteEmployee(id);
+    },
   }
 });

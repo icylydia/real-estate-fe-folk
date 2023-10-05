@@ -4,7 +4,7 @@ import {onMounted, ref, Ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {useDepartmentStore} from 'stores/department-store';
 import {storeToRefs} from 'pinia';
-import {useQuasar} from "quasar";
+import {useQuasar} from 'quasar';
 
 const selected: Ref<string[]> = ref([]);
 const loading = ref(false);

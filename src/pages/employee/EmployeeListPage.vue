@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { EmployeeModel, useEmployeeStore } from 'stores/employee-store';
-import { QTableProps } from 'quasar';
+import {QTableProps, useQuasar} from 'quasar';
 import { storeToRefs } from 'pinia';
 
 const router = useRouter();
@@ -19,9 +19,13 @@ const toCreatePage = async () => {
 const loading = ref(false);
 
 const { list: employees } = storeToRefs(useEmployeeStore());
-const { getEmployeeList, reset: resetEmployeeList } = useEmployeeStore();
+const { getEmployeeList, reset: resetEmployeeList, deleteEmployee } = useEmployeeStore();
 
 onMounted(async () => {
+  await reload();
+});
+
+const reload = async () => {
   loading.value = true;
   try {
     resetEmployeeList();
@@ -31,7 +35,7 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-});
+}
 
 const columns: QTableProps['columns'] = [
   {
@@ -90,8 +94,27 @@ const editEmployee = async (key: string) => {
   }
 };
 
-const removeEmployee = (key: string) => {
-  console.log('remove employee', key);
+const $q = useQuasar();
+
+const removeEmployee = (employee: EmployeeModel) => {
+  $q.dialog({
+    title: '社員削除',
+    message: `社員「${employee.lastName} ${employee.firstName}」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!employee.id) {
+      return;
+    }
+    try {
+      await deleteEmployee(employee.id);
+    } catch (e) {
+      console.error(e);
+    }
+
+    await reload()
+  });
 };
 </script>
 
@@ -139,11 +162,11 @@ const removeEmployee = (key: string) => {
               {{ row.departments?.map((department) => department.name).join(', ') }}
             </q-td>
           </template>
-          <template #[`body-cell-actions`]="{ key }">
+          <template #[`body-cell-actions`]="{ key, row }: { key: string, row: EmployeeModel}">
             <q-td class="text-right">
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="employeeDetail(key)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editEmployee(key)" />
-              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeEmployee(key)" />
+              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeEmployee(row)" />
             </q-td>
           </template>
         </q-table>
