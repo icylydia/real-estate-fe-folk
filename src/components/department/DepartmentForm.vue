@@ -69,7 +69,7 @@ enum DepartmentLoadingStatus {
   Aborted = 3,
 }
 const { getDepartmentList } = useDepartmentStore();
-const { list: parentDepartments } = storeToRefs(useDepartmentStore());
+const { flatteredDepartmentList: parentDepartments } = storeToRefs(useDepartmentStore());
 
 const departmentLoadingStatus = ref<DepartmentLoadingStatus>(DepartmentLoadingStatus.BeforeLoad);
 

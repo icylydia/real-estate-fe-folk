@@ -1,3 +1,64 @@
+<script setup lang="ts">
+import {DepartmentInResponse} from 'src/api';
+import {onMounted, ref, Ref} from 'vue';
+import {useRouter} from 'vue-router';
+import {useDepartmentStore} from 'stores/department-store';
+import {storeToRefs} from 'pinia';
+import {useQuasar} from "quasar";
+
+const selected: Ref<string[]> = ref([]);
+const loading = ref(false);
+const { getDepartmentList, deleteDepartment } = useDepartmentStore();
+const { list: departments } = storeToRefs(useDepartmentStore());
+
+onMounted(async () => {
+  await reload();
+});
+
+const reload = async () => {
+  loading.value = true;
+  try {
+    await getDepartmentList();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+}
+
+const router = useRouter();
+const toCreatePage = () => {
+  router.push({ name: 'department-create' })
+}
+const toDetailPage = (id: string) => {
+  router.push({ name: 'department-detail', params: { id } })
+}
+const toEditPage = (id: string) => {
+  router.push({ name: 'department-edit', params: { id } })
+}
+const $q = useQuasar();
+const removeDepartment = (department: DepartmentInResponse) => {
+  $q.dialog({
+    title: '部署削除',
+    message: `部署「${department.name}」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!department.id) {
+      return;
+    }
+    try {
+      await deleteDepartment(department.id);
+    } catch (e) {
+      console.error(e);
+    }
+
+    await reload();
+  });
+}
+</script>
+
 <template>
   <q-page padding>
     <q-card bordered>
@@ -51,7 +112,7 @@
                   icon="sym_r_delete"
                   flat
                   dense
-                  @click="deleteDepartment(key)"
+                  @click="removeDepartment(node)"
                 />
               </div>
             </div>
@@ -61,54 +122,3 @@
     </q-card>
   </q-page>
 </template>
-
-<script setup lang="ts">
-import { DepartmentInResponse } from 'src/api';
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
-import { useDepartmentStore } from 'stores/department-store';
-
-export default defineComponent({
-  name: 'DepartmentListPage',
-  data() {
-    return {
-      loading: false,
-      selected: [],
-    }
-  },
-  async mounted() {
-    this.loading = true
-    try {
-      this.reset()
-      await this.getDepartmentList()
-    } catch (error) {
-      console.error(error)
-    } finally {
-      this.loading = false
-    }
-  },
-  methods: {
-    ...mapActions(useDepartmentStore, ['getDepartmentList', 'reset']),
-    toCreatePage() {
-      this.$router.push({ name: 'department-create' })
-    },
-    toDetailPage(id: string) {
-      this.$router.push({ name: 'department-detail', params: { id } })
-    },
-    toEditPage(id: string) {
-      this.$router.push({ name: 'department-edit', params: { id } })
-    },
-    deleteDepartment(id: string) {
-      console.log('delete ', id)
-    },
-  },
-  computed: {
-    ...mapState(useDepartmentStore, {
-      departments: 'list',
-    }),
-  },
-})
-</script>

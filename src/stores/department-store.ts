@@ -38,5 +38,22 @@ export const useDepartmentStore = defineStore('department', {
     async updateDepartment(id: string, data: DepartmentInRequest) {
       return await api.updateDepartment(data, id);
     },
+    async deleteDepartment(id: string) {
+      return await api.deleteDepartment(id);
+    },
   },
+  getters: {
+    flatteredDepartmentList: (state) => {
+      const result: DepartmentInResponse[] = [];
+      const flatten = (department: DepartmentInResponse) => {
+        result.push(_.omit(department, ['subDepartments']));
+        department.subDepartments?.forEach(flatten);
+      }
+      state.list.forEach(flatten);
+      if (state.formModel.id) {
+        _.remove(result, { id: state.formModel.id });
+      }
+      return result;
+    },
+  }
 });
