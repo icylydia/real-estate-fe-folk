@@ -2,8 +2,11 @@
 import { storeToRefs } from 'pinia';
 import { useExpenseStore } from 'stores/expense-store';
 import { usePayment } from 'src/utils/payment';
+import { toTypedSchema } from '@vee-validate/yup';
+import { Field, useForm } from 'vee-validate';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -15,7 +18,19 @@ defineProps({
 });
 
 const { formModel: expense } = storeToRefs(useExpenseStore());
+const initialValues: any = computed( () => {
+  if (props.newExpense) {
+    return {};
+  }
+  return expense.value;
+});
+const { validate } = useForm({
+  initialValues,
+});
 
+defineExpose({
+  validate,
+})
 const {
   expenseCategoryOptions: categoryOptions,
   paymentMethodOptions,

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { IncomeInRequest, IncomeInResponse } from 'src/api';
+import { IncomeDetailResponse, IncomeInRequest, IncomeInResponse } from 'src/api';
 import _ from 'lodash';
 import { api } from 'boot/api';
 
@@ -13,13 +13,14 @@ interface GetIncomeListRequest {
 }
 
 export type IncomeModel = Partial<
-  IncomeInRequest & IncomeInResponse
+  IncomeInRequest & IncomeInResponse & IncomeDetailResponse
 >
+const defaultFormModel: IncomeModel = {}
 export const useIncomeStore = defineStore('income', {
   state: () => ({
     searchParams: {} as GetIncomeListRequest,
     list: [] as IncomeInResponse[],
-    formModel: {} as IncomeModel,
+    formModel: defaultFormModel,
   }),
   actions: {
     reset() {
@@ -49,6 +50,15 @@ export const useIncomeStore = defineStore('income', {
     },
     async getIncome(id: string) {
       this.formModel = await api.getIncome(id);
-    }
+    },
+    async createIncome(data: IncomeInRequest) {
+      return await api.createIncome(data);
+    },
+    async updateIncome(id: string, data: IncomeInRequest) {
+      await api.updateIncome(data, id);
+    },
+    async deleteIncome(id: string) {
+      await api.deleteIncome(id);
+    },
   },
 });

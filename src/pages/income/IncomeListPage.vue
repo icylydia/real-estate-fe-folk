@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { QTableProps } from 'quasar';
+import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useIncomeStore } from 'stores/income-store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
@@ -8,6 +8,7 @@ import { IncomeInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 
 const loading = ref(false);
+const $q = useQuasar();
 
 const columns: QTableProps['columns'] = [
   {
@@ -54,8 +55,20 @@ const columns: QTableProps['columns'] = [
   },
 ];
 
-const { reset, getIncomeList } = useIncomeStore();
+const { reset, getIncomeList,deleteIncome } = useIncomeStore();
 const { list: rows, searchParams } = storeToRefs(useIncomeStore());
+
+const loadIncomes = async () => {
+  try {
+    loading.value = true;
+    reset();
+    await getIncomeList({});
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+};
 
 onMounted(async () => {
   try {
@@ -119,8 +132,26 @@ const toEdit = async (id: number) => {
   }
 };
 
-const remove = (id: number) => {
-  console.log(id);
+const remove = (income: IncomeInResponse) => {
+  console.log(income);
+  $q.dialog({
+    title: 'インカム削除',
+    message: `インカム「${income.title} 」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!income.id) {
+      return;
+    }
+    try {
+      await deleteIncome(income.id);
+    } catch (e) {
+      console.error(e);
+    }
+
+    await loadIncomes();
+  });
 };
 
 const {
@@ -210,11 +241,11 @@ const selectedRows = ref<IncomeInResponse[]>([]);
                   />
                 </q-td>
               </template>
-              <template #[`body-cell-actions`]="{ key }">
+              <template #[`body-cell-actions`]="{ key , row }">
                 <q-td class="text-right">
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="toDetail(key)" />
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="toEdit(key)" />
-                  <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(key)" />
+                  <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(row)" />
                 </q-td>
               </template>
             </q-table>

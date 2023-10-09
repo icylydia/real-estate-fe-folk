@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import ExpenseForm from 'components/payment/ExpenseForm.vue';
 import { onMounted, ref } from 'vue';
-import { useExpenseStore } from 'stores/expense-store';
+import { ExpenseModel,useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
+import { FormValidationResult } from 'vee-validate';
+import { storeToRefs } from 'pinia';
 
 const loading = ref(false);
 const router = useRouter();
 const route = useRoute();
 
 const expenseId = typeof route.params.id == 'string' ? route.params.id : '';
-const { getExpense } = useExpenseStore();
+const { getExpense, updateExpense } = useExpenseStore();
+const form = ref<InstanceType<typeof ExpenseForm>>();
+const { formModel: expense } = storeToRefs(useExpenseStore());
+
 
 onMounted(async () => {
   loading.value = true;
@@ -33,8 +38,19 @@ const cancel = async () => {
   }
 };
 const save = async () => {
+  const validation: FormValidationResult<any> = await form.value?.validate();
+  if (!validation.valid) {
+    return;
+  }
+  loading.value = true;
   try {
-    await router.push({
+      const data = validation.values;
+      const newExpense: ExpenseModel = {
+        ...expense.value,
+        ...data,
+      };
+      await updateExpense(expenseId, newExpense);
+      await router.push({
       name: 'expense-detail',
       params: { id: expenseId },
     });
@@ -49,7 +65,7 @@ const save = async () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <expense-form />
+        <expense-form ref="form"/>
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

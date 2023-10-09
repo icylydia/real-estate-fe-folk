@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { QTableProps } from 'quasar';
+import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useExpenseStore } from 'stores/expense-store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
@@ -8,6 +8,7 @@ import { ExpenseInResponse, IncomeInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 
 const loading = ref(false);
+const $q = useQuasar();
 
 const columns: QTableProps['columns'] = [
   {
@@ -47,9 +48,20 @@ const columns: QTableProps['columns'] = [
   },
 ];
 
-const { getExpenseList } = useExpenseStore();
+const { reset, getExpenseList,deleteExpense } = useExpenseStore();
 const { list: rows, searchParams } = storeToRefs(useExpenseStore());
 
+const loadExpenses = async () => {
+  try {
+    loading.value = true;
+    reset();
+    await getExpenseList({});
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+};
 onMounted(async () => {
   try {
     loading.value = true;
@@ -110,8 +122,26 @@ const toEdit = async (id: number) => {
   }
 };
 
-const remove = (id: number) => {
-  console.log(id);
+const remove = (expense: ExpenseInResponse) => {
+  console.log(expense.id);
+  $q.dialog({
+    title: 'エクスペンス 削除',
+    message: `エクスペンス「${expense.title} 」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!expense.id) {
+      return;
+    }
+    try {
+      await deleteExpense(expense.id);
+    } catch (e) {
+      console.error(e);
+    }
+
+    await loadExpenses();
+  });
 };
 
 const { describeCategory: describeExpenseCategory } = usePayment();
@@ -177,11 +207,11 @@ const { describeCategory: describeExpenseCategory } = usePayment();
                   {{ $filters.jpyCurrency(row.amount) }}
                 </q-td>
               </template>
-              <template #[`body-cell-actions`]="{ key }">
+              <template #[`body-cell-actions`]="{ key , row }">
                 <q-td class="text-right">
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="toDetail(key)" />
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="toEdit(key)" />
-                  <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(key)" />
+                  <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(row)" />
                 </q-td>
               </template>
             </q-table>

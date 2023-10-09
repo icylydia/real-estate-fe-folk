@@ -1,15 +1,38 @@
 <script setup lang="ts">
 import IncomeForm from 'components/payment/IncomeForm.vue';
-import { useRouter } from 'vue-router';
-
+import { useRouter,useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { IncomeModel, useIncomeStore } from 'stores/income-store';
+import { FormValidationResult } from 'vee-validate';
+import { storeToRefs } from 'pinia';
 const router = useRouter();
+const route = useRoute();
+
+const loading = ref(false);
+
+const { createIncome } = useIncomeStore();
+
+const form = ref<InstanceType<typeof IncomeForm>>();
+//const { formModel: income } = storeToRefs(useIncomeStore());
+
+//const incomeId = typeof route.params.id == 'string' ? route.params.id : '';
+
 const save = async () => {
+  const validation: FormValidationResult<any> = await form.value?.validate();
+  if (!validation.valid) {
+    return;
+  }
+  loading.value = true;
   try {
+    const data = validation.values;
+    const newIncome= await createIncome(data);
     await router.push({
       name: 'income-list',
     });
   } catch (error) {
     console.log(error);
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -23,7 +46,7 @@ const save = async () => {
         </q-card-section>
         <q-separator></q-separator>
         <q-card-section>
-          <income-form new-income />
+          <income-form new-income ref="form" />
         </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">

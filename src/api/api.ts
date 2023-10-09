@@ -1185,6 +1185,8 @@ export interface ExpenseDetailResponse extends ExpenseInResponse {
  */
 export interface ExpenseInRequest extends ExpenseBase {
 }
+export namespace ExpenseInRequest {
+}
 /**
  *
  * @export
@@ -1245,6 +1247,8 @@ export namespace IncomeDetailResponse {
  * @interface IncomeInRequest
  */
 export interface IncomeInRequest extends IncomeBase {
+}
+export namespace IncomeInRequest {
 }
 /**
  *
@@ -2415,7 +2419,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       }
       const localVarPath = `/income`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 

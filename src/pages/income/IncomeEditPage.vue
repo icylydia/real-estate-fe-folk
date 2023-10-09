@@ -2,10 +2,19 @@
 import IncomeForm from 'components/payment/IncomeForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import { useIncomeStore } from 'stores/income-store';
+import { IncomeModel, useIncomeStore } from 'stores/income-store';
+import { FormValidationResult } from 'vee-validate';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
 const route = useRoute();
+
+const loading = ref(false);
+
+const { getIncome,updateIncome } = useIncomeStore();
+
+const form = ref<InstanceType<typeof IncomeForm>>();
+const { formModel: income } = storeToRefs(useIncomeStore());
 
 const incomeId = typeof route.params.id == 'string' ? route.params.id : '';
 const cancel = async () => {
@@ -19,19 +28,30 @@ const cancel = async () => {
   }
 };
 const save = async () => {
+  const validation: FormValidationResult<any> = await form.value?.validate();
+  if (!validation.valid) {
+    return;
+  }
+  loading.value = true;
   try {
+    const data = validation.values;
+    const newIncome: IncomeModel = {
+      ...income.value,
+      ...data,
+    };
+    await updateIncome(incomeId, newIncome);
     await router.push({
       name: 'income-detail',
       params: { id: incomeId },
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+  } finally {
+    loading.value = false;
   }
+  
 };
 
-const loading = ref(false);
-
-const { getIncome } = useIncomeStore();
 
 onMounted(async () => {
   loading.value = true;
@@ -50,7 +70,7 @@ onMounted(async () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <income-form />
+        <income-form ref="form"/>
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

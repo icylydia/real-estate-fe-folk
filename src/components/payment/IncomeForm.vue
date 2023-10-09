@@ -4,8 +4,11 @@ import { useIncomeStore } from 'stores/income-store';
 import { usePayment } from 'src/utils/payment';
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
 import { PaymentBase } from 'src/api';
+import { toTypedSchema } from '@vee-validate/yup';
+import { Field, useForm } from 'vee-validate';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -17,6 +20,20 @@ defineProps({
 });
 
 const { formModel: income } = storeToRefs(useIncomeStore());
+
+const initialValues: any = computed( () => {
+  if (props.newIncome) {
+    return {};
+  }
+  return income.value;
+});
+const { validate } = useForm({
+  initialValues,
+});
+
+defineExpose({
+  validate,
+})
 
 const {
   incomeCategoryOptions: categoryOptions,

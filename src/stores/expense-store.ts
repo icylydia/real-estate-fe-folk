@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ExpenseInRequest, ExpenseInResponse } from 'src/api';
+import { ExpenseDetailResponse, ExpenseInRequest, ExpenseInResponse } from 'src/api';
 import _ from 'lodash';
 import { api } from 'boot/api';
 
@@ -12,14 +12,15 @@ interface GetExpenseListRequest {
 }
 
 export type ExpenseModel = Partial<
-  ExpenseInRequest & ExpenseInResponse
+  ExpenseInRequest & ExpenseInResponse  & ExpenseDetailResponse
 >
+const defaultFormModel: ExpenseModel = {}
 
 export const useExpenseStore = defineStore('expense', {
   state: () => ({
     searchParams: {} as GetExpenseListRequest,
     list: [] as ExpenseInResponse[],
-    formModel: {} as ExpenseModel,
+    formModel: defaultFormModel,
   }),
   actions: {
     reset() {
@@ -45,6 +46,15 @@ export const useExpenseStore = defineStore('expense', {
     async getExpense(id: string) {
       this.reset();
       this.formModel = await api.getExpense(id);
+    },
+    async createExpense(data: ExpenseInRequest) {
+      return await api.createExpense(data);
+    },
+    async updateExpense(id: string, data: ExpenseInRequest) {
+      await api.updateExpense(data, id);
+    },
+    async deleteExpense(id: string) {
+      await api.deleteExpense(id);
     },
   },
 });

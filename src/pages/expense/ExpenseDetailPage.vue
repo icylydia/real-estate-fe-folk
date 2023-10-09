@@ -3,9 +3,13 @@ import ExpenseForm from 'components/payment/ExpenseForm.vue';
 import { onMounted, ref } from 'vue';
 import { useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { ExpenseInResponse } from 'src/api';
 
 const loading = ref(false);
 const { getExpense } = useExpenseStore();
+
+const { formModel: expense } = storeToRefs(useExpenseStore());
 const router = useRouter();
 const route = useRoute();
 const expenseId = typeof route.params.id == 'string' ? route.params.id : '';
