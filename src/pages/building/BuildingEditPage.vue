@@ -1,3 +1,43 @@
+<script setup lang="ts">
+import BuildingForm from 'components/building/BuildingForm.vue';
+import { useRoute, useRouter } from 'vue-router';
+import useErrorHandler from 'components/app/useErrorHandler';
+import { computed } from 'vue';
+import { useBuildingStore } from 'stores/building-store';
+import { storeToRefs } from 'pinia';
+
+const router = useRouter();
+const route = useRoute();
+const { toastHandler } = useErrorHandler();
+const {
+  updateBuilding: callApi,
+} = useBuildingStore();
+const {
+  formModel: building,
+} = storeToRefs(useBuildingStore());
+
+const buildingId = computed(() => {
+  const id = route.params.id;
+  if (typeof id != 'string') {
+    throw new Error('Invalid building id');
+  }
+  return id;
+});
+
+const onSave = async () => {
+  try {
+    await callApi(buildingId.value, building.value);
+  } catch (e) {
+    toastHandler(e);
+  }
+  await router.push({ name: 'building-list' });
+};
+
+const onCancel = async () => {
+  await router.push({ name: 'building-list' });
+};
+</script>
+
 <template>
   <q-page padding>
     <q-card bordered>
@@ -10,55 +50,15 @@
           style="width: 100px"
           color="negative"
           label="取消"
-          @click="cancel"
+          @click="onCancel"
         />
         <q-btn
           style="width: 100px"
           color="primary"
           label="保存"
-          @click="save"
+          @click="onSave"
         />
       </q-card-actions>
     </q-card>
   </q-page>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import BuildingForm from 'components/building/BuildingForm.vue';
-import { mapActions, mapState } from 'pinia';
-import { useBuildingStore } from 'stores/building-store';
-
-export default defineComponent({
-  name: 'BuildingEditPage',
-  components: { BuildingForm },
-  async mounted() {
-    try {
-      await this.getBuildingDetail(this.buildingId);
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  methods: {
-    ...mapActions(useBuildingStore, ['getBuildingDetail']),
-    save() {
-      this.$router.push({ name: 'building-detail', params: { id: this.buildingId } });
-    },
-    cancel() {
-      this.$router.push({ name: 'building-detail', params: { id: this.buildingId } });
-    },
-  },
-  computed: {
-    ...mapState(useBuildingStore, {
-      building: 'formModel',
-    }),
-    buildingId() {
-      const id = this.$route.params.id;
-      if (typeof id != 'string') {
-        throw new Error('Invalid building id');
-      }
-      return id;
-    },
-  }
-});
-</script>

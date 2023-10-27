@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { BuildingInResponse } from 'src/api';
-import { QTable, QTableProps } from 'quasar';
+import { QTable, QTableProps, useQuasar } from 'quasar';
 import { computed, onMounted, Ref, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useBuildingStore } from 'stores/building-store';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const columns: QTableProps['columns'] = [
   {
@@ -68,7 +69,7 @@ onMounted(async () => {
   tableRef.value?.requestServerInteraction();
 });
 
-const { getBuildingList } = useBuildingStore();
+const { getBuildingList, deleteBuilding } = useBuildingStore();
 const { searchParams, list: rows } = storeToRefs(useBuildingStore());
 
 const search = async () => {
@@ -117,8 +118,27 @@ const edit = (key: string) => {
   router.push({ name: 'building-edit', params: { id: key } })
 };
 
-const remove = (rowIndex: number) => {
-  console.log('remove', rowIndex)
+const $q = useQuasar();
+const { toastHandler } = useErrorHandler();
+const remove = async (building: BuildingInResponse) => {
+  $q.dialog({
+    title: '物件削除',
+    message: `物件「${building.name}」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!building.id) {
+      return;
+    }
+    try {
+      await deleteBuilding(building.id);
+    } catch (e) {
+      toastHandler(new Error('削除に失敗しました。'));
+    }
+
+    tableRef.value?.requestServerInteraction();
+  });
 };
 </script>
 
@@ -180,11 +200,11 @@ const remove = (rowIndex: number) => {
                   {{ row.address.prefecture }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
                 </q-td>
               </template>
-              <template #[`body-cell-actions`]="{ key }">
+              <template #[`body-cell-actions`]="{ key, row }: { row: BuildingInResponse }">
                 <q-td class="text-right">
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="detail(key)" />
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="edit(key)" />
-                  <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(key)" />
+                  <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(row)" />
                 </q-td>
               </template>
             </q-table>

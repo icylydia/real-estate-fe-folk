@@ -80,8 +80,16 @@ export const useBuildingStore = defineStore('building', {
       this.formModel = await api.getBuilding(id);
     },
 
-    callCreateBuildingApi() {
+    createBuilding() {
       return api.createBuilding(this.formModel)
+    },
+
+    updateBuilding(id: string, data: BuildingInRequest) {
+      return api.updateBuilding(data, id);
+    },
+
+    deleteBuilding(id: string) {
+      return api.deleteBuilding(id);
     },
 
     validatePostalCode() {

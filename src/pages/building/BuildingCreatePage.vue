@@ -7,7 +7,7 @@ import useErrorHandler from 'components/app/useErrorHandler';
 
 const {
   resetFormModel,
-  callCreateBuildingApi: callApi,
+  createBuilding: callApi,
 } = useBuildingStore();
 
 const {
