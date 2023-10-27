@@ -14,6 +14,7 @@ interface ImportMetaEnv{
   readonly VITE_APP_NAME: string
   readonly VITE_APP_VERSION: string
   readonly VITE_APP_API_URL: string
+  readonly VITE_APP_DEFAULT_MAIN_PHOTO: string
 }
 
 interface ImportMeta {

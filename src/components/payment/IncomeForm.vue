@@ -4,8 +4,7 @@ import { useIncomeStore } from 'stores/income-store';
 import { usePayment } from 'src/utils/payment';
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
 import { PaymentBase } from 'src/api';
-import { toTypedSchema } from '@vee-validate/yup';
-import { Field, useForm } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import { computed } from 'vue';
 
 const props = defineProps({

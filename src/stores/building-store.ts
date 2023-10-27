@@ -47,6 +47,10 @@ export const useBuildingStore = defineStore('building', {
       this.formModel = defaultFormModel;
     },
 
+    resetFormModel() {
+      this.formModel = defaultFormModel;
+    },
+
     resetRegularExpenseModel() {
       this.regularExpenseModel = {} as RegularExpenseBase;
     },
@@ -107,6 +111,5 @@ export const useBuildingStore = defineStore('building', {
         ...addressExceptPostalCode,
       }
     },
-
   },
 });

@@ -2,8 +2,30 @@ import { boot } from 'quasar/wrappers';
 import { inject } from 'vue';
 import { getToken } from 'src/auth';
 import { DefaultApi, Configuration } from 'src/api';
+import axios from 'axios';
 
-type ApiType = DefaultApi;
+export interface UploadMainPhotoResponse {
+  url: string;
+  relativePath: string;
+  name: string;
+}
+
+class CustomAPI extends DefaultApi {
+  public uploadMainPhoto = async (file: File): Promise<UploadMainPhotoResponse> => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`;
+    const url = `${this.configuration.basePath}/file/upload-main-photo`;
+    const formData = new FormData();
+    formData.append('file', file);
+    const resp = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return resp.data as UploadMainPhotoResponse;
+  }
+}
+
+type ApiType = CustomAPI;
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -16,7 +38,7 @@ const apiConfig = new Configuration({
   basePath: import.meta.env.VITE_APP_API_URL,
 });
 
-const api: ApiType = new DefaultApi(apiConfig, import.meta.env.VITE_APP_API_URL, fetch);
+const api: ApiType = new CustomAPI(apiConfig, import.meta.env.VITE_APP_API_URL, fetch);
 
 const API_KEY = 'API_KEY';
 

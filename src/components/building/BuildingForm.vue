@@ -1,3 +1,230 @@
+<script lang="ts" setup>
+import QInputCurrency from 'components/extension/QInputCurrency.vue';
+import QInputArea from 'components/extension/QInputArea.vue';
+import { QTableProps, useQuasar } from 'quasar';
+import { RegularExpenseBase } from 'src/api';
+import { storeToRefs } from 'pinia';
+import { computed, onMounted, ref } from 'vue';
+import RegularExpenseDialog from 'components/building/RegularExpenseDialog.vue';
+import _ from 'lodash';
+import { useFileStore } from 'stores/file-store';
+import { useBuildingStore } from 'stores/building-store';
+
+const props = defineProps({
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  newBuilding: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const { formModel: building } = storeToRefs(useBuildingStore());
+const mainPhotoName = computed(() => {
+  if (building.value.image) {
+    const fullUrl = new URL(building.value.image);
+    return fullUrl.pathname.split('/').pop();
+  }
+  return '';
+});
+
+const buildingStructureOptions = [
+  {
+    label: '木造(W)',
+    value: 'wood',
+  },
+  {
+    label: '鉄骨造(S)',
+    value: 'steel',
+  },
+  {
+    label: '鉄筋コンクリート造(RC)',
+    value: 'reinforcedConcrete',
+  },
+  {
+    label: '鉄筋鉄骨コンクリート造(SRC)',
+    value: 'steelReinforcedConcrete',
+  },
+];
+
+const landRightsOptions = [
+  {
+    label: '所有権',
+    value: 'freehold',
+  },
+  {
+    label: '借地権',
+    value: 'leasehold',
+  }
+]
+
+const landUseZoneOptions = [
+  {
+    label: '第一種低層住居専用地域',
+    value: 'lowRiseResidential1',
+  },
+  {
+    label: '第二種低層住居専用地域',
+    value: 'lowRiseResidential2',
+  },
+  {
+    label: '第一種中高層住居専用地域',
+    value: 'mediumHighRiseResidential1',
+  },
+  {
+    label: '第二種中高層住居専用地域',
+    value: 'mediumHighRiseResidential2',
+  },
+  {
+    label: '第一種住居地域',
+    value: 'residential1',
+  },
+  {
+    label: '第二種住居地域',
+    value: 'residential2',
+  },
+  {
+    label: '準住居地域',
+    value: 'quasiResidential',
+  },
+  {
+    label: '田園住居地域',
+    value: 'ruralResidential',
+  },
+  {
+    label: '近隣商業地域',
+    value: 'neighborhoodCommercial',
+  },
+  {
+    label: '商業地域',
+    value: 'commercial',
+  },
+  {
+    label: '準工業地域',
+    value: 'quasiIndustrial',
+  },
+  {
+    label: '工業地域',
+    value: 'industrial',
+  },
+]
+
+const regularExpenseColumns: QTableProps['columns'] = (() => {
+  let columns: QTableProps['columns'] = [
+    {
+      name: 'name',
+      label: '項目',
+      field: 'name',
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'months',
+      label: '月',
+      field: 'months',
+      align: 'left',
+      sortable: false,
+    },
+  ];
+  if (!props.readonly) {
+    columns.push({
+      name: 'actions',
+      label: '操作',
+      field: 'actions',
+      align: 'right',
+      sortable: false,
+    });
+  }
+  return columns;
+})()
+
+const { regularExpenseModel: regularExpense } = storeToRefs(useBuildingStore());
+const { resetRegularExpenseModel } = useBuildingStore();
+const showDialog = ref(false);
+const dialogMode = ref<'add' | 'edit'>('add');
+const editingIndex = ref<number | null>(null);
+
+const showAddingDialog = () => {
+  resetRegularExpenseModel();
+  dialogMode.value = 'add';
+  showDialog.value = true;
+}
+
+const handleDialogSubmit = (regularExpense: RegularExpenseBase) => {
+  if (dialogMode.value === 'add') {
+    building.value.regularExpenses?.push(regularExpense);
+  } else {
+    const index = editingIndex.value;
+    if (index === null) {
+      return;
+    }
+    building.value.regularExpenses?.splice(index, 1, regularExpense);
+  }
+}
+
+const removeRegularExpense = (index: number) => {
+  building.value.regularExpenses?.splice(index, 1);
+}
+
+const editRegularExpense = (index: number) => {
+  const model = building.value.regularExpenses?.[index];
+  if (!model) {
+    return;
+  }
+  editingIndex.value = index;
+  regularExpense.value = _.cloneDeep(model);
+  dialogMode.value = 'edit';
+  showDialog.value = true;
+}
+
+const $q = useQuasar();
+const {
+  validatePostalCode,
+  updateAddressFromPostalCode,
+} = useBuildingStore();
+const {
+  defaultMainPhotoUrl,
+} = storeToRefs(useFileStore());
+
+onMounted(() => {
+  console.log('mounted');
+  console.log(defaultMainPhotoUrl.value);
+});
+
+const searchAddress = async () => {
+  if (!validatePostalCode()) {
+    $q.notify({
+      type: 'negative',
+      message: '郵便番号は不正です',
+    });
+    return;
+  }
+  try {
+    await updateAddressFromPostalCode();
+  } catch (e) {
+    //
+  }
+};
+
+const { uploadMainPhoto } = useFileStore();
+const mainPhoto = ref<File|null>( null);
+const uploadingPhoto = ref(false);
+const onMainPhotoChange = async (file: File) => {
+  uploadingPhoto.value = true;
+  mainPhoto.value = file;
+  try {
+    const resp = await uploadMainPhoto(mainPhoto.value);
+    building.value.image = resp.url;
+  } catch (e) {
+    //
+  } finally {
+    uploadingPhoto.value = false;
+  }
+}
+</script>
+
 <template>
   <div class="text-h6">
     物件基本情報{{ readonly ? '（閲覧）' : '（編集）' }}
@@ -6,6 +233,32 @@
     <q-item class="col-12" v-if="!newBuilding">
       <q-item-section>
         <q-input v-model="building.id" label="物件ID" readonly />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-12">
+      <q-item-section>
+        <q-img
+          ratio="1.6"
+          height="200px"
+          width="320px"
+          :src="building.image || defaultMainPhotoUrl"
+        />
+      </q-item-section>
+    </q-item>
+    <q-item class="col-12">
+      <q-item-section>
+        <q-file
+          label="物件画像"
+          accept="image/*"
+          :readonly="readonly"
+          :loading="uploadingPhoto"
+          @update:model-value="onMainPhotoChange"
+          :display-value="mainPhotoName"
+        >
+          <template #prepend>
+            <q-icon name="sym_r_photo" />
+          </template>
+        </q-file>
       </q-item-section>
     </q-item>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -210,204 +463,3 @@
     @submit="handleDialogSubmit"
   />
 </template>
-
-<script lang="ts" setup>
-import QInputCurrency from 'components/extension/QInputCurrency.vue';
-import QInputArea from 'components/extension/QInputArea.vue';
-import { QTableProps } from 'quasar';
-import { RegularExpenseBase } from 'src/api';
-import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
-import RegularExpenseDialog from 'components/building/RegularExpenseDialog.vue';
-import _ from 'lodash';
-
-const props = defineProps({
-  readonly: {
-    type: Boolean,
-    default: false,
-  },
-  newBuilding: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const { formModel: building } = storeToRefs(useBuildingStore());
-
-const buildingStructureOptions = [
-  {
-    label: '木造(W)',
-    value: 'wood',
-  },
-  {
-    label: '鉄骨造(S)',
-    value: 'steel',
-  },
-  {
-    label: '鉄筋コンクリート造(RC)',
-    value: 'reinforcedConcrete',
-  },
-  {
-    label: '鉄筋鉄骨コンクリート造(SRC)',
-    value: 'steelReinforcedConcrete',
-  },
-];
-
-const landRightsOptions = [
-  {
-    label: '所有権',
-    value: 'freehold',
-  },
-  {
-    label: '借地権',
-    value: 'leasehold',
-  }
-]
-
-const landUseZoneOptions = [
-  {
-    label: '第一種低層住居専用地域',
-    value: 'lowRiseResidential1',
-  },
-  {
-    label: '第二種低層住居専用地域',
-    value: 'lowRiseResidential2',
-  },
-  {
-    label: '第一種中高層住居専用地域',
-    value: 'mediumHighRiseResidential1',
-  },
-  {
-    label: '第二種中高層住居専用地域',
-    value: 'mediumHighRiseResidential2',
-  },
-  {
-    label: '第一種住居地域',
-    value: 'residential1',
-  },
-  {
-    label: '第二種住居地域',
-    value: 'residential2',
-  },
-  {
-    label: '準住居地域',
-    value: 'quasiResidential',
-  },
-  {
-    label: '田園住居地域',
-    value: 'ruralResidential',
-  },
-  {
-    label: '近隣商業地域',
-    value: 'neighborhoodCommercial',
-  },
-  {
-    label: '商業地域',
-    value: 'commercial',
-  },
-  {
-    label: '準工業地域',
-    value: 'quasiIndustrial',
-  },
-  {
-    label: '工業地域',
-    value: 'industrial',
-  },
-]
-
-const regularExpenseColumns: QTableProps['columns'] = (() => {
-  let columns: QTableProps['columns'] = [
-    {
-      name: 'name',
-      label: '項目',
-      field: 'name',
-      align: 'left',
-      sortable: false,
-    },
-    {
-      name: 'months',
-      label: '月',
-      field: 'months',
-      align: 'left',
-      sortable: false,
-    },
-  ];
-  if (!props.readonly) {
-    columns.push({
-      name: 'actions',
-      label: '操作',
-      field: 'actions',
-      align: 'right',
-      sortable: false,
-    });
-  }
-  return columns;
-})()
-
-const { regularExpenseModel: regularExpense } = storeToRefs(useBuildingStore());
-const { resetRegularExpenseModel } = useBuildingStore();
-const showDialog = ref(false);
-const dialogMode = ref<'add' | 'edit'>('add');
-const editingIndex = ref<number | null>(null);
-
-const showAddingDialog = () => {
-  resetRegularExpenseModel();
-  dialogMode.value = 'add';
-  showDialog.value = true;
-}
-
-const handleDialogSubmit = (regularExpense: RegularExpenseBase) => {
-  if (dialogMode.value === 'add') {
-    building.value.regularExpenses?.push(regularExpense);
-  } else {
-    const index = editingIndex.value;
-    if (index === null) {
-      return;
-    }
-    building.value.regularExpenses?.splice(index, 1, regularExpense);
-  }
-}
-
-const removeRegularExpense = (index: number) => {
-  building.value.regularExpenses?.splice(index, 1);
-}
-
-const editRegularExpense = (index: number) => {
-  const model = building.value.regularExpenses?.[index];
-  if (!model) {
-    return;
-  }
-  editingIndex.value = index;
-  regularExpense.value = _.cloneDeep(model);
-  dialogMode.value = 'edit';
-  showDialog.value = true;
-}
-</script>
-
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions } from 'pinia';
-import { useBuildingStore } from 'stores/building-store';
-
-export default defineComponent({
-  name: 'BuildingForm',
-  methods: {
-    ...mapActions(useBuildingStore, ['validatePostalCode', 'updateAddressFromPostalCode']),
-    async searchAddress() {
-      if (!this.validatePostalCode()) {
-        this.$q.notify({
-          type: 'negative',
-          message: '郵便番号は不正です',
-        });
-        return;
-      }
-      try {
-        await this.updateAddressFromPostalCode();
-      } catch (e) {
-        //
-      }
-    },
-  },
-});
-</script>

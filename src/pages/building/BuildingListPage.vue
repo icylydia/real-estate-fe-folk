@@ -136,7 +136,7 @@ const remove = (rowIndex: number) => {
             <q-input
               v-model="searchParams.location"
               label="所在地"
-              placeholder="地名、駅など"
+              hint="地名、駅など"
             />
           </q-card-section>
           <q-card-actions>
