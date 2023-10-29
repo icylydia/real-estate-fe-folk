@@ -1,21 +1,37 @@
 <script setup lang="ts">
 import TenantForm from 'components/tenant/TenantForm.vue';
 import { useRouter } from 'vue-router';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useTenantStore } from 'stores/tenant-store';
-import { storeToRefs } from 'pinia';
+import { FormValidationResult } from 'vee-validate';
+
+const loading = ref(false);
+const form = ref<InstanceType<typeof TenantForm>>();
 
 const router = useRouter();
 
 const save = async () => {
-  await router.push({ name: 'tenant-list' });
+  const validation: FormValidationResult<any> = await form.value?.validate();
+  if (!validation.valid) {
+    return;
+  }
+  loading.value = true;
+  try {
+    const data = validation.values;
+    const newTenant = await useTenantStore().createTenant(data);
+    await router.push({
+      name: 'tenant-detail',
+      params: { id: newTenant.id }
+    });
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
 };
 
-const { reset } = useTenantStore();
-const { formModel } = storeToRefs(useTenantStore());
 onMounted(() => {
-  reset();
-  formModel.value.emergencyContact = {};
+  useTenantStore().resetFormModel();
 });
 </script>
 
@@ -28,8 +44,9 @@ onMounted(() => {
         </q-card-section>
       </q-form>
       <q-separator></q-separator>
+      <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <tenant-form new-tenant />
+        <tenant-form new-tenant ref="form" />
       </q-card-section>
       <q-separator></q-separator>
       <q-card-actions align="right">

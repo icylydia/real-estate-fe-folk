@@ -197,7 +197,7 @@ const remove = async (building: BuildingInResponse) => {
               </template>
               <template #[`body-cell-address`]="{ row }: { row: BuildingInResponse }">
                 <q-td>
-                  {{ row.address.prefecture }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
+                  {{ row.address.prefectureName }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
                 </q-td>
               </template>
               <template #[`body-cell-actions`]="{ key, row }: { row: BuildingInResponse }">

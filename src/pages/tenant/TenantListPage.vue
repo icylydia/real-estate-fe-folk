@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, Ref, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useTenantStore } from 'stores/tenant-store';
 import { TenantInResponse } from 'src/api';
 import { useRouter } from 'vue-router';
-import { QTableProps } from 'quasar';
+import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useGender } from 'src/utils/gender';
 
 const loading = ref(false);
 
-const loadTenants = async () => {
-  loading.value = true;
+const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
   try {
-    resetTenantList()
-    await getTenantList();
+    loading.value = true;
+    const { page, rowsPerPage } = _pagination;
+    const pageMeta = await useTenantStore().getTenantList(rowsPerPage, page, searchText.value ?? null);
+    pagination.value = {
+      sortBy: undefined,
+      descending: false,
+      page: pageMeta.currentPage ?? 1,
+      rowsPerPage: pageMeta.itemsPerPage ?? 10,
+      rowsNumber: pageMeta.total ?? 0,
+    };
   } catch (e) {
     console.error(e);
   } finally {
@@ -22,11 +29,10 @@ const loadTenants = async () => {
 };
 
 onMounted(async () => {
-  await loadTenants();
+  tableRef.value?.requestServerInteraction();
 });
 
 const { tenantList: tenants } = storeToRefs(useTenantStore());
-const { getTenantList, reset: resetTenantList } = useTenantStore();
 
 const columns: QTableProps['columns'] = [
   {
@@ -82,6 +88,29 @@ const editTenant = (key: string) => {
   });
 };
 
+const $q = useQuasar();
+
+const removeTenant = (tenant: TenantInResponse) => {
+  $q.dialog({
+    title: '入居者削除',
+    message: `入居者「${tenant.lastName} ${tenant.firstName}」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!tenant.id) {
+      return;
+    }
+    try {
+      await useTenantStore().deleteTenant(tenant.id);
+    } catch (e) {
+      console.error(e);
+    }
+
+    tableRef.value?.requestServerInteraction();
+  });
+}
+
 const newTenant = () => {
   router.push({
     name: 'tenant-create',
@@ -90,10 +119,38 @@ const newTenant = () => {
 
 const searchText = ref('');
 const search = async () => {
-  await loadTenants()
+  tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
 
 const { describe: describeGender } = useGender();
+
+type Pagination = {
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  rowsPerPage?: number;
+  rowsNumber?: number;
+};
+
+const pagination: Ref<Pagination> = ref({
+  sortBy: undefined,
+  descending: false,
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: 0,
+});
+
+const paginationMax = computed(() => {
+  if (!pagination.value.rowsPerPage || !pagination.value.rowsNumber) {
+    return 0;
+  }
+  return Math.ceil(pagination.value.rowsNumber / pagination.value.rowsPerPage)
+});
+
+const tableRef = ref<QTable | null>(null);
+const onPageChange = async () => {
+  tableRef.value?.requestServerInteraction({ pagination: pagination.value });
+};
 </script>
 
 <template>
@@ -107,6 +164,10 @@ const { describe: describeGender } = useGender();
           :columns="columns"
           row-key="id"
           :loading="loading"
+          hide-pagination
+          v-model:pagination="pagination"
+          @request="onRequest"
+          ref="tableRef"
         >
           <template #top-right>
             <q-input
@@ -145,13 +206,23 @@ const { describe: describeGender } = useGender();
               {{ describeGender(row.gender) }}
             </q-td>
           </template>
-          <template #[`body-cell-actions`]="{ key }">
+          <template #[`body-cell-actions`]="{ key, row }: { key: string, row: TenantInResponse }">
             <q-td class="text-right">
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="tenantDetail(key)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editTenant(key)" />
+              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeTenant(row)" />
             </q-td>
           </template>
         </q-table>
+        <div class="row justify-center q-my-md">
+          <q-pagination
+            v-model="pagination.page"
+            color="primary"
+            :max="paginationMax"
+            max-pages="9"
+            @update:model-value="onPageChange"
+          />
+        </div>
       </q-card-section>
     </q-card>
   </q-page>

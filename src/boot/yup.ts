@@ -15,3 +15,11 @@ yup.addMethod(yup.string, 'birthday', function () {
       '生年月日の形式が正しくありません。',
       );
 });
+
+yup.addMethod(yup.string, 'postalCode', function () {
+  return this
+    .matches(
+      /^\d{3}-?\d{4}$/,
+      '郵便番号の形式が正しくありません。',
+      );
+});

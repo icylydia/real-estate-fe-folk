@@ -12,5 +12,6 @@ declare module 'yup' {
   > extends yup.StringSchema<TType, TContext, TDefault, TFlags> {
     phone(): StringSchema;
     birthday(): StringSchema;
+    postalCode(): StringSchema;
   }
 }

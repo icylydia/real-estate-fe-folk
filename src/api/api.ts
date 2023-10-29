@@ -231,7 +231,7 @@ export interface AddressInResponse extends AddressBase {
    * @type {string}
    * @memberof AddressInResponse
    */
-  prefecture?: string;
+  prefectureName?: string;
 }
 /**
  * 登录信息
@@ -259,19 +259,19 @@ export interface AuthLoginBody {
  */
 export interface BuildingBase {
   /**
-   * 建筑名称
+   * 建筑名称/物件名
    * @type {string}
    * @memberof BuildingBase
    */
   name?: string;
   /**
-   * 建筑图片
+   * 建筑图片/物件写真
    * @type {string}
    * @memberof BuildingBase
    */
   image?: string;
   /**
-   * 建筑价格
+   * 建筑价格/物件価格
    * @type {number}
    * @memberof BuildingBase
    */
@@ -325,13 +325,13 @@ export interface BuildingBase {
    */
   totalUnits?: number;
   /**
-   * 土地权利 - `freehold`: 所有権 - `leasehold`: 借地権
+   * 土地权利/土地権利 - `freehold`: 所有権 - `leasehold`: 借地権
    * @type {string}
    * @memberof BuildingBase
    */
   landRights?: BuildingBase.LandRightsEnum;
   /**
-   * 土地用途区域 - `lowRiseResidential1`: 第一種低層住居専用地域 - `lowRiseResidential2`: 第二種低層住居専用地域 - `mediumHighRiseResidential1`: 第一種中高層住居専用地域 - `mediumHighRiseResidential2`: 第二種中高層住居専用地域 - `residential1`: 第一種住居地域 - `residential2`: 第二種住居地域 - `quasiResidential`: 準住居地域 - `ruralResidential`: 田園住居地域 - `neighborhoodCommercial`: 近隣商業地域 - `commercial`: 商業地域 - `quasiIndustrial`: 準工業地域 - `industrial`: 工業地域
+   * 土地用途区域/用途地域 - `lowRiseResidential1`: 第一種低層住居専用地域 - `lowRiseResidential2`: 第二種低層住居専用地域 - `mediumHighRiseResidential1`: 第一種中高層住居専用地域 - `mediumHighRiseResidential2`: 第二種中高層住居専用地域 - `residential1`: 第一種住居地域 - `residential2`: 第二種住居地域 - `quasiResidential`: 準住居地域 - `ruralResidential`: 田園住居地域 - `neighborhoodCommercial`: 近隣商業地域 - `commercial`: 商業地域 - `quasiIndustrial`: 準工業地域 - `industrial`: 工業地域
    * @type {string}
    * @memberof BuildingBase
    */
@@ -349,7 +349,7 @@ export interface BuildingBase {
    */
   floorAreaRatio?: number;
   /**
-   * 提示更新/催促期間（N月前）
+   * 提示更新（N月前）/催促期間（N月前）
    * @type {number}
    * @memberof BuildingBase
    */

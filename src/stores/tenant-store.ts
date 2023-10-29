@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
-import { AddressInResponse, TenantDetailResponse, TenantInRequest, TenantInResponse } from 'src/api';
+import {
+  AddressInResponse,
+  PaginationResponsePagination,
+  TenantDetailResponse,
+  TenantInRequest,
+  TenantInResponse
+} from 'src/api';
 
 export type TenantFormModel = Partial<
   TenantInRequest & TenantInResponse & TenantDetailResponse
@@ -22,41 +28,29 @@ export const useTenantStore = defineStore('tenant', {
     formModel: defaultFormModel,
   }),
   actions: {
-    async getTenantList() {
-      const resp = await api.getTenants();
-      this.tenantList = resp.items ?? [];
-    },
-    async getTenant(id: string) {
-      this.formModel = await api.getTenant(id);
-    },
     reset() {
       this.tenantList = [];
       this.formModel = defaultFormModel;
     },
-    validatePostalCode() {
-      const postalCode = this.formModel.address?.postalCode;
-      if (!postalCode) {
-        return false;
-      }
-      return RegExp(/^\d{3}-\d{4}$/).exec(postalCode) !== null;
+    resetFormModel() {
+      this.formModel = defaultFormModel;
     },
-    async updateAddressFromPostalCode() {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const postalCode = this.formModel.address!.postalCode!;
-      const resp = await api.getAddressByPostalCode(postalCode);
-      this.setAddressExceptPostalCode(resp)
+    async getTenantList(itemsPerPage?: number, page?: number, query?: string) {
+      const resp = await api.getTenants(itemsPerPage, page, query);
+      this.tenantList = resp.items ?? [];
+      return resp.pagination ?? {} as PaginationResponsePagination;
     },
-    setAddressExceptPostalCode(address: AddressInResponse) {
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        postalCode,
-        ...addressExceptPostalCode
-      } = address;
-      const originalPostalCode = this.formModel.address?.postalCode;
-      this.formModel.address = {
-        postalCode: originalPostalCode,
-        ...addressExceptPostalCode,
-      }
+    async getTenant(id: string) {
+      this.formModel = await api.getTenant(id);
+    },
+    async createTenant(data: TenantInRequest) {
+      return await api.createTenant(data);
+    },
+    async updateTenant(id: string, data: TenantInRequest) {
+      await api.updateTenant(data, id);
+    },
+    async deleteTenant(id: string) {
+      await api.deleteTenant(id);
     },
     async updateEmergencyContactAddressFromPostalCode() {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

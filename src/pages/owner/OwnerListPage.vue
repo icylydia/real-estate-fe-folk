@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {computed, onMounted, Ref, ref} from 'vue';
+import { computed, onMounted, Ref, ref } from 'vue';
 import { useOwnerStore } from 'stores/owner-store';
 import { storeToRefs } from 'pinia';
-import {QTable, QTableProps, useQuasar} from 'quasar';
+import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useGender } from 'src/utils/gender';
 import { useRouter } from 'vue-router';
 import { OwnerInResponse, TenantInResponse } from 'src/api';

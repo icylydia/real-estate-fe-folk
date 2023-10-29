@@ -103,24 +103,23 @@ defineExpose({
               map-options
               :options="genderOptions"
               clearable
-            >
-            </q-select>
+            />
           </q-item-section>
         </q-item>
       </Field>
       <Field name="phone" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            v-bind="field"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="電話番号"
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
+        <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              v-bind="field"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="電話番号"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
       </Field>
       <Field name="email" #="{errorMessage, value, field}">
         <q-item class="col-12">
