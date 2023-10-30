@@ -56,7 +56,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'contracts/new',
         name: 'contract-create',
-        component: () => import('pages/ConstructingPage.vue'),
+        component: () => import('pages/contract/RentalContractCreatePage.vue'),
       },
       {
         path: 'contracts/:id',
@@ -162,7 +162,7 @@ const routes: RouteRecordRaw[] = [
         name: 'tenant-edit',
         component: () => import('pages/tenant/TenantEditPage.vue'),
       },
-      // 収支
+      // 収入
       {
         path: 'incomes',
         name: 'income-list',

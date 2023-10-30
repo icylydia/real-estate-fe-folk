@@ -8,10 +8,21 @@ import {
   RentalContractInResponse
 } from 'src/api';
 
+export type RentalContractFormModel = Partial<
+  RentalContractInResponse
+>
+
+const defaultRentalContractFormModel: RentalContractFormModel = {
+  building: {},
+  room: {},
+  tenant: {},
+}
+
 export const useContractStore = defineStore('contract', {
   state: () => ({
     rentalContractList: [] as RentalContractInResponse[],
     entrustContractList: [] as EntrustContractInResponse[],
+    rentalContractFormModel: defaultRentalContractFormModel,
   }),
   actions: {
     async getRentalContractList() {
@@ -25,6 +36,9 @@ export const useContractStore = defineStore('contract', {
     reset() {
       this.rentalContractList = [];
       this.entrustContractList = [];
+    },
+    resetRentalContractFormModel() {
+      this.rentalContractFormModel = defaultRentalContractFormModel;
     },
     statusToChipProps(status?: ContractBase.StatusEnum) {
       if (!status) {

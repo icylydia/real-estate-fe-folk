@@ -5,10 +5,10 @@ import {
   AddressInResponse,
   BuildingDetailResponse,
   BuildingInRequest,
-  BuildingListResponseItems,
+  BuildingListResponseItems, BuildingOptionsResponse,
   ModelFile,
   PaginationResponsePagination,
-  RegularExpenseBase
+  RegularExpenseBase, RoomOptionsResponse
 } from 'src/api';
 
 export type BuildingFormModel = Partial<
@@ -40,6 +40,8 @@ export const useBuildingStore = defineStore('building', {
     formModel: defaultFormModel,
     regularExpenseModel: {} as RegularExpenseBase,
     fileModel: {} as FileModel,
+    buildingOptions: [] as BuildingOptionsResponse[],
+    roomOptions: [] as RoomOptionsResponse[],
   }),
   actions: {
     reset() {
@@ -90,6 +92,24 @@ export const useBuildingStore = defineStore('building', {
 
     deleteBuilding(id: string) {
       return api.deleteBuilding(id);
+    },
+
+    resetBuildingOptions() {
+      this.buildingOptions = [];
+    },
+
+    async getBuildingOptions() {
+      const resp = await api.getBuildingOptions();
+      this.buildingOptions = resp ?? [];
+    },
+
+    resetRoomOptions() {
+      this.roomOptions = [];
+    },
+
+    async getRoomOptions(buildingId: string) {
+      const resp = await api.getRoomOptions(buildingId);
+      this.roomOptions = resp ?? [];
     },
 
     validatePostalCode() {
