@@ -22,10 +22,6 @@ const props = defineProps({
   },
 });
 
-const {
-  updateEmergencyContactAddressFromPostalCode,
-  updateWorkplaceAddressFromPostalCode,
-} = useTenantStore();
 const { formModel: tenant } = storeToRefs(useTenantStore());
 const { selectOptions: genderOptions } = useGender();
 const {
@@ -42,7 +38,27 @@ const updateAddressFromPostalCode = (address: AddressInResponse) => {
     addressDetailAddress2: address.detailAddress2,
     addressDetailAddress3: address.detailAddress3,
   });
-}
+};
+
+const updateEmergencyContactAddressFromPostalCode = (address: AddressInResponse) => {
+  setValues({
+    emergencyContactAddressPrefectureId: address.prefectureId,
+    emergencyContactAddressPrefectureName: address.prefectureName,
+    emergencyContactAddressDetailAddress1: address.detailAddress1,
+    emergencyContactAddressDetailAddress2: address.detailAddress2,
+    emergencyContactAddressDetailAddress3: address.detailAddress3,
+  });
+};
+
+const updateWorkplaceAddressFromPostalCode = (address: AddressInResponse) => {
+  setValues({
+    workplaceAddressPrefectureId: address.prefectureId,
+    workplaceAddressPrefectureName: address.prefectureName,
+    workplaceAddressDetailAddress1: address.detailAddress1,
+    workplaceAddressDetailAddress2: address.detailAddress2,
+    workplaceAddressDetailAddress3: address.detailAddress3,
+  });
+};
 
 const searchAddress = async (callback: (address: AddressInResponse) => void) => {
   const validationResult: ValidationResult = await validateField('addressPostalCode');
@@ -106,6 +122,46 @@ const validationSchema = toTypedSchema(object({
   addressDetailAddress1: string().notRequired().nullable().label('市区町村'),
   addressDetailAddress2: string().notRequired().nullable().label('丁目'),
   addressDetailAddress3: string().notRequired().nullable().label('それ以降の住所'),
+  emergencyContactLastName: string().notRequired().nullable().label('姓'),
+  emergencyContactFirstName: string().notRequired().nullable().label('名'),
+  emergencyContactGender: string().oneOf([
+    'male', 'female', 'other',
+  ]).notRequired().label('性別'),
+  emergencyContactRelationship: string().oneOf([
+    'spouse', 'family', 'friend', 'other',
+  ]).notRequired().label('続柄'),
+  emergencyContactPhone: string()
+    .phone()
+    .nullable()
+    .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
+    .label('電話番号'),
+  emergencyContactEmail: string().email().notRequired().nullable().label('メールアドレス'),
+  emergencyContactAddressPostalCode: string()
+    .postalCode()
+    .nullable()
+    .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
+    .label('郵便番号'),
+  emergencyContactAddressPrefectureId: string().notRequired().nullable().label('都道府県ID'),
+  emergencyContactAddressPrefectureName: string().notRequired().nullable().label('都道府県'),
+  emergencyContactAddressDetailAddress1: string().notRequired().nullable().label('市区町村'),
+  emergencyContactAddressDetailAddress2: string().notRequired().nullable().label('丁目'),
+  emergencyContactAddressDetailAddress3: string().notRequired().nullable().label('それ以降の住所'),
+  workplaceName: string().notRequired().nullable().label('会社名'),
+  workplacePhone: string()
+    .phone()
+    .nullable()
+    .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
+    .label('電話番号'),
+  workplaceAddressPostalCode: string()
+    .postalCode()
+    .nullable()
+    .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
+    .label('郵便番号'),
+  workplaceAddressPrefectureId: string().notRequired().nullable().label('都道府県ID'),
+  workplaceAddressPrefectureName: string().notRequired().nullable().label('都道府県'),
+  workplaceAddressDetailAddress1: string().notRequired().nullable().label('市区町村'),
+  workplaceAddressDetailAddress2: string().notRequired().nullable().label('丁目'),
+  workplaceAddressDetailAddress3: string().notRequired().nullable().label('それ以降の住所'),
 }));
 
 const initialValues: any = computed( () => {
@@ -121,6 +177,36 @@ const initialValues: any = computed( () => {
     result.addressDetailAddress1 = tenant.value.address.detailAddress1;
     result.addressDetailAddress2 = tenant.value.address.detailAddress2;
     result.addressDetailAddress3 = tenant.value.address.detailAddress3;
+  }
+  // 緊急連絡先情報
+  if (tenant.value.emergencyContact) {
+    result.emergencyContactLastName = tenant.value.emergencyContact.lastName;
+    result.emergencyContactFirstName = tenant.value.emergencyContact.firstName;
+    result.emergencyContactGender = tenant.value.emergencyContact.gender;
+    result.emergencyContactRelationship = tenant.value.emergencyContact.relationship;
+    result.emergencyContactPhone = tenant.value.emergencyContact.phone;
+    result.emergencyContactEmail = tenant.value.emergencyContact.email;
+    if (tenant.value.emergencyContact.address) {
+      result.emergencyContactAddressPostalCode = tenant.value.emergencyContact.address.postalCode;
+      result.emergencyContactAddressPrefectureId = tenant.value.emergencyContact.address.prefectureId;
+      result.emergencyContactAddressPrefectureName = tenant.value.emergencyContact.address.prefectureName;
+      result.emergencyContactAddressDetailAddress1 = tenant.value.emergencyContact.address.detailAddress1;
+      result.emergencyContactAddressDetailAddress2 = tenant.value.emergencyContact.address.detailAddress2;
+      result.emergencyContactAddressDetailAddress3 = tenant.value.emergencyContact.address.detailAddress3;
+    }
+  }
+  // 勤務先情報
+  if (tenant.value.workplace) {
+    result.workplaceName = tenant.value.workplace.name;
+    result.workplacePhone = tenant.value.workplace.phone;
+    if (tenant.value.workplace.address) {
+      result.workplaceAddressPostalCode = tenant.value.workplace.address.postalCode;
+      result.workplaceAddressPrefectureId = tenant.value.workplace.address.prefectureId;
+      result.workplaceAddressPrefectureName = tenant.value.workplace.address.prefectureName;
+      result.workplaceAddressDetailAddress1 = tenant.value.workplace.address.detailAddress1;
+      result.workplaceAddressDetailAddress2 = tenant.value.workplace.address.detailAddress2;
+      result.workplaceAddressDetailAddress3 = tenant.value.workplace.address.detailAddress3;
+    }
   }
   return result
 });
@@ -352,64 +438,115 @@ defineExpose({
     緊急連絡先情報{{ readonly ? '（閲覧）' : '（編集）'}}
   </div>
   <q-list class="row">
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.emergencyContact!.lastName" label="姓" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.emergencyContact!.firstName" label="名" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-select
-          v-model="tenant.emergencyContact!.gender"
-          label="性別"
-          :readonly="readonly"
-          emit-value
-          map-options
-          :options="genderOptions"
-          clearable
-        >
-        </q-select>
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-select
-          v-model="tenant.emergencyContact!.relationship"
-          label="続柄"
-          :readonly="readonly"
-          emit-value
-          map-options
-          :options="relationshipOptions"
-          clearable
-        >
-        </q-select>
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.emergencyContact!.phone" label="電話番号" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-12">
-      <q-item-section>
-        <q-input v-model="tenant.emergencyContact!.email" label="メールアドレス" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input
-          v-model="tenant.emergencyContact!.address!.postalCode"
-          label="郵便番号"
-          placeholder="xxx-xxxx"
-          :readonly="readonly"
-        />
-      </q-item-section>
-    </q-item>
+    <Field name="emergencyContactLastName" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="姓"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactFirstName" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="名"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactGender" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="性別"
+            :readonly="readonly"
+            emit-value
+            map-options
+            :options="genderOptions"
+            clearable
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactRelationship" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="続柄"
+            :readonly="readonly"
+            emit-value
+            map-options
+            :options="relationshipOptions"
+            clearable
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactPhone" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="電話番号"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactEmail" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="メールアドレス"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactAddressPostalCode" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="郵便番号"
+            hint="フォーマット: 110-0001"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
         <q-btn
@@ -422,52 +559,111 @@ defineExpose({
         />
       </q-item-section>
     </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.emergencyContact!.address!.prefecture" label="都道府県" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.emergencyContact!.address!.detailAddress1" label="市区町村" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-12">
-      <q-item-section>
-        <q-input v-model="tenant.emergencyContact!.address!.detailAddress2" label="丁目" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-12">
-      <q-item-section>
-        <q-input v-model="tenant.emergencyContact!.address!.detailAddress3" label="それ以降の住所" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
+    <Field name="emergencyContactAddressPrefectureName" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="都道府県"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactAddressDetailAddress1" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="市区町村"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactAddressDetailAddress2" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="丁目"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="emergencyContactAddressDetailAddress3" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="それ以降の住所"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
   </q-list>
   <q-separator class="q-my-md" />
   <div class="text-h6">
     勤務先情報{{ readonly ? '（閲覧）' : '（編集）'}}
   </div>
   <q-list class="row">
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.workplace!.name" label="会社名" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.workplace!.phone" label="電話番号" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input
-          v-model="tenant.workplace!.address!.postalCode"
-          label="郵便番号"
-          placeholder="xxx-xxxx"
-          :readonly="readonly"
-        />
-      </q-item-section>
-    </q-item>
+    <Field name="workplaceName" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="会社名"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="workplacePhone" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="電話番号"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="workplacePostalCode" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="郵便番号"
+            hint="フォーマット: 110-0001"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
         <q-btn
@@ -480,25 +676,61 @@ defineExpose({
         />
       </q-item-section>
     </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.workplace!.address!.prefectureName" label="都道府県" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="tenant.workplace!.address!.detailAddress1" label="市区町村" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-12">
-      <q-item-section>
-        <q-input v-model="tenant.workplace!.address!.detailAddress2" label="丁目" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-12">
-      <q-item-section>
-        <q-input v-model="tenant.workplace!.address!.detailAddress3" label="それ以降の住所" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
+    <Field name="workplaceAddressPrefectureName" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="都道府県"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="workplaceAddressDetailAddress1" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="市区町村"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="workplaceAddressDetailAddress2" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="丁目"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="workplaceAddressDetailAddress3" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="それ以降の住所"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
   </q-list>
 </template>
