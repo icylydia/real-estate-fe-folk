@@ -1738,6 +1738,18 @@ export interface RentalContractBase extends ContractBase {
    */
   tenant?: TenantInResponse;
   /**
+   *
+   * @type {BuildingInResponse}
+   * @memberof RentalContractBase
+   */
+  building?: BuildingInResponse;
+  /**
+   *
+   * @type {RoomInResponse}
+   * @memberof RentalContractBase
+   */
+  room?: RoomInResponse;
+  /**
    * 是否提示续租
    * @type {boolean}
    * @memberof RentalContractBase
@@ -1798,18 +1810,6 @@ export interface RentalContractInResponse extends RentalContractBase {
    * @memberof RentalContractInResponse
    */
   id?: string;
-  /**
-   *
-   * @type {BuildingInResponse}
-   * @memberof RentalContractInResponse
-   */
-  building?: BuildingInResponse;
-  /**
-   *
-   * @type {RoomInResponse}
-   * @memberof RentalContractInResponse
-   */
-  room?: RoomInResponse;
 }
 
 /**
@@ -2160,6 +2160,31 @@ export interface TenantListResponse extends PaginationResponse {
   items?: Array<TenantInResponse>;
 }
 /**
+ *
+ * @export
+ * @interface TenantOptionsResponse
+ */
+export interface TenantOptionsResponse {
+  /**
+   * 租户ID/入居者ID
+   * @type {number}
+   * @memberof TenantOptionsResponse
+   */
+  id?: number;
+  /**
+   * 姓
+   * @type {string}
+   * @memberof TenantOptionsResponse
+   */
+  lastName?: string;
+  /**
+   * 名
+   * @type {string}
+   * @memberof TenantOptionsResponse
+   */
+  firstName?: string;
+}
+/**
  * 电车线路
  * @export
  * @interface TrainLine
@@ -2303,8 +2328,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2346,8 +2371,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2389,8 +2414,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2432,8 +2457,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2475,8 +2500,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2518,8 +2543,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2530,6 +2555,49 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"OwnerInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 新建租赁合同
+     * @summary 新建租赁合同
+     * @param {RentalContractInRequest} body 租赁合同信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createRentalContract(body: RentalContractInRequest, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling createRentalContract.');
+      }
+      const localVarPath = `/rental-contract`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"RentalContractInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
 
       return {
@@ -2561,8 +2629,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2604,8 +2672,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2636,7 +2704,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteBuilding.');
       }
       const localVarPath = `/building/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2648,8 +2716,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2676,7 +2744,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteDepartment.');
       }
       const localVarPath = `/department/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2688,8 +2756,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2716,7 +2784,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteEmployee.');
       }
       const localVarPath = `/employee/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2728,8 +2796,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2756,7 +2824,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteExpense.');
       }
       const localVarPath = `/expense/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2768,8 +2836,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2796,7 +2864,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteIncome.');
       }
       const localVarPath = `/income/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2808,8 +2876,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2836,7 +2904,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteOwner.');
       }
       const localVarPath = `/owner/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2848,8 +2916,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2876,7 +2944,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteRoom.');
       }
       const localVarPath = `/room/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2888,8 +2956,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2916,7 +2984,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteTenant.');
       }
       const localVarPath = `/renter/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2928,8 +2996,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2956,7 +3024,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('postalCode','Required parameter postalCode was null or undefined when calling getAddressByPostalCode.');
       }
       const localVarPath = `/postal-codes/{postalCode}`
-          .replace(`{${"postalCode"}}`, encodeURIComponent(String(postalCode)));
+        .replace(`{${"postalCode"}}`, encodeURIComponent(String(postalCode)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -2968,8 +3036,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -2996,7 +3064,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getBuilding.');
       }
       const localVarPath = `/building/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3008,8 +3076,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3042,8 +3110,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3080,8 +3148,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3130,8 +3198,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3158,7 +3226,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getDepartment.');
       }
       const localVarPath = `/department/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3170,8 +3238,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3204,8 +3272,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3232,7 +3300,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getEmployee.');
       }
       const localVarPath = `/employee/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3244,8 +3312,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3278,8 +3346,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3316,8 +3384,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3360,7 +3428,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getExpense.');
       }
       const localVarPath = `/expense/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3372,8 +3440,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3411,8 +3479,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3459,7 +3527,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getIncome.');
       }
       const localVarPath = `/income/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3471,8 +3539,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3511,8 +3579,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3563,7 +3631,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getOwner.');
       }
       const localVarPath = `/owner/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3575,8 +3643,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3612,8 +3680,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3658,8 +3726,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3697,8 +3765,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3745,7 +3813,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getRoom.');
       }
       const localVarPath = `/room/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3757,8 +3825,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3785,7 +3853,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getRoomOptions.');
       }
       const localVarPath = `/building/{id}/roomOptions`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3797,8 +3865,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3825,7 +3893,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getRoomOptions_1.');
       }
       const localVarPath = `/building/{id}/roomOptions`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3837,8 +3905,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3865,7 +3933,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getTenant.');
       }
       const localVarPath = `/renter/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3877,8 +3945,42 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 获取租户列表，不分页，用于下拉框选择
+     * @summary 租户下拉列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenantOptions(options: any = {}): FetchArgs {
+      const localVarPath = `/renter/listOptions`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3914,8 +4016,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -3954,7 +4056,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling getTrainLine.');
       }
       const localVarPath = `/train-line/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
@@ -3966,8 +4068,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4000,8 +4102,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4065,7 +4167,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling updateBuilding.');
       }
       const localVarPath = `/building/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
@@ -4077,8 +4179,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4114,7 +4216,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling updateDepartment.');
       }
       const localVarPath = `/department/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
@@ -4126,8 +4228,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4163,7 +4265,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling updateEmployee.');
       }
       const localVarPath = `/employee/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
@@ -4175,8 +4277,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4212,7 +4314,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling updateExpense.');
       }
       const localVarPath = `/expense/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
@@ -4224,8 +4326,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4261,7 +4363,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling updateIncome.');
       }
       const localVarPath = `/income/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
@@ -4273,8 +4375,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4310,7 +4412,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling updateOwner.');
       }
       const localVarPath = `/owner/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
@@ -4322,8 +4424,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4359,7 +4461,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling updateRoom.');
       }
       const localVarPath = `/room/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
@@ -4371,8 +4473,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4408,7 +4510,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling updateTenant.');
       }
       const localVarPath = `/renter/{id}`
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
       const localVarHeaderParameter = {} as any;
@@ -4420,8 +4522,8 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       // oauth required
       if (configuration && configuration.accessToken) {
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
-            ? configuration.accessToken("oauth2", [])
-            : configuration.accessToken;
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
         localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
       }
 
@@ -4552,6 +4654,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      */
     createOwner(body: OwnerInRequest, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<OwnerInResponse> {
       const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).createOwner(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 新建租赁合同
+     * @summary 新建租赁合同
+     * @param {RentalContractInRequest} body 租赁合同信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createRentalContract(body: RentalContractInRequest, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RentalContractInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).createRentalContract(body, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -5187,6 +5308,24 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 获取租户列表，不分页，用于下拉框选择
+     * @summary 租户下拉列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenantOptions(options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<Array<TenantOptionsResponse>> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getTenantOptions(options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据条件获取租客列表
      * @summary 租客列表
      * @param {number} [itemsPerPage] 每页条数
@@ -5491,6 +5630,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     createOwner(body: OwnerInRequest, options?: any) {
       return DefaultApiFp(configuration).createOwner(body, options)(fetch, basePath);
+    },
+    /**
+     * 新建租赁合同
+     * @summary 新建租赁合同
+     * @param {RentalContractInRequest} body 租赁合同信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createRentalContract(body: RentalContractInRequest, options?: any) {
+      return DefaultApiFp(configuration).createRentalContract(body, options)(fetch, basePath);
     },
     /**
      * 新建房间
@@ -5829,6 +5978,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).getTenant(id, options)(fetch, basePath);
     },
     /**
+     * 获取租户列表，不分页，用于下拉框选择
+     * @summary 租户下拉列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTenantOptions(options?: any) {
+      return DefaultApiFp(configuration).getTenantOptions(options)(fetch, basePath);
+    },
+    /**
      * 根据条件获取租客列表
      * @summary 租客列表
      * @param {number} [itemsPerPage] 每页条数
@@ -6037,6 +6195,18 @@ export class DefaultApi extends BaseAPI {
    */
   public createOwner(body: OwnerInRequest, options?: any) {
     return DefaultApiFp(this.configuration).createOwner(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 新建租赁合同
+   * @summary 新建租赁合同
+   * @param {RentalContractInRequest} body 租赁合同信息
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createRentalContract(body: RentalContractInRequest, options?: any) {
+    return DefaultApiFp(this.configuration).createRentalContract(body, options)(this.fetch, this.basePath);
   }
 
   /**
@@ -6437,6 +6607,17 @@ export class DefaultApi extends BaseAPI {
    */
   public getTenant(id: string, options?: any) {
     return DefaultApiFp(this.configuration).getTenant(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 获取租户列表，不分页，用于下拉框选择
+   * @summary 租户下拉列表
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getTenantOptions(options?: any) {
+    return DefaultApiFp(this.configuration).getTenantOptions(options)(this.fetch, this.basePath);
   }
 
   /**

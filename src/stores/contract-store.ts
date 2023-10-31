@@ -4,7 +4,7 @@ import {
   ContractBase,
   EntrustContractBase,
   EntrustContractInResponse,
-  RentalContractBase,
+  RentalContractBase, RentalContractInRequest,
   RentalContractInResponse
 } from 'src/api';
 
@@ -13,9 +13,10 @@ export type RentalContractFormModel = Partial<
 >
 
 const defaultRentalContractFormModel: RentalContractFormModel = {
-  building: {},
-  room: {},
-  tenant: {},
+  building: undefined,
+  room: undefined,
+  tenant: undefined,
+  promptRemind: true,
 }
 
 export const useContractStore = defineStore('contract', {
@@ -32,6 +33,9 @@ export const useContractStore = defineStore('contract', {
     async getEntrustContractList() {
       const resp = await api.getEntrustContracts();
       this.entrustContractList = resp.items ?? [];
+    },
+    async createRentalContract(data: RentalContractInRequest) {
+      return api.createRentalContract(data);
     },
     reset() {
       this.rentalContractList = [];

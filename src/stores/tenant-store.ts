@@ -4,7 +4,7 @@ import {
   PaginationResponsePagination,
   TenantDetailResponse,
   TenantInRequest,
-  TenantInResponse
+  TenantInResponse, TenantOptionsResponse
 } from 'src/api';
 
 export type TenantFormModel = Partial<
@@ -25,6 +25,7 @@ export const useTenantStore = defineStore('tenant', {
   state: () => ({
     tenantList: [] as TenantInResponse[],
     formModel: defaultFormModel,
+    renterOptions: [] as TenantOptionsResponse[],
   }),
   actions: {
     reset() {
@@ -51,5 +52,11 @@ export const useTenantStore = defineStore('tenant', {
     async deleteTenant(id: string) {
       await api.deleteTenant(id);
     },
+    resetRenterOptions() {
+      this.renterOptions = [];
+    },
+    async getRenterOptions() {
+      this.renterOptions = await api.getTenantOptions() ?? [];
+    }
   },
 });

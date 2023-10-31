@@ -2,12 +2,26 @@
 import RentalContractForm from 'components/contract/RentalContractForm.vue';
 import { onMounted, ref } from 'vue';
 import { useContractStore } from 'stores/contract-store';
+import { useRouter } from 'vue-router';
+import { FormValidationResult } from 'vee-validate';
 
 const loading = ref(false);
+const form = ref<InstanceType<typeof RentalContractForm>>();
+const router = useRouter();
 
 const save = async () => {
-  loading.value = true;
   try {
+    const validation: FormValidationResult<any> = await form.value?.validate();
+    if (!validation.valid) {
+      return;
+    }
+    loading.value = true;
+    const data = validation.values;
+    const newContract = await useContractStore().createRentalContract(data);
+    await router.push({
+      name: 'rental-contract-detail',
+      params: { id: newContract.id }
+    });
   } catch (error) {
     console.error(error);
   } finally {
