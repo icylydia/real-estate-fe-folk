@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useContractStore } from 'stores/contract-store';
-import { QTableProps } from 'quasar';
-import { onMounted, ref } from 'vue';
+import { QTable, QTableProps, useQuasar } from 'quasar';
+import { computed, onMounted, Ref, ref } from 'vue';
 import { RentalContractInResponse } from 'src/api';
 import { useRouter } from 'vue-router';
 
@@ -67,27 +67,13 @@ const columns: QTableProps['columns'] = [
 
 const { rentalContractList: contracts } = storeToRefs(useContractStore());
 const {
-  getRentalContractList,
-  reset: resetRentalContractList,
   statusToChipProps,
   promptRemindStatusToChipProps,
 } = useContractStore();
 const loading = ref(false);
 
-const loadContracts = async () => {
-  loading.value = true;
-  try {
-    resetRentalContractList();
-    await getRentalContractList();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
-};
-
 onMounted(async () => {
-  await loadContracts();
+  tableRef.value?.requestServerInteraction();
 });
 
 const router = useRouter();
@@ -96,7 +82,7 @@ const toContractDetail = async (id?: string) => {
   if (!id) return;
   try {
     await router.push({
-      name: 'contract-detail',
+      name: 'rental-contract-detail',
       params: { id },
     });
   } catch (e) {
@@ -108,7 +94,7 @@ const toContractEdit = async (id?: string) => {
   if (!id) return;
   try {
     await router.push({
-      name: 'contract-edit',
+      name: 'rental-contract-edit',
       params: { id },
     });
   } catch (e) {
@@ -131,7 +117,7 @@ const promptToUpdateContract = async (id?: string) => {
 const toNewContract = async () => {
   try {
     await router.push({
-      name: 'contract-create',
+      name: 'rental-contract-create',
     });
   } catch (e) {
     console.error(e);
@@ -141,12 +127,78 @@ const toNewContract = async () => {
 
 const searchText = ref('');
 const search = async () => {
-  await loadContracts()
+  tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
 const includeArchive = ref(false);
 
-const archiveContract = async (id?: string) => {
-  console.log(id);
+const $q = useQuasar();
+
+const archiveContract = async (contract: RentalContractInResponse) => {
+  $q.dialog({
+    title: '契約を削除',
+    message: `契約「${contract.title}」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!contract.id) {
+      return;
+    }
+    try {
+      await useContractStore().deleteRentalContract(contract.id);
+    } catch (e) {
+      console.error(e);
+    }
+
+    tableRef.value?.requestServerInteraction();
+  });
+};
+
+type Pagination = {
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  rowsPerPage?: number;
+  rowsNumber?: number;
+};
+
+const pagination: Ref<Pagination> = ref({
+  sortBy: undefined,
+  descending: false,
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: 0,
+});
+
+const paginationMax = computed(() => {
+  if (!pagination.value.rowsPerPage || !pagination.value.rowsNumber) {
+    return 0;
+  }
+  return Math.ceil(pagination.value.rowsNumber / pagination.value.rowsPerPage)
+});
+
+const tableRef = ref<QTable | null>(null);
+const onPageChange = async () => {
+  tableRef.value?.requestServerInteraction({ pagination: pagination.value });
+};
+
+const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
+  try {
+    loading.value = true;
+    const { page, rowsPerPage } = _pagination;
+    const pageMeta = await useContractStore().getRentalContractList(rowsPerPage, page);
+    pagination.value = {
+      sortBy: undefined,
+      descending: false,
+      page: pageMeta.currentPage ?? 1,
+      rowsPerPage: pageMeta.itemsPerPage ?? 10,
+      rowsNumber: pageMeta.total ?? 0,
+    };
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 
@@ -161,6 +213,10 @@ const archiveContract = async (id?: string) => {
           :columns="columns"
           row-key="id"
           :loading="loading"
+          hide-pagination
+          v-model:pagination="pagination"
+          @request="onRequest"
+          ref="tableRef"
         >
           <template #top-right>
             <q-checkbox
@@ -239,7 +295,7 @@ const archiveContract = async (id?: string) => {
               />
             </q-td>
           </template>
-          <template #[`body-cell-actions`]="{ key }">
+          <template #[`body-cell-actions`]="{ key, row }: { key: string, row: RentalContractInResponse }">
             <q-td class="text-right">
               <q-btn icon="sym_r_more_horiz" flat>
                 <q-menu>
@@ -259,7 +315,7 @@ const archiveContract = async (id?: string) => {
                         <q-item-label>更新を促す</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item dense clickable @click="archiveContract(key)">
+                    <q-item dense clickable @click="archiveContract(row)">
                       <q-item-section>
                         <q-item-label>削除</q-item-label>
                       </q-item-section>
@@ -270,6 +326,15 @@ const archiveContract = async (id?: string) => {
             </q-td>
           </template>
         </q-table>
+        <div class="row justify-center q-my-md">
+          <q-pagination
+            v-model="pagination.page"
+            color="primary"
+            :max="paginationMax"
+            max-pages="9"
+            @update:model-value="onPageChange"
+          />
+        </div>
       </q-card-section>
     </q-card>
   </q-page>

@@ -3,8 +3,9 @@ import { api } from 'boot/api';
 import {
   ContractBase,
   EntrustContractBase,
-  EntrustContractInResponse,
-  RentalContractBase, RentalContractInRequest,
+  EntrustContractInResponse, PaginationResponsePagination,
+  RentalContractBase,
+  RentalContractInRequest,
   RentalContractInResponse
 } from 'src/api';
 
@@ -26,16 +27,26 @@ export const useContractStore = defineStore('contract', {
     rentalContractFormModel: defaultRentalContractFormModel,
   }),
   actions: {
-    async getRentalContractList() {
-      const resp = await api.getRentalContracts();
+    async getRentalContractList(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string) {
+      const resp = await api.getRentalContracts(itemsPerPage, page, buildingId, roomId, tenantId);
       this.rentalContractList = resp.items ?? [];
+      return resp.pagination ?? {} as PaginationResponsePagination;
+    },
+    async createRentalContract(data: RentalContractInRequest) {
+      return api.createRentalContract(data);
+    },
+    async getRentalContract(id: string) {
+      this.rentalContractFormModel = await api.getRentalContract(id);
+    },
+    async updateRentalContract(id: string, data: RentalContractInRequest) {
+      return api.updateRentalContract(data, id);
+    },
+    async deleteRentalContract(id: string) {
+      return api.deleteRentalContract(id);
     },
     async getEntrustContractList() {
       const resp = await api.getEntrustContracts();
       this.entrustContractList = resp.items ?? [];
-    },
-    async createRentalContract(data: RentalContractInRequest) {
-      return api.createRentalContract(data);
     },
     reset() {
       this.rentalContractList = [];

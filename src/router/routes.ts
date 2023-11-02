@@ -54,9 +54,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/contract/RentalContractListPage.vue'),
       },
       {
+        path: 'rental-contracts/new',
+        name: 'rental-contract-create',
+        component: () => import('pages/contract/RentalContractCreatePage.vue'),
+      },
+      {
         path: 'rental-contracts/:id',
         name: 'rental-contract-detail',
         component: () => import('pages/contract/RentalContractDetailPage.vue'),
+      },
+      {
+        path: 'rental-contracts/:id/edit',
+        name: 'rental-contract-edit',
+        component: () => import('pages/contract/RentalContractEditPage.vue'),
       },
       {
         path: 'contracts/new',

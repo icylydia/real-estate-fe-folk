@@ -2932,6 +2932,46 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID删除租赁合同
+     * @summary 删除租赁合同
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRentalContract(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling deleteRentalContract.');
+      }
+      const localVarPath = `/rental-contract/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID删除房间
      * @summary 删除房间
      * @param {string} id 房间ID
@@ -3742,6 +3782,46 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID获取租赁合同详情
+     * @summary 租赁合同详情
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRentalContract(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling getRentalContract.');
+      }
+      const localVarPath = `/rental-contract/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据条件获取租赁合同列表
      * @summary 租赁合同列表
      * @param {number} [itemsPerPage] 每页条数
@@ -4444,6 +4524,55 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID更新租赁合同
+     * @summary 更新租赁合同
+     * @param {RentalContractInRequest} body 租赁合同信息
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRentalContract(body: RentalContractInRequest, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateRentalContract.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling updateRentalContract.');
+      }
+      const localVarPath = `/rental-contract/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"RentalContractInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID更新房间
      * @summary 更新房间
      * @param {RoomInRequest} body 房间信息
@@ -4836,6 +4965,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID删除租赁合同
+     * @summary 删除租赁合同
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRentalContract(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).deleteRentalContract(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID删除房间
      * @summary 删除房间
      * @param {string} id 房间ID
@@ -5209,6 +5357,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID获取租赁合同详情
+     * @summary 租赁合同详情
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRentalContract(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RentalContractInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getRentalContract(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据条件获取租赁合同列表
      * @summary 租赁合同列表
      * @param {number} [itemsPerPage] 每页条数
@@ -5523,6 +5690,26 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID更新租赁合同
+     * @summary 更新租赁合同
+     * @param {RentalContractInRequest} body 租赁合同信息
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRentalContract(body: RentalContractInRequest, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RentalContractInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateRentalContract(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID更新房间
      * @summary 更新房间
      * @param {RoomInRequest} body 房间信息
@@ -5720,6 +5907,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     deleteOwner(id: string, options?: any) {
       return DefaultApiFp(configuration).deleteOwner(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID删除租赁合同
+     * @summary 删除租赁合同
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRentalContract(id: string, options?: any) {
+      return DefaultApiFp(configuration).deleteRentalContract(id, options)(fetch, basePath);
     },
     /**
      * 根据ID删除房间
@@ -5924,6 +6121,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).getPrefectures(options)(fetch, basePath);
     },
     /**
+     * 根据ID获取租赁合同详情
+     * @summary 租赁合同详情
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRentalContract(id: string, options?: any) {
+      return DefaultApiFp(configuration).getRentalContract(id, options)(fetch, basePath);
+    },
+    /**
      * 根据条件获取租赁合同列表
      * @summary 租赁合同列表
      * @param {number} [itemsPerPage] 每页条数
@@ -6092,6 +6299,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     updateOwner(body: OwnerInRequest, id: string, options?: any) {
       return DefaultApiFp(configuration).updateOwner(body, id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID更新租赁合同
+     * @summary 更新租赁合同
+     * @param {RentalContractInRequest} body 租赁合同信息
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRentalContract(body: RentalContractInRequest, id: string, options?: any) {
+      return DefaultApiFp(configuration).updateRentalContract(body, id, options)(fetch, basePath);
     },
     /**
      * 根据ID更新房间
@@ -6303,6 +6521,18 @@ export class DefaultApi extends BaseAPI {
    */
   public deleteOwner(id: string, options?: any) {
     return DefaultApiFp(this.configuration).deleteOwner(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID删除租赁合同
+   * @summary 删除租赁合同
+   * @param {string} id 租赁合同ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteRentalContract(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).deleteRentalContract(id, options)(this.fetch, this.basePath);
   }
 
   /**
@@ -6546,6 +6776,18 @@ export class DefaultApi extends BaseAPI {
   }
 
   /**
+   * 根据ID获取租赁合同详情
+   * @summary 租赁合同详情
+   * @param {string} id 租赁合同ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getRentalContract(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).getRentalContract(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
    * 根据条件获取租赁合同列表
    * @summary 租赁合同列表
    * @param {number} [itemsPerPage] 每页条数
@@ -6745,6 +6987,19 @@ export class DefaultApi extends BaseAPI {
    */
   public updateOwner(body: OwnerInRequest, id: string, options?: any) {
     return DefaultApiFp(this.configuration).updateOwner(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID更新租赁合同
+   * @summary 更新租赁合同
+   * @param {RentalContractInRequest} body 租赁合同信息
+   * @param {string} id 租赁合同ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateRentalContract(body: RentalContractInRequest, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).updateRentalContract(body, id, options)(this.fetch, this.basePath);
   }
 
   /**

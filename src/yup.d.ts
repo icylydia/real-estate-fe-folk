@@ -13,5 +13,6 @@ declare module 'yup' {
     phone(): StringSchema;
     birthday(): StringSchema;
     postalCode(): StringSchema;
+    date(): StringSchema;
   }
 }

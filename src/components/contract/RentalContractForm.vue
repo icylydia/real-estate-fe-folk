@@ -2,7 +2,7 @@
 import { useContractStore } from 'stores/contract-store';
 import { storeToRefs } from 'pinia';
 import { toTypedSchema } from '@vee-validate/yup';
-import { object, string, date, boolean } from 'yup';
+import { object, string, boolean } from 'yup';
 import { computed, ref } from 'vue';
 import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
@@ -136,15 +136,17 @@ const roomFilterFn = (val: string, update: () => void) => {
  * Renter select
  **********************/
 const renterOptions = ref<Array<{
-  name: string | undefined;
+  lastName: string | undefined;
+  firstName: string | undefined;
   id: string | number | undefined;
 }> | undefined>(undefined);
 
 const getAllRenterOptions = () => {
   return useTenantStore().renterOptions.map((v) => {
     return {
-      name: v.lastName + ' ' + v.firstName,
       id: v.id || '',
+      lastName: v.lastName || '',
+      firstName: v.firstName || '',
     };
   });
 };
@@ -179,7 +181,9 @@ const renterFilterFn = (val: string, update: () => void) => {
     renterOptions.value = getAllRenterOptions();
   } else {
     renterOptions.value = getAllRenterOptions().filter((v) => {
-      return v.name && v.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
+      return v.lastName && v.lastName.toLowerCase().indexOf(val.toLowerCase()) > -1
+        || v.firstName && v.firstName.toLowerCase().indexOf(val.toLowerCase()) > -1
+        || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(val.toLowerCase()) > -1;
     });
   }
   update();
@@ -200,8 +204,16 @@ const validationSchema = toTypedSchema(object({
   tenant: object({
     id: string().required().label('入居者'),
   }).required().label('入居者'),
-  startDate: date().required().label('契約開始日'),
-  endDate: date().required().label('契約終了日'),
+  startDate: string()
+    .date()
+    .transform((value) => value ?? null)
+    .required()
+    .label('契約開始日'),
+  endDate: string()
+    .date()
+    .transform((value) => value ?? null)
+    .required()
+    .label('契約終了日'),
   promptRemind: boolean().required().label('契約終了前に通知するか'),
   promptRemindMonths: string().when('promptRemind', {
       is: true,
@@ -325,7 +337,7 @@ defineExpose({
             :error="!!errorMessage"
             label="入居者"
             :options="renterOptions"
-            option-label="name"
+            :option-label="item => item.lastName + ' ' + item.firstName"
             option-value="id"
             @filter="renterFilterFn"
             :readonly="readonly"

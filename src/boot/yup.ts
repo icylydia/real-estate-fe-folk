@@ -23,3 +23,11 @@ yup.addMethod(yup.string, 'postalCode', function () {
       '郵便番号の形式が正しくありません。',
       );
 });
+
+yup.addMethod(yup.string, 'date', function () {
+  return this
+    .matches(
+      /^\d{4}[-/.]\d{1,2}[-/.]\d{1,2}$/,
+      '日付の形式が正しくありません。',
+      );
+});
