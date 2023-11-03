@@ -27,7 +27,8 @@ export default defineComponent({
   methods: {
     handleUpdateModelValue(value: string) {
       const parsedValue = parseInt(value.replace(/\D/g, ''), 10);
-      this.$emit('update:modelValue', parsedValue);
+      const emitValue = isNaN(parsedValue) ? undefined : parsedValue;
+      this.$emit('update:modelValue', emitValue);
     },
   },
 })

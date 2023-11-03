@@ -1,8 +1,54 @@
+<script setup lang="ts">
+import FileList from 'components/building/FileList.vue';
+import RoomForm from 'components/room/RoomForm.vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useRoomStore } from 'stores/room-store';
+import { storeToRefs } from 'pinia';
+
+const loading = ref(false);
+const route = useRoute()
+const router = useRouter()
+
+const { formModel: room } = storeToRefs(useRoomStore());
+
+const roomId = computed(() => {
+  const id = route.params.id;
+  if (typeof id != 'string') {
+    throw new Error('Invalid room id');
+  }
+  return id;
+});
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    useRoomStore().resetFormModel();
+    await useRoomStore().getRoomDetail(roomId.value);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
+});
+
+const toEdit = async () => {
+  await router.push({ name: 'room-edit', params: { id: roomId.value } });
+};
+
+const backToBuilding = async () => {
+  const buildingId = useRoomStore().formModel.building?.id;
+  if (buildingId) {
+    await router.push({ name: 'building-detail', params: { id: buildingId } });
+  }
+};
+</script>
 <template>
   <q-page padding>
     <q-card bordered>
+      <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <room-form readonly />
+        <room-form readonly v-if="room" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
@@ -29,54 +75,3 @@
     </q-card>
   </q-page>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import RoomForm from 'components/room/RoomForm.vue';
-import { useRoomStore } from 'stores/room-store';
-import { mapActions, mapState } from 'pinia';
-import FileList from 'components/room/FileList.vue';
-
-export default defineComponent({
-  name: 'RoomDetailPage',
-  components: { FileList, RoomForm },
-  data() {
-    return {
-      loading: false,
-    }
-  },
-  async mounted() {
-    try {
-      this.loading = true;
-      this.resetFormModel();
-      await this.getRoomDetail(this.roomId);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.loading = false;
-    }
-  },
-  methods: {
-    ...mapActions(useRoomStore, ['getRoomDetail', 'resetFormModel']),
-    toEdit() {
-      this.$router.push({ name: 'room-edit', params: { id: this.roomId } });
-    },
-    backToBuilding() {
-      this.$router.push({ name: 'building-detail', params: { id: this.room.buildingId } });
-    },
-  },
-  computed: {
-    ...mapState(useRoomStore, {
-      room: 'formModel',
-    }),
-    roomId() {
-      const id = this.$route.params.id;
-      if (typeof id != 'string') {
-        throw new Error('Invalid room id');
-      }
-      return id;
-    },
-  }
-})
-</script>
-

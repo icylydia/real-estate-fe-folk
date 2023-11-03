@@ -1,3 +1,59 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import RoomForm from 'components/room/RoomForm.vue';
+import { useRoomStore } from 'stores/room-store';
+import { useBuildingStore } from 'stores/building-store';
+import { storeToRefs } from 'pinia';
+import { FormValidationResult } from 'vee-validate';
+
+const loading = ref(true);
+const { formModel: building } = storeToRefs(useBuildingStore());
+const form = ref<InstanceType<typeof RoomForm>>();
+
+const buildingId = computed(() => {
+  const id = useRoute().params.buildingId;
+  if (typeof id != 'string') {
+    throw new Error('Invalid building id');
+  }
+  return id;
+});
+
+const simplifiedBuilding = computed(() => {
+  return {
+    id: building.value.id,
+    name: building.value.name,
+  };
+});
+
+onMounted(async () => {
+  useRoomStore().resetFormModel();
+  try {
+    useBuildingStore().resetFormModel();
+    await useBuildingStore().getBuildingDetail(buildingId.value);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+});
+
+const save = async () => {
+  const validation: FormValidationResult<any> = await form.value?.validate();
+  if (!validation.valid) {
+    return;
+  }
+  loading.value = true;
+  try {
+    const data = validation.values;
+    await useRoomStore().createRoom(data);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
+</script>
 <template>
   <q-page padding>
     <q-card bordered>
@@ -6,11 +62,23 @@
           <div class="text-h5">新規部屋</div>
         </q-card-section>
         <q-separator></q-separator>
+        <q-linear-progress indeterminate v-if="loading" />
         <q-card-section>
-          <room-form new-room :new-room-building-id="buildingId" />
+          <room-form
+            new-room
+            :room-building="simplifiedBuilding"
+            v-if="simplifiedBuilding.id && simplifiedBuilding.name"
+            ref="form"
+          />
         </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">
+          <q-btn
+            style="width: 100px"
+            color="negative"
+            label="取消"
+            @click="$router.back()"
+          ></q-btn>
           <q-btn
             style="width: 100px"
             color="primary"
@@ -22,28 +90,3 @@
     </q-card>
   </q-page>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import RoomForm from 'components/room/RoomForm.vue';
-
-export default defineComponent({
-  name: 'RoomCreatePage',
-  components: { RoomForm },
-  methods: {
-    save() {
-      this.$router.push({ name: 'building-detail', params: { id: this.buildingId } });
-    },
-  },
-  computed: {
-    buildingId() {
-      const id = this.$route.params.buildingId;
-      if (typeof id != 'string') {
-        throw new Error('Invalid building id');
-      }
-      return id;
-    },
-  }
-});
-</script>
-

@@ -12,17 +12,29 @@ export type FileModel = Partial<
   }
 >
 
+const defaultFormModel: RoomFormModel = {
+  building: {},
+}
+
+const defaultFileModel: FileModel = {}
+
 export const useRoomStore = defineStore('room', {
   state: () => ({
-    formModel: {} as RoomFormModel,
-    fileModel: {} as FileModel,
+    formModel: defaultFormModel as RoomFormModel,
+    fileModel: defaultFileModel as FileModel,
   }),
   actions: {
     async getRoomDetail(id: string) {
       this.formModel = await api.getRoom(id);
     },
+    async createRoom(data: RoomInRequest) {
+      await api.createRoom(data);
+    },
+    async updateRoom(id: string, data: RoomInRequest) {
+      await api.updateRoom(data, id);
+    },
     resetFormModel() {
-      this.formModel = {};
+      this.formModel = defaultFormModel;
     },
     resetFileModel() {
       this.fileModel = {} as FileModel;

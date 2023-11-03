@@ -78,7 +78,6 @@ export const useBuildingStore = defineStore('building', {
     },
 
     async getBuildingDetail(id: string) {
-      this.reset();
       this.formModel = await api.getBuilding(id);
     },
 

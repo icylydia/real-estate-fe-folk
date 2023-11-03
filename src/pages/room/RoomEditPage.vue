@@ -1,3 +1,6 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <q-page padding>
     <q-card bordered>

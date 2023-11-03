@@ -1,6 +1,24 @@
 import { RoomInResponse } from 'src/api';
 
 export const useRoom = () => {
+  const roomLayoutUnitOptions: { label: string, value: string }[] = [
+    {
+      label: 'R',
+      value: 'R',
+    },
+    {
+      label: 'K',
+      value: 'K',
+    },
+    {
+      label: 'DK',
+      value: 'DK',
+    },
+    {
+      label: 'LDK',
+      value: 'LDK',
+    },
+  ];
   const fileCategoryOptions:  { label: string, value: string }[] = [
     {
       label: '売買契約',
@@ -55,6 +73,7 @@ export const useRoom = () => {
     }
   }
   return {
+    roomLayoutUnitOptions,
     fileCategoryOptions,
     contractStatusToChipProps,
   }

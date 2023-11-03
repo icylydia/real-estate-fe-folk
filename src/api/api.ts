@@ -1838,11 +1838,11 @@ export interface RentalContractListResponse extends PaginationResponse {
  */
 export interface RoomBase {
   /**
-   * 建筑ID
-   * @type {string}
+   *
+   * @type {BuildingInResponse}
    * @memberof RoomBase
    */
-  buildingId?: string;
+  building?: BuildingInResponse;
   /**
    * 房间名称
    * @type {string}
@@ -1861,6 +1861,18 @@ export interface RoomBase {
    * @memberof RoomBase
    */
   monthlyRent?: number;
+  /**
+   * 押金/敷金
+   * @type {number}
+   * @memberof RoomBase
+   */
+  deposit?: number;
+  /**
+   * 礼金/礼金
+   * @type {number}
+   * @memberof RoomBase
+   */
+  keyMoney?: number;
   /**
    * 修缮基金/修繕積立金
    * @type {number}
@@ -1902,13 +1914,13 @@ export interface RoomBase {
    * @type {number}
    * @memberof RoomBase
    */
-  contractRenewRemindBefore?: number;
+  promptUpdate?: number;
   /**
    * 备注/備考
    * @type {string}
    * @memberof RoomBase
    */
-  miscellaneous?: string;
+  note?: string;
 }
 
 /**
