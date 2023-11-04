@@ -66,6 +66,7 @@ const onCancel = () => {
 <template>
   <q-page padding>
     <q-card bordered>
+      <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
         <building-form ref="form" />
       </q-card-section>

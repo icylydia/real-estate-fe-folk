@@ -1,11 +1,70 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import RoomForm from 'components/room/RoomForm.vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useRoomStore } from 'stores/room-store';
+import useErrorHandler from 'components/app/useErrorHandler';
+
+const loading = ref(false);
+const form = ref<InstanceType<typeof RoomForm>>();
+const { toastHandler } = useErrorHandler();
+const router = useRouter();
+
+const roomId = computed(() => {
+  const id = useRoute().params.id;
+  if (typeof id != 'string') {
+    throw new Error('Invalid room id');
+  }
+  return id;
+});
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    useRoomStore().resetFormModel();
+    await useRoomStore().getRoomDetail(roomId.value);
+  } catch (error) {
+    toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
+});
+
+const onSave = async () => {
+  const validation = await form.value?.validate();
+  if (!validation.valid) {
+    return;
+  }
+  loading.value = true;
+  try {
+    const data = validation.values;
+    const newRoom = {
+      ...useRoomStore().formModel,
+      ...data,
+    };
+    await useRoomStore().updateRoom(roomId.value, newRoom);
+    await router.push({
+      name: 'room-detail',
+      params: { id: roomId.value },
+    });
+  } catch (error) {
+    toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const onCancel = () => {
+  router.back();
+};
 </script>
 
 <template>
   <q-page padding>
     <q-card bordered>
+      <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <room-form />
+        <room-form ref="form" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
@@ -13,64 +72,17 @@
           style="width: 100px"
           color="negative"
           label="取消"
-          @click="cancel"
+          @click="onCancel"
           :disable="loading"
         />
         <q-btn
           style="width: 100px"
           color="primary"
           label="保存"
-          @click="save"
+          @click="onSave"
           :disable="loading"
         />
       </q-card-actions>
     </q-card>
   </q-page>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import RoomForm from 'components/room/RoomForm.vue';
-import { mapActions } from 'pinia';
-import { useRoomStore } from 'stores/room-store';
-
-export default defineComponent({
-  name: 'RoomEditPage',
-  components: { RoomForm },
-  data() {
-    return {
-      loading: false,
-    }
-  },
-  async mounted() {
-    try {
-      this.loading = true;
-      this.resetFormModel();
-      await this.getRoomDetail(this.roomId);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.loading = false;
-    }
-  },
-  methods: {
-    ...mapActions(useRoomStore, ['getRoomDetail', 'resetFormModel']),
-    save() {
-      this.$router.push({ name: 'room-detail', params: { id: this.roomId } });
-    },
-    cancel() {
-      this.$router.push({ name: 'room-detail', params: { id: this.roomId } });
-    },
-  },
-  computed: {
-    roomId() {
-      const id = this.$route.params.id;
-      if (typeof id != 'string') {
-        throw new Error('Invalid room id');
-      }
-      return id;
-    },
-  }
-})
-</script>
-

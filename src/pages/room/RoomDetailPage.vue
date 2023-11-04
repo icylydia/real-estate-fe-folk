@@ -5,10 +5,12 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useRoomStore } from 'stores/room-store';
 import { storeToRefs } from 'pinia';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const route = useRoute()
 const router = useRouter()
+const { toastHandler } = useErrorHandler();
 
 const { formModel: room } = storeToRefs(useRoomStore());
 
@@ -26,7 +28,7 @@ onMounted(async () => {
     useRoomStore().resetFormModel();
     await useRoomStore().getRoomDetail(roomId.value);
   } catch (error) {
-    console.log(error);
+    toastHandler(error);
   } finally {
     loading.value = false;
   }
