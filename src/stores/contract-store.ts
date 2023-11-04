@@ -40,11 +40,6 @@ export const useContractStore = defineStore('contract', {
     entrustContractFormModel: defaultEntrustContractFormModel,
   }),
   actions: {
-    reset() {
-      // TODO: remove this method
-      this.rentalContractList = [];
-      this.entrustContractList = [];
-    },
     async getRentalContractList(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string) {
       const resp = await api.getRentalContracts(itemsPerPage, page, buildingId, roomId, tenantId);
       this.rentalContractList = resp.items ?? [];
@@ -65,9 +60,10 @@ export const useContractStore = defineStore('contract', {
     resetRentalContractFormModel() {
       this.rentalContractFormModel = defaultRentalContractFormModel;
     },
-    async getEntrustContractList() {
-      const resp = await api.getEntrustContracts();
+    async getEntrustContractList(itemsPerPage?: number, page?: number, buildingId?: string, ownerId?: string,) {
+      const resp = await api.getEntrustContracts(itemsPerPage, page, buildingId, ownerId);
       this.entrustContractList = resp.items ?? [];
+      return resp.pagination ?? {} as PaginationResponsePagination;
     },
     async getEntrustContract(id: string) {
       this.entrustContractFormModel = await api.getEntrustContract(id);
