@@ -80,8 +80,8 @@ export const useBuildingStore = defineStore('building', {
       this.formModel = await api.getBuilding(id);
     },
 
-    createBuilding() {
-      return api.createBuilding(this.formModel)
+    createBuilding(data: BuildingInRequest) {
+      return api.createBuilding(data)
     },
 
     updateBuilding(id: string, data: BuildingInRequest) {

@@ -12,15 +12,15 @@ export default defineComponent({
   name: 'QInputCurrency',
   props: {
     modelValue: {
-      type: Number,
+      type: [Number, String],
       default: 0,
     },
   },
   emits: ['update:modelValue'],
   computed: {
     formattedValue(): string {
-      let value = this.modelValue;
-      if (!this.modelValue) value = 0;
+      let value = typeof this.modelValue === 'string' ? parseInt(this.modelValue, 10) : this.modelValue;
+      if (!this.modelValue || !value) value = 0;
       return Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(value);
     },
   },

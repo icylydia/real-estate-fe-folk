@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import RoomForm from 'components/room/RoomForm.vue';
 import { useRoomStore } from 'stores/room-store';
 import { useBuildingStore } from 'stores/building-store';
@@ -10,6 +10,7 @@ import { FormValidationResult } from 'vee-validate';
 const loading = ref(true);
 const { formModel: building } = storeToRefs(useBuildingStore());
 const form = ref<InstanceType<typeof RoomForm>>();
+const router = useRouter();
 
 const buildingId = computed(() => {
   const id = useRoute().params.buildingId;
@@ -46,7 +47,11 @@ const save = async () => {
   loading.value = true;
   try {
     const data = validation.values;
-    await useRoomStore().createRoom(data);
+    const room = await useRoomStore().createRoom(data);
+    await router.push({
+      name: 'room-detail',
+      params: { id: room.id },
+    });
   } catch (error) {
     console.error(error);
   } finally {

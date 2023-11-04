@@ -28,10 +28,10 @@ export const useRoomStore = defineStore('room', {
       this.formModel = await api.getRoom(id);
     },
     async createRoom(data: RoomInRequest) {
-      await api.createRoom(data);
+      return await api.createRoom(data);
     },
     async updateRoom(id: string, data: RoomInRequest) {
-      await api.updateRoom(data, id);
+      return await api.updateRoom(data, id);
     },
     resetFormModel() {
       this.formModel = defaultFormModel;
