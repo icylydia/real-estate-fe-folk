@@ -2,19 +2,16 @@
 import BuildingForm from 'components/building/BuildingForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useBuildingStore } from 'stores/building-store';
-import { storeToRefs } from 'pinia';
+import { FormValidationResult } from 'vee-validate';
+
+const loading = ref(false);
+const form = ref<InstanceType<typeof BuildingForm>>();
 
 const router = useRouter();
 const route = useRoute();
 const { toastHandler } = useErrorHandler();
-const {
-  updateBuilding: callApi,
-} = useBuildingStore();
-const {
-  formModel: building,
-} = storeToRefs(useBuildingStore());
 
 const buildingId = computed(() => {
   const id = route.params.id;
@@ -24,17 +21,45 @@ const buildingId = computed(() => {
   return id;
 });
 
-const onSave = async () => {
+onMounted(async () => {
+  loading.value = true;
   try {
-    await callApi(buildingId.value, building.value);
+    useBuildingStore().resetFormModel();
+    await useBuildingStore().getBuilding(buildingId.value);
+  } catch (error) {
+    toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
+});
+
+const onSave = async () => {
+  const validation: FormValidationResult<any> = await form.value?.validate();
+  if (!validation.valid) {
+    console.log('invalid', validation)
+    return;
+  }
+  try {
+    loading.value = true;
+    const data = validation.values;
+    const newBuilding = {
+      ...useBuildingStore().formModel,
+      ...data,
+    };
+    await useBuildingStore().updateBuilding(buildingId.value, newBuilding);
+    await router.push({
+      name: 'building-detail',
+      params: { id: buildingId.value },
+    });
   } catch (e) {
     toastHandler(e);
+  } finally {
+    loading.value = false;
   }
-  await router.push({ name: 'building-list' });
 };
 
-const onCancel = async () => {
-  await router.push({ name: 'building-list' });
+const onCancel = () => {
+  router.back();
 };
 </script>
 
@@ -42,7 +67,7 @@ const onCancel = async () => {
   <q-page padding>
     <q-card bordered>
       <q-card-section>
-        <building-form />
+        <building-form ref="form" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

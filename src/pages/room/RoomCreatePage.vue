@@ -30,7 +30,7 @@ onMounted(async () => {
   useRoomStore().resetFormModel();
   try {
     useBuildingStore().resetFormModel();
-    await useBuildingStore().getBuildingDetail(buildingId.value);
+    await useBuildingStore().getBuilding(buildingId.value);
   } catch (e) {
     console.error(e);
   } finally {

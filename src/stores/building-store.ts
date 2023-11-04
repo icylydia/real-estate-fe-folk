@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { api } from 'boot/api';
 import _ from 'lodash';
 import {
-  AddressInResponse,
   BuildingDetailResponse,
   BuildingInRequest,
   BuildingListResponseItems, BuildingOptionsResponse,
@@ -77,7 +76,7 @@ export const useBuildingStore = defineStore('building', {
       return resp.pagination ?? {} as PaginationResponsePagination;
     },
 
-    async getBuildingDetail(id: string) {
+    async getBuilding(id: string) {
       this.formModel = await api.getBuilding(id);
     },
 
@@ -109,34 +108,6 @@ export const useBuildingStore = defineStore('building', {
     async getRoomOptions(buildingId: string) {
       const resp = await api.getRoomOptions(buildingId);
       this.roomOptions = resp ?? [];
-    },
-
-    validatePostalCode() {
-      const postalCode = this.formModel.address?.postalCode;
-      if (!postalCode) {
-        return false;
-      }
-      return RegExp(/^\d{3}-\d{4}$/).exec(postalCode) !== null;
-    },
-
-    async updateAddressFromPostalCode() {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const postalCode = this.formModel.address!.postalCode!;
-      const resp = await api.getAddressByPostalCode(postalCode);
-      this.setAddressExceptPostalCode(resp)
-    },
-
-    setAddressExceptPostalCode(address: AddressInResponse) {
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        postalCode,
-        ...addressExceptPostalCode
-      } = address;
-      const originalPostalCode = this.formModel.address?.postalCode;
-      this.formModel.address = {
-        postalCode: originalPostalCode,
-        ...addressExceptPostalCode,
-      }
     },
   },
 });

@@ -1,8 +1,54 @@
+<script setup lang="ts">
+import BuildingForm from 'components/building/BuildingForm.vue';
+import RoomList from 'components/building/RoomList.vue';
+import ContractList from 'components/tenant/ContractList.vue';
+import FileList from 'components/building/FileList.vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useBuildingStore } from 'stores/building-store';
+import useErrorHandler from 'components/app/useErrorHandler';
+
+const loading = ref(false);
+const router = useRouter();
+const { toastHandler } = useErrorHandler();
+
+const buildingId = computed(() => {
+  const id = useRoute().params.id;
+  if (typeof id != 'string') {
+    throw new Error('Invalid building id');
+  }
+  return id;
+});
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    await useBuildingStore().getBuilding(buildingId.value);
+  } catch (error) {
+    toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
+});
+
+const toEdit = async () => {
+  try {
+    await router.push({
+      name: 'building-edit',
+      params: { id: buildingId.value },
+    });
+  } catch (error) {
+    toastHandler(error);
+  }
+}
+</script>
+
 <template>
   <q-page padding>
     <q-card bordered>
+      <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <building-form readonly />
+        <building-form readonly v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
@@ -31,43 +77,3 @@
     </q-card>
   </q-page>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
-import { useBuildingStore } from 'stores/building-store';
-import BuildingForm from 'components/building/BuildingForm.vue';
-import RoomList from 'components/building/RoomList.vue';
-import ContractList from 'components/building/EntrustContractList.vue';
-import FileList from 'components/building/FileList.vue';
-
-export default defineComponent({
-  name: 'BuildingDetailPage',
-  components: { FileList, RoomList, BuildingForm, ContractList },
-  async mounted() {
-    try {
-      await this.getBuildingDetail(this.buildingId);
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  methods: {
-    ...mapActions(useBuildingStore, ['getBuildingDetail']),
-    toEdit() {
-      this.$router.push({ name: 'building-edit', params: { id: this.buildingId } });
-    },
-  },
-  computed: {
-    ...mapState(useBuildingStore, {
-      building: 'formModel',
-    }),
-    buildingId() {
-      const id = this.$route.params.id;
-      if (typeof id != 'string') {
-        throw new Error('Invalid building id');
-      }
-      return id;
-    },
-  }
-});
-</script>

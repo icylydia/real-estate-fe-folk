@@ -4,5 +4,5 @@
   "compilerOptions": {
     "baseUrl": "."
   },
-  "exclude": ["dist", ".quasar", "node_modules"],
+  "exclude": ["dist", ".quasar", "node_modules", "src/api/api.ts"],
 }

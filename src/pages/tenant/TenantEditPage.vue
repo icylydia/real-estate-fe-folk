@@ -5,9 +5,11 @@ import { TenantFormModel, useTenantStore } from 'stores/tenant-store';
 import TenantForm from 'components/tenant/TenantForm.vue';
 import { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof TenantForm>>();
+const { toastHandler } = useErrorHandler();
 
 const route = useRoute();
 const router = useRouter();
@@ -20,7 +22,7 @@ onMounted(async () => {
     useTenantStore().resetFormModel();
     await useTenantStore().getTenant(tenantId);
   } catch (error) {
-    console.error(error);
+    toastHandler(error);
   } finally {
     loading.value = false;
   }
@@ -44,7 +46,7 @@ const save = async () => {
       params: { id: tenantId }
     });
   } catch (error) {
-    console.error(error);
+    toastHandler(error);
   } finally {
     loading.value = false;
   }

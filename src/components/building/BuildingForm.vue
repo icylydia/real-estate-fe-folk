@@ -1,14 +1,20 @@
 <script lang="ts" setup>
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
 import QInputArea from 'components/extension/QInputArea.vue';
-import { QTableProps, useQuasar } from 'quasar';
+import RegularExpenseDialog from 'components/building/RegularExpenseDialog.vue';
+import { QTableProps } from 'quasar';
 import { RegularExpenseBase } from 'src/api';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, ref } from 'vue';
-import RegularExpenseDialog from 'components/building/RegularExpenseDialog.vue';
+import { computed, ref } from 'vue';
 import _ from 'lodash';
 import { useFileStore } from 'stores/file-store';
 import { useBuildingStore } from 'stores/building-store';
+import { toTypedSchema } from '@vee-validate/yup';
+import { object, string, array } from 'yup';
+import { Field, useForm, ValidationResult } from 'vee-validate';
+import { useBuilding } from 'src/utils/building';
+import { useAddressStore } from 'stores/address-store';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const props = defineProps({
   readonly: {
@@ -30,86 +36,13 @@ const mainPhotoName = computed(() => {
   return '';
 });
 
-const buildingStructureOptions = [
-  {
-    label: '木造(W)',
-    value: 'wood',
-  },
-  {
-    label: '鉄骨造(S)',
-    value: 'steel',
-  },
-  {
-    label: '鉄筋コンクリート造(RC)',
-    value: 'reinforcedConcrete',
-  },
-  {
-    label: '鉄筋鉄骨コンクリート造(SRC)',
-    value: 'steelReinforcedConcrete',
-  },
-];
+const {
+  buildingStructureOptions,
+  landRightsOptions,
+  landUseZoneOptions,
+} = useBuilding();
 
-const landRightsOptions = [
-  {
-    label: '所有権',
-    value: 'freehold',
-  },
-  {
-    label: '借地権',
-    value: 'leasehold',
-  }
-]
-
-const landUseZoneOptions = [
-  {
-    label: '第一種低層住居専用地域',
-    value: 'lowRiseResidential1',
-  },
-  {
-    label: '第二種低層住居専用地域',
-    value: 'lowRiseResidential2',
-  },
-  {
-    label: '第一種中高層住居専用地域',
-    value: 'mediumHighRiseResidential1',
-  },
-  {
-    label: '第二種中高層住居専用地域',
-    value: 'mediumHighRiseResidential2',
-  },
-  {
-    label: '第一種住居地域',
-    value: 'residential1',
-  },
-  {
-    label: '第二種住居地域',
-    value: 'residential2',
-  },
-  {
-    label: '準住居地域',
-    value: 'quasiResidential',
-  },
-  {
-    label: '田園住居地域',
-    value: 'ruralResidential',
-  },
-  {
-    label: '近隣商業地域',
-    value: 'neighborhoodCommercial',
-  },
-  {
-    label: '商業地域',
-    value: 'commercial',
-  },
-  {
-    label: '準工業地域',
-    value: 'quasiIndustrial',
-  },
-  {
-    label: '工業地域',
-    value: 'industrial',
-  },
-]
+const { toastHandler } = useErrorHandler();
 
 const regularExpenseColumns: QTableProps['columns'] = (() => {
   let columns: QTableProps['columns'] = [
@@ -179,37 +112,35 @@ const editRegularExpense = (index: number) => {
   showDialog.value = true;
 }
 
-const $q = useQuasar();
-const {
-  validatePostalCode,
-  updateAddressFromPostalCode,
-} = useBuildingStore();
 const {
   defaultMainPhotoUrl,
 } = storeToRefs(useFileStore());
 
-onMounted(() => {
-  console.log('mounted');
-  console.log(defaultMainPhotoUrl.value);
-});
-
 const searchAddress = async () => {
-  if (!validatePostalCode()) {
-    $q.notify({
-      type: 'negative',
-      message: '郵便番号は不正です',
-    });
+  const validationResult: ValidationResult = await validateField('address.postalCode');
+  const postalCode = _.get(values, 'address.postalCode');
+  if (!validationResult.valid || !postalCode) {
     return;
   }
   try {
-    await updateAddressFromPostalCode();
+    const address = await useAddressStore().getAddressByPostalCode(postalCode);
+    setValues({
+      address: {
+        postalCode: address.postalCode,
+        prefectureId: address.prefectureId,
+        prefectureName: address.prefectureName,
+        detailAddress1: address.detailAddress1,
+        detailAddress2: address.detailAddress2,
+        detailAddress3: address.detailAddress3,
+      },
+    });
   } catch (e) {
-    //
+    toastHandler(e);
   }
 };
 
 const { uploadMainPhoto } = useFileStore();
-const mainPhoto = ref<File|null>( null);
+const mainPhoto = ref<File|null>(null);
 const uploadingPhoto = ref(false);
 const onMainPhotoChange = async (file: File) => {
   uploadingPhoto.value = true;
@@ -223,6 +154,64 @@ const onMainPhotoChange = async (file: File) => {
     uploadingPhoto.value = false;
   }
 }
+
+/**********************
+ * Form validation
+ **********************/
+const validationSchema = toTypedSchema(object({
+  id: string().notRequired().nullable().label('物件番号'),
+  name: string().required().label('物件名'),
+  image: string().notRequired().nullable().label('物件画像'),
+  description: string().notRequired().nullable().label('物件説明'),
+  price: string().notRequired().nullable().label('価格'),
+  grossYield: string().notRequired().nullable().label('表面利回り'),
+  grossArea: string().notRequired().nullable().label('建物面積'),
+  landArea: string().notRequired().nullable().label('土地面積'),
+  buildingStructure: string().notRequired().nullable().label('建物構造'),
+  floorsAboveGround: string().notRequired().nullable().label('地上階数'),
+  floorsUnderGround: string().notRequired().nullable().label('地下階数'),
+  completionDate: string().notRequired().nullable().label('新築年月日'),
+  totalUnits: string().notRequired().nullable().label('総戸数'),
+  landRights: string().notRequired().nullable().label('土地权利'),
+  landUseZone: string().notRequired().nullable().label('用途地域'),
+  buildingCoverageRatio: string().notRequired().nullable().label('建ぺい率'),
+  floorAreaRatio: string().notRequired().nullable().label('容積率'),
+  defaultPromptUpdate: string().notRequired().nullable().label('催促期間（Nヶ月前）'),
+  note: string().notRequired().nullable().label('備考'),
+  address: object({
+    postalCode: string()
+      .postalCode()
+      .nullable()
+      .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
+      .label('郵便番号'),
+    prefectureId: string().notRequired().nullable().label('都道府県ID'),
+    prefectureName: string().notRequired().nullable().label('都道府県'),
+    detailAddress1: string().notRequired().nullable().label('市区町村'),
+    detailAddress2: string().notRequired().nullable().label('丁目'),
+    detailAddress3: string().notRequired().nullable().label('それ以降の住所'),
+  }).notRequired().nullable().label('住所'),
+  regularExpenses: array()
+    .of(object({
+      name: string().notRequired().nullable().label('項目'),
+      months: string().notRequired().nullable().label('月'),
+    }))
+    .notRequired()
+    .nullable()
+    .label('経常支出'),
+}));
+
+const initialValues: any = computed(() => {
+  return building.value;
+});
+
+const { validate, validateField, values, setValues } = useForm({
+  validationSchema,
+  initialValues,
+});
+
+defineExpose({
+  validate,
+})
 </script>
 
 <template>
@@ -232,7 +221,11 @@ const onMainPhotoChange = async (file: File) => {
   <q-list class="row">
     <q-item class="col-12" v-if="!newBuilding">
       <q-item-section>
-        <q-input v-model="building.id" label="物件ID" readonly />
+        <q-input
+          v-model="building.id"
+          label="物件ID"
+          readonly
+        />
       </q-item-section>
     </q-item>
     <q-item class="col-12">
@@ -256,137 +249,286 @@ const onMainPhotoChange = async (file: File) => {
           :display-value="mainPhotoName"
         >
           <template #prepend>
-            <q-icon name="sym_r_photo" />
+            <q-icon name="sym_r_photo"/>
           </template>
         </q-file>
       </q-item-section>
     </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.name" label="物件名" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input-currency v-model="building.price" label="価格" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.grossYield" label="表面利回り" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input-area v-model="building.grossArea" label="建物面積" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input-area v-model="building.landArea" label="土地面積" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-select
-          v-model="building.buildingStructure"
-          emit-value
-          map-options
-          label="建物構造"
-          :options="buildingStructureOptions"
-          clearable
-          :readonly="readonly"
-        />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.floorsAboveGround" label="地上階数" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.floorsUnderGround" label="地下階数" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.completionDate" label="新築年月日" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.totalUnits" label="総戸数" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-select
-          v-model="building.landRights"
-          emit-value
-          map-options
-          label="土地权利"
-          :options="landRightsOptions"
-          clearable
-          :readonly="readonly"
-        />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-select
-          v-model="building.landUseZone"
-          emit-value
-          map-options
-          label="用途地域"
-          :options="landUseZoneOptions"
-          clearable
-          :readonly="readonly"
-        />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.buildingCoverageRatio" label="建ぺい率" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.floorAreaRatio" label="容積率" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.promptUpdate" label="催促期間（Nヶ月前）" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-12">
-      <q-item-section>
-        <q-input
-          v-model="building.comments"
-          label="備考"
-          autogrow
-          clearable
-          :readonly="readonly"
-        />
-      </q-item-section>
-    </q-item>
+    <Field name="name" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="物件名"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="description" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="物件説明"
+            autogrow
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="price" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input-currency
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="価格"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="grossYield" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="表面利回り"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="grossArea" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input-area
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="建物面積"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="landArea" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input-area
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="土地面積"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="buildingStructure" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            emit-value
+            map-options
+            label="建物構造"
+            :options="buildingStructureOptions"
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="floorsAboveGround" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="地上階数"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="floorsUnderGround" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="地下階数"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="completionDate" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="新築年月日"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="totalUnits" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="総戸数"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="landRights" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            emit-value
+            map-options
+            label="土地权利"
+            :options="landRightsOptions"
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="landUseZone" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            emit-value
+            map-options
+            label="用途地域"
+            :options="landUseZoneOptions"
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="buildingCoverageRatio" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="建ぺい率"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="floorAreaRatio" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="容積率"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="defaultPromptUpdate" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="催促期間（Nヶ月前）"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="note" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="備考"
+            autogrow
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
   </q-list>
-  <q-separator class="q-my-md" />
+  <q-separator class="q-my-md"/>
   <div class="q-mt-md text-h6">
-    物件位置情報{{readonly ? '（閲覧）' : '（編集）'}}
+    物件位置情報{{ readonly ? '（閲覧）' : '（編集）' }}
   </div>
   <q-list class="row">
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input
-          v-model="building.address!.postalCode"
-          label="郵便番号"
-          placeholder="xxx-xxxx"
-          :readonly="readonly"
-        />
-      </q-item-section>
-    </q-item>
+    <Field name="address.postalCode" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="郵便番号"
+            hint="フォーマット: 110-0001"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
     <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <q-item-section>
         <q-btn
@@ -399,47 +541,83 @@ const onMainPhotoChange = async (file: File) => {
         />
       </q-item-section>
     </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.address!.prefecture" label="都道府県" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-item-section>
-        <q-input v-model="building.address!.detailAddress1" label="市区町村" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-12">
-      <q-item-section>
-        <q-input v-model="building.address!.detailAddress2" label="丁目" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
-    <q-item class="col-12">
-      <q-item-section>
-        <q-input v-model="building.address!.detailAddress3" label="それ以降の住所" :readonly="readonly" />
-      </q-item-section>
-    </q-item>
+    <Field name="address.prefectureName" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="都道府県"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="address.detailAddress1" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="市区町村"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="address.detailAddress2" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="丁目"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="address.detailAddress3" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="それ以降の住所"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
   </q-list>
-  <q-separator class="q-mt-md" />
+  <q-separator class="q-mt-md"/>
   <div class="fit row wrap justify-between items-start content-start">
     <div class="q-mt-md text-h6">
-      経常支出{{readonly ? '（閲覧）' : '（編集）'}}
+      経常支出{{ readonly ? '（閲覧）' : '（編集）' }}
     </div>
     <q-btn
-      v-if="!readonly"
-      class="q-mt-md"
-      color="primary"
-      label="追加"
-      icon="sym_r_add"
-      @click="showAddingDialog"
+        v-if="!readonly"
+        class="q-mt-md"
+        color="primary"
+        label="追加"
+        icon="sym_r_add"
+        @click="showAddingDialog"
     />
   </div>
   <q-table
-    :rows="building.regularExpenses"
-    :columns="regularExpenseColumns"
-    flat
-    hide-pagination
-    :pagination="{
+      :rows="building.regularExpenses"
+      :columns="regularExpenseColumns"
+      flat
+      hide-pagination
+      :pagination="{
       rowsPerPage: 0,
     }"
   >
@@ -450,16 +628,16 @@ const onMainPhotoChange = async (file: File) => {
     </template>
     <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: Number }">
       <q-td class="text-right">
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRegularExpense(rowIndex)" />
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRegularExpense(rowIndex)" />
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRegularExpense(rowIndex)"/>
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRegularExpense(rowIndex)"/>
       </q-td>
     </template>
   </q-table>
   <regular-expense-dialog
-    ref="regularExpenseDialog"
-    :show="showDialog"
-    :mode="dialogMode"
-    @update:show="showDialog = $event"
-    @submit="handleDialogSubmit"
+      ref="regularExpenseDialog"
+      :show="showDialog"
+      :mode="dialogMode"
+      @update:show="showDialog = $event"
+      @submit="handleDialogSubmit"
   />
 </template>
