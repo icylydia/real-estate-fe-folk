@@ -87,7 +87,7 @@ const router = useRouter();
 const toNewContract = async () => {
   try {
     await router.push({
-      name: 'contract-create',
+      name: 'entrust-contract-create',
     });
   } catch (e) {
     console.error(e);

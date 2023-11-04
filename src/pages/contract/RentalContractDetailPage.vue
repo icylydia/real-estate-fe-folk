@@ -1,35 +1,37 @@
 <script setup lang="ts">
 import RentalContractForm from 'components/contract/RentalContractForm.vue';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useContractStore } from 'stores/contract-store';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
-const route = useRoute()
-const contractId = ref(route.params.id)
 const router = useRouter()
+const { toastHandler } = useErrorHandler();
+
+const contractId = computed(() => {
+  const id = useRoute().params.id;
+  if (typeof id != 'string') {
+    throw new Error('Invalid building id');
+  }
+  return id;
+});
 
 const toEdit = async () => {
   try {
-    if (typeof contractId.value != 'string') {
-      throw new Error('Invalid tenant id');
-    }
     await router.push({ name: 'rental-contract-edit', params: { id: contractId.value } });
   } catch (error) {
-    console.log(error);
+    toastHandler(error);
   }
 };
 
 onMounted(async () => {
   loading.value = true;
   try {
-    if (typeof contractId.value != 'string') {
-      throw new Error('Invalid tenant id');
-    }
     useContractStore().resetRentalContractFormModel();
     await useContractStore().getRentalContract(contractId.value);
   } catch (error) {
-    console.log(error);
+    toastHandler(error);
   } finally {
     loading.value = false;
   }

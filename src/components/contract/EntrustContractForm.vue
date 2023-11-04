@@ -1,0 +1,645 @@
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { useContractStore } from 'stores/contract-store';
+import { toTypedSchema } from '@vee-validate/yup';
+import { object, string } from 'yup';
+import { computed, ref } from 'vue';
+import { Field, useForm } from 'vee-validate';
+import { useBuildingStore } from 'stores/building-store';
+import { useOwnerStore } from 'stores/owner-store';
+import { useEntrustContract } from 'src/utils/entrust-contract';
+
+const { benefitTypeOptions } = useEntrustContract();
+
+defineProps({
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  newContract: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
+
+/**********************
+ * Building select
+ **********************/
+const buildingOptions = ref<Array<{
+  name: string | undefined;
+  id: string | number | undefined;
+}> | undefined>(undefined);
+
+const getAllBuildingOptions = () => {
+  return useBuildingStore().buildingOptions.map((v) => {
+    return {
+      name: v.name || '',
+      id: v.id || '',
+    };
+  });
+};
+
+enum BuildingLoadingStatus {
+  BeforeLoad = 0,
+  Loading = 1,
+  Loaded = 2,
+  Aborted = 3,
+}
+
+const buildingsStatus = ref<BuildingLoadingStatus>(BuildingLoadingStatus.BeforeLoad);
+const buildingFilterFn = (val: string, update: () => void) => {
+  if (
+    buildingsStatus.value === BuildingLoadingStatus.BeforeLoad
+    || buildingsStatus.value === BuildingLoadingStatus.Aborted
+  ) {
+    buildingsStatus.value = BuildingLoadingStatus.Loading;
+    useBuildingStore()
+      .getBuildingOptions()
+      .then(() => {
+        buildingsStatus.value = BuildingLoadingStatus.Loaded;
+        buildingOptions.value = getAllBuildingOptions();
+        update();
+      })
+      .catch(() => {
+        buildingsStatus.value = BuildingLoadingStatus.Aborted;
+      });
+  }
+  if (val === '') {
+    buildingOptions.value = getAllBuildingOptions();
+  } else {
+    buildingOptions.value = getAllBuildingOptions().filter((v) => {
+      return v.name && v.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
+    });
+  }
+  update();
+};
+
+/**********************
+ * Owner select
+ **********************/
+const ownerOptions = ref<Array<{
+  lastName: string | undefined;
+  firstName: string | undefined;
+  id: string | number | undefined;
+}> | undefined>(undefined);
+
+const getAllOwnerOptions = () => {
+  return useOwnerStore().ownerOptions.map((v) => {
+    return {
+      id: v.id || '',
+      lastName: v.lastName || '',
+      firstName: v.firstName || '',
+    };
+  });
+};
+
+enum OwnerLoadingStatus {
+  BeforeLoad = 0,
+  Loading = 1,
+  Loaded = 2,
+  Aborted = 3,
+}
+
+const ownersStatus = ref<OwnerLoadingStatus>(OwnerLoadingStatus.BeforeLoad);
+
+const ownerFilterFn = (val: string, update: () => void) => {
+  if (
+    ownersStatus.value === OwnerLoadingStatus.BeforeLoad
+    || ownersStatus.value === OwnerLoadingStatus.Aborted
+  ) {
+    ownersStatus.value = OwnerLoadingStatus.Loading;
+    useOwnerStore()
+      .getOwnerOptions()
+      .then(() => {
+        ownersStatus.value = OwnerLoadingStatus.Loaded;
+        ownerOptions.value = getAllOwnerOptions();
+        update();
+      })
+      .catch(() => {
+        ownersStatus.value = OwnerLoadingStatus.Aborted;
+      });
+  }
+  if (val === '') {
+    ownerOptions.value = getAllOwnerOptions();
+  } else {
+    ownerOptions.value = getAllOwnerOptions().filter((v) => {
+      return v.lastName && v.lastName.toLowerCase().indexOf(val.toLowerCase()) > -1
+        || v.firstName && v.firstName.toLowerCase().indexOf(val.toLowerCase()) > -1
+        || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(val.toLowerCase()) > -1;
+    });
+  }
+  update();
+};
+
+/**********************
+ * Form validation
+ **********************/
+const validationSchema = toTypedSchema(object({
+  id: string().nullable().notRequired().label('管理番号'),
+  title: string().required().label('タイトル'),
+  description: string().nullable().notRequired().label('説明'),
+  building: object({
+    id: string().required().label('物件ID'),
+  }).required().label('物件'),
+  owner: object({
+    id: string().required().label('オーナーID'),
+  }).required().label('オーナー'),
+  startDate: string()
+    .date()
+    .transform((value) => value ?? null)
+    .required()
+    .label('契約開始日'),
+  endDate: string()
+    .date()
+    .transform((value) => value ?? null)
+    .required()
+    .label('契約終了日'),
+  benefitType: string().required().label('利益区分'),
+  benefitAmount: string().nullable().notRequired().label('利益金額'),
+  benefitPercentage: string().nullable().notRequired().label('利益率'),
+  remittanceType: string().required().label('振込区分'),
+  japanBank: object({
+    bankName: string().nullable().notRequired().label('銀行名'),
+    branchName: string().nullable().notRequired().label('支店名'),
+    accountType: string().nullable().notRequired().label('口座種別'),
+    accountNumber: string().nullable().notRequired().label('口座番号'),
+    accountHolder: string().nullable().notRequired().label('口座名義'),
+  }).nullable().notRequired().label('日本銀行'),
+  overseasBank: object({
+    country: string().nullable().notRequired().label('国名'),
+    bankCode: string().nullable().notRequired().label('銀行コード'),
+    swiftCode: string().nullable().notRequired().label('SWIFTコード'),
+    bankName: string().nullable().notRequired().label('銀行名'),
+    ibanCode: string().nullable().notRequired().label('IBANコード'),
+    currency: string().nullable().notRequired().label('通貨'),
+    accountHolder: string().nullable().notRequired().label('口座名義'),
+    accountHolderNickname: string().nullable().notRequired().label('口座名義（愛称）'),
+    postCode: string().nullable().notRequired().label('郵便番号'),
+    address: string().nullable().notRequired().label('住所'),
+    telephone: string().nullable().notRequired().label('電話番号'),
+    email: string().nullable().notRequired().label('メールアドレス'),
+  }).nullable().notRequired().label('海外銀行'),
+}));
+
+const initialValues: any = computed( () => {
+  return contract.value;
+});
+
+const { validate, values, setFieldValue } = useForm({
+  validationSchema,
+  initialValues,
+});
+
+defineExpose({
+  validate,
+})
+
+const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
+  setFieldValue('benefitAmount', undefined, false);
+  setFieldValue('benefitRate', undefined, false);
+  callback(event);
+}
+</script>
+
+<template>
+  <div class="text-h6" v-if="!newContract">
+    管理委託契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+  </div>
+  <q-list class="row">
+    <q-item class="col-12" v-if="!newContract">
+      <q-item-section>
+        <q-input v-model="contract.id" label="管理番号" readonly />
+      </q-item-section>
+    </q-item>
+    <Field name="title" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="タイトル"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="description" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="説明"
+            autogrow
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="building" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="物件"
+            :options="buildingOptions"
+            option-label="name"
+            option-value="id"
+            @filter="buildingFilterFn"
+            :readonly="readonly"
+            use-input
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="owner" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="入居者"
+            :options="ownerOptions"
+            :option-label="item => item.lastName + ' ' + item.firstName"
+            option-value="id"
+            @filter="ownerFilterFn"
+            :readonly="readonly"
+            use-input
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="startDate" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="契約開始日"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="endDate" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="契約終了日"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="benefitType" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="event => onBenefitTypeChange(event, handleChange)"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            emit-value
+            map-options
+            label="利益区分"
+            :options="benefitTypeOptions"
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="benefitAmount" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="利益金額"
+            :readonly="readonly"
+            :disable="values.benefitType !== 'fixed'"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="benefitPercentage" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="利益割合"
+            :readonly="readonly"
+            :disable="values.benefitType !== 'percentage'"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="remittanceType" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <div class="q-gutter-sm">
+            <q-radio
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="日本銀行"
+              val="japan"
+              :readonly="readonly"
+            />
+            <q-radio
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="海外銀行"
+              val="overseas"
+              :readonly="readonly"
+            />
+          </div>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <template v-if="values.remittanceType == 'japan'">
+      <Field name="japanBank.bankName" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="銀行名"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="japanBank.branchName" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              label="支店名"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="japanBank.accountType" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <q-item-section>
+            <div class="q-gutter-sm">
+              <q-radio
+                :model-value="value"
+                @update:model-value="handleChange"
+                :error-message="errorMessage"
+                :error="!!errorMessage"
+                label="普通"
+                val="savings"
+                :readonly="readonly"
+              />
+              <q-radio
+                :model-value="value"
+                @update:model-value="handleChange"
+                :error-message="errorMessage"
+                :error="!!errorMessage"
+                label="当座"
+                val="current"
+                :readonly="readonly"
+              />
+            </div>
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="japanBank.accountNumber" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              label="口座番号"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="japanBank.accountHolder" #="{errorMessage, value, handleChange}">
+        <q-item class="col-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              label="口座名義"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+    </template>
+    <template v-if="values.remittanceType == 'overseas'">
+      <Field name="overseasBank.country" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="国名"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.bankCode" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="銀行コード"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.swiftCode" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="SWIFTコード"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.bankName" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="銀行名"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.ibanCode" #="{errorMessage, value, handleChange}">
+        <q-item class="col-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="IBANコード"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.currency" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="通貨"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.accountHolder" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="口座名義"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.accountHolderNickname" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="口座名義（ニックネーム）"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.postCode" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="郵便番号"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.address" #="{errorMessage, value, handleChange}">
+        <q-item class="col-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="住所"
+              :readonly="readonly"
+              autogrow
+              clearable
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.telephone" #="{errorMessage, value, handleChange}">
+        <q-item class="col-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="電話番号"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="overseasBank.email" #="{errorMessage, value, handleChange}">
+        <q-item class="col-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              label="メールアドレス"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+    </template>
+  </q-list>
+</template>

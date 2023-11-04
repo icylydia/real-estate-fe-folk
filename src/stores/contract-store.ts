@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { api } from 'boot/api';
 import {
   ContractBase,
-  EntrustContractBase,
+  EntrustContractBase, EntrustContractInRequest,
   EntrustContractInResponse, PaginationResponsePagination,
   RentalContractBase,
   RentalContractInRequest,
@@ -13,6 +13,10 @@ export type RentalContractFormModel = Partial<
   RentalContractInResponse
 >
 
+export type EntrustContractFormModel = Partial<
+  EntrustContractInResponse
+>
+
 const defaultRentalContractFormModel: RentalContractFormModel = {
   building: undefined,
   room: undefined,
@@ -20,13 +24,27 @@ const defaultRentalContractFormModel: RentalContractFormModel = {
   promptRemind: true,
 }
 
+const defaultEntrustContractFormModel: EntrustContractFormModel = {
+  building: undefined,
+  owner: undefined,
+  remittanceType: EntrustContractBase.RemittanceTypeEnum.Overseas,
+  japanBank: undefined,
+  overseasBank: undefined,
+}
+
 export const useContractStore = defineStore('contract', {
   state: () => ({
     rentalContractList: [] as RentalContractInResponse[],
     entrustContractList: [] as EntrustContractInResponse[],
     rentalContractFormModel: defaultRentalContractFormModel,
+    entrustContractFormModel: defaultEntrustContractFormModel,
   }),
   actions: {
+    reset() {
+      // TODO: remove this method
+      this.rentalContractList = [];
+      this.entrustContractList = [];
+    },
     async getRentalContractList(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string) {
       const resp = await api.getRentalContracts(itemsPerPage, page, buildingId, roomId, tenantId);
       this.rentalContractList = resp.items ?? [];
@@ -44,16 +62,27 @@ export const useContractStore = defineStore('contract', {
     async deleteRentalContract(id: string) {
       return api.deleteRentalContract(id);
     },
+    resetRentalContractFormModel() {
+      this.rentalContractFormModel = defaultRentalContractFormModel;
+    },
     async getEntrustContractList() {
       const resp = await api.getEntrustContracts();
       this.entrustContractList = resp.items ?? [];
     },
-    reset() {
-      this.rentalContractList = [];
-      this.entrustContractList = [];
+    async getEntrustContract(id: string) {
+      this.entrustContractFormModel = await api.getEntrustContract(id);
     },
-    resetRentalContractFormModel() {
-      this.rentalContractFormModel = defaultRentalContractFormModel;
+    async createEntrustContract(data: EntrustContractInRequest) {
+      return api.createEntrustContract(data);
+    },
+    async updateEntrustContract(id: string, data: EntrustContractInRequest) {
+      return api.updateEntrustContract(data, id);
+    },
+    async deleteEntrustContract(id: string) {
+      return api.deleteEntrustContract(id);
+    },
+    resetEntrustContractFormModel() {
+      this.entrustContractFormModel = defaultEntrustContractFormModel;
     },
     statusToChipProps(status?: ContractBase.StatusEnum) {
       if (!status) {

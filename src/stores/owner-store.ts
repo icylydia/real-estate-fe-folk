@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia';
-import {OwnerDetailResponse, OwnerInRequest, OwnerInResponse, PaginationResponsePagination} from 'src/api';
+import {
+  OwnerDetailResponse,
+  OwnerInRequest,
+  OwnerInResponse,
+  OwnerOptionsResponse,
+  PaginationResponsePagination
+} from 'src/api';
 import { api } from 'boot/api';
 
 export type OwnerFormModel = Partial<
@@ -12,9 +18,11 @@ export const useOwnerStore = defineStore('owner', {
   state: () => ({
     ownerList: [] as OwnerInResponse[],
     formModel: defaultFormModel,
+    ownerOptions: [] as OwnerOptionsResponse[],
   }),
   actions: {
     reset() {
+      // TODO: remove this method
       this.ownerList = [];
       this.formModel = defaultFormModel;
     },
@@ -34,6 +42,12 @@ export const useOwnerStore = defineStore('owner', {
     },
     async deleteOwner(id: string) {
       await api.deleteOwner(id);
+    },
+    resetOwnerOptions() {
+      this.ownerOptions = [];
+    },
+    async getOwnerOptions() {
+      this.ownerOptions = await api.getOwnerOptions() ?? [];
     },
   },
 });

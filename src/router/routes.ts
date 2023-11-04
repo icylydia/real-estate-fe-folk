@@ -47,7 +47,7 @@ const routes: RouteRecordRaw[] = [
         name: 'room-edit',
         component: () => import('pages/room/RoomEditPage.vue'),
       },
-      // 契約
+      // 賃貸借契約
       {
         path: 'rental-contracts',
         name: 'rental-contract-list',
@@ -68,25 +68,21 @@ const routes: RouteRecordRaw[] = [
         name: 'rental-contract-edit',
         component: () => import('pages/contract/RentalContractEditPage.vue'),
       },
+      // 管理委託契約
       {
-        path: 'contracts/new',
-        name: 'contract-create',
-        component: () => import('pages/contract/RentalContractCreatePage.vue'),
+        path: 'entrust-contracts/new',
+        name: 'entrust-contract-create',
+        component: () => import('pages/contract/EntrustContractCreatePage.vue'),
       },
       {
-        path: 'contracts/:id',
-        name: 'contract-detail',
-        component: () => import('pages/ConstructingPage.vue'),
+        path: 'entrust-contracts/:id',
+        name: 'entrust-contract-detail',
+        component: () => import('pages/contract/EntrustContractDetailPage.vue'),
       },
       {
-        path: 'contracts/:id/edit',
-        name: 'contract-edit',
-        component: () => import('pages/ConstructingPage.vue'),
-      },
-      {
-        path: 'contracts/:id/promptToUpdate',
-        name: 'contract-prompt-update',
-        component: () => import('pages/ConstructingPage.vue'),
+        path: 'entrust-contracts/:id/edit',
+        name: 'entrust-contract-edit',
+        component: () => import('pages/contract/EntrustContractEditPage.vue'),
       },
       {
         path: 'entrust-contracts',

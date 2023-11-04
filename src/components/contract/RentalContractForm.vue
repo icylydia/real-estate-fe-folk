@@ -8,7 +8,7 @@ import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
 import { useTenantStore } from 'stores/tenant-store';
 
-const props = defineProps({
+defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -223,10 +223,6 @@ const validationSchema = toTypedSchema(object({
 }));
 
 const initialValues: any = computed( () => {
-  if (props.newContract) {
-    useContractStore().resetRentalContractFormModel();
-    return contract.value;
-  }
   return contract.value;
 });
 
@@ -254,7 +250,7 @@ defineExpose({
   <q-list class="row">
     <q-item class="col-12" v-if="!newContract">
       <q-item-section>
-        <q-input v-model="contract.id" label="オーナーID" readonly />
+        <q-input v-model="contract.id" label="管理番号" readonly />
       </q-item-section>
     </q-item>
     <Field name="title" #="{errorMessage, value, field}">

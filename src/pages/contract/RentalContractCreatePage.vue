@@ -49,6 +49,12 @@ onMounted(() => {
       <q-card-actions align="right">
         <q-btn
           style="width: 100px"
+          color="negative"
+          label="取消"
+          @click="$router.back()"
+        ></q-btn>
+        <q-btn
+          style="width: 100px"
           color="primary"
           label="保存"
           @click="save"
