@@ -1412,7 +1412,7 @@ export interface ModelFile {
    * @type {string}
    * @memberof ModelFile
    */
-  uploadTime?: string;
+  uploadedAt?: string;
 }
 
 /**
