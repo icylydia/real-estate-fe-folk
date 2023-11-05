@@ -3,6 +3,7 @@ import EntrustContractForm from 'components/contract/EntrustContractForm.vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useContractStore } from 'stores/contract-store';
+import { FormValidationResult } from 'vee-validate';
 
 
 const loading = ref(false);
@@ -11,7 +12,7 @@ const router = useRouter();
 
 const onSave = async () => {
   try {
-    const validation = await form.value?.validate();
+    const validation: FormValidationResult<any> = await form.value?.validate();
     if (!validation.valid) {
       return;
     }

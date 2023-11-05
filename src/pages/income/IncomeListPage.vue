@@ -109,8 +109,8 @@ const toEdit = async (id: number) => {
 const remove = (income: IncomeInResponse) => {
   console.log(income);
   $q.dialog({
-    title: 'インカム削除',
-    message: `インカム「${income.title} 」を削除しますか？`,
+    title: '収入削除',
+    message: `収入「${income.title} 」を削除しますか？`,
     ok: { label: '確認', color: 'negative'},
     cancel: { label: 'キャンセル', color: 'grey-8'},
     persistent: true,

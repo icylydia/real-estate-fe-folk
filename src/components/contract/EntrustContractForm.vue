@@ -271,7 +271,7 @@ const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="入居者"
+            label="オーナー"
             :options="ownerOptions"
             :option-label="item => item.lastName + ' ' + item.firstName"
             option-value="id"

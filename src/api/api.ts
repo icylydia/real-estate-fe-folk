@@ -1674,29 +1674,29 @@ export interface PaymentBase {
    */
   note?: string;
   /**
-   * 建筑ID
-   * @type {number}
+   *
+   * @type {BuildingInResponse}
    * @memberof PaymentBase
    */
-  buildingId?: number;
+  building?: BuildingInResponse;
   /**
-   * 房间ID
-   * @type {number}
+   *
+   * @type {RoomInResponse}
    * @memberof PaymentBase
    */
-  roomId?: number;
+  room?: RoomInResponse;
   /**
-   * 租客ID
-   * @type {number}
+   *
+   * @type {TenantInResponse}
    * @memberof PaymentBase
    */
-  tenantId?: number;
+  tenant?: TenantInResponse;
   /**
-   * 房东ID
-   * @type {number}
+   *
+   * @type {TenantInResponse}
    * @memberof PaymentBase
    */
-  ownerId?: number;
+  owner?: TenantInResponse;
 }
 
 /**

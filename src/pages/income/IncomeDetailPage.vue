@@ -1,22 +1,33 @@
 <script setup lang="ts">
 import IncomeForm from 'components/payment/IncomeForm.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useIncomeStore } from 'stores/income-store';
 import { storeToRefs } from 'pinia';
 import { IncomeInResponse } from 'src/api';
+import useErrorHandler from 'components/app/useErrorHandler';
 
+const loading = ref(false);
 const router = useRouter();
-const route = useRoute();
-const incomeId = typeof route.params.id == 'string' ? route.params.id : '';
+const { toastHandler } = useErrorHandler();
+const { formModel: income } = storeToRefs(useIncomeStore());
+
+const incomeId = computed(() => {
+  const id = useRoute().params.id;
+  if (typeof id != 'string') {
+    throw new Error('Invalid building id');
+  }
+  return id;
+});
+
 const toEdit = async () => {
   try {
     await router.push({
       name: 'income-edit',
-      params: { id: incomeId },
+      params: { id: incomeId.value },
     });
   } catch (error) {
-    console.log(error);
+    toastHandler(error);
   }
 };
 
@@ -26,21 +37,17 @@ const backToList = async () => {
       name: 'income-list',
     });
   } catch (error) {
-    console.log(error);
+    toastHandler(error);
   }
 };
-
-const loading = ref(false);
-
-const { getIncome } = useIncomeStore();
-const { formModel: income } = storeToRefs(useIncomeStore());
 
 onMounted(async () => {
   loading.value = true;
   try {
-    await getIncome(incomeId);
+    useIncomeStore().resetFormModel();
+    await useIncomeStore().getIncome(incomeId.value);
   } catch (error) {
-    console.log(error);
+    toastHandler(error);
   } finally {
     loading.value = false;
   }

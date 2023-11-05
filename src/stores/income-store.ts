@@ -14,7 +14,12 @@ interface GetIncomeListRequest {
 export type IncomeModel = Partial<
   IncomeInRequest & IncomeInResponse & IncomeDetailResponse
 >
-const defaultFormModel: IncomeModel = {}
+const defaultFormModel: IncomeModel = {
+  building: undefined,
+  room: undefined,
+  owner: undefined,
+  tenant: undefined,
+}
 export const useIncomeStore = defineStore('income', {
   state: () => ({
     searchParams: {} as GetIncomeListRequest,
@@ -22,14 +27,8 @@ export const useIncomeStore = defineStore('income', {
     formModel: defaultFormModel,
   }),
   actions: {
-    reset() {
-      this.searchParams = {
-        itemsPerPage: 15,
-        page: 1,
-        onlyUnconfirmed: false,
-      };
-      this.list = [];
-      this.formModel = {};
+    resetFormModel() {
+      this.formModel = defaultFormModel;
     },
     async getIncomeList(
       itemsPerPage?: number,
