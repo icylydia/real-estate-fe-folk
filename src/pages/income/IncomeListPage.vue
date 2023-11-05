@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, Ref, ref } from 'vue';
 import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useIncomeStore } from 'stores/income-store';
 import { storeToRefs } from 'pinia';
@@ -9,6 +9,13 @@ import { usePayment } from 'src/utils/payment';
 
 const loading = ref(false);
 const $q = useQuasar();
+const {
+  describeCategory: describeIncomeCategory,
+  describeIncomeConfirmStatus: describeConfirmStatus,
+} = usePayment();
+const selectedRows = ref<IncomeInResponse[]>([]);
+const { list: rows, searchParams } = storeToRefs(useIncomeStore());
+const router = useRouter();
 
 const columns: QTableProps['columns'] = [
   {
@@ -55,46 +62,13 @@ const columns: QTableProps['columns'] = [
   },
 ];
 
-const { reset, getIncomeList,deleteIncome } = useIncomeStore();
-const { list: rows, searchParams } = storeToRefs(useIncomeStore());
-
-const loadIncomes = async () => {
-  try {
-    loading.value = true;
-    reset();
-    await getIncomeList({});
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
-};
-
-onMounted(async () => {
-  try {
-    loading.value = true;
-    reset();
-    await getIncomeList({});
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
+onMounted(() => {
+  tableRef.value?.requestServerInteraction();
 });
 
 const search = async () => {
-  try {
-    loading.value = true;
-    selectedRows.value = [];
-    await getIncomeList(searchParams.value);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
+  tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
-
-const router = useRouter();
 
 const toCreate = async () => {
   try {
@@ -145,21 +119,70 @@ const remove = (income: IncomeInResponse) => {
       return;
     }
     try {
-      await deleteIncome(income.id);
+      await useIncomeStore().deleteIncome(income.id);
     } catch (e) {
       console.error(e);
     }
-
-    await loadIncomes();
+    tableRef.value?.requestServerInteraction();
   });
 };
 
-const {
-  describeCategory: describeIncomeCategory,
-  describeIncomeConfirmStatus: describeConfirmStatus,
-} = usePayment();
+/**********************
+ * Pagination
+ **********************/
+type Pagination = {
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  rowsPerPage?: number;
+  rowsNumber?: number;
+};
 
-const selectedRows = ref<IncomeInResponse[]>([]);
+const pagination: Ref<Pagination> = ref({
+  sortBy: undefined,
+  descending: false,
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: 0,
+});
+
+const paginationMax = computed(() => {
+  if (!pagination.value.rowsPerPage || !pagination.value.rowsNumber) {
+    return 0;
+  }
+  return Math.ceil(pagination.value.rowsNumber / pagination.value.rowsPerPage)
+});
+
+const tableRef = ref<QTable | null>(null);
+const onPageChange = async () => {
+  tableRef.value?.requestServerInteraction({ pagination: pagination.value });
+};
+
+const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
+  try {
+    loading.value = true;
+    const { page, rowsPerPage } = _pagination;
+    const pageMeta = await useIncomeStore().getIncomeList(
+      rowsPerPage,
+      page,
+      searchParams.value.year,
+      searchParams.value.month,
+      searchParams.value.onlyUnconfirmed,
+      searchParams.value.query,
+    );
+    pagination.value = {
+      sortBy: undefined,
+      descending: false,
+      page: pageMeta.currentPage ?? 1,
+      rowsPerPage: pageMeta.itemsPerPage ?? 10,
+      rowsNumber: pageMeta.total ?? 0,
+    };
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <template>
@@ -206,11 +229,12 @@ const selectedRows = ref<IncomeInResponse[]>([]);
               :columns="columns"
               :rows="rows"
               row-key="id"
-              :pagination="{
-                rowsPerPage: 15,
-              }"
               selection="multiple"
               v-model:selected="selectedRows"
+              hide-pagination
+              v-model:pagination="pagination"
+              @request="onRequest"
+              ref="tableRef"
             >
               <template #top-left>
                 <div class="text-h6">収入一覧</div>
@@ -249,6 +273,15 @@ const selectedRows = ref<IncomeInResponse[]>([]);
                 </q-td>
               </template>
             </q-table>
+            <div class="row justify-center q-my-md">
+              <q-pagination
+                v-model="pagination.page"
+                color="primary"
+                :max="paginationMax"
+                max-pages="9"
+                @update:model-value="onPageChange"
+              />
+            </div>
           </q-card-section>
         </q-card>
       </div>

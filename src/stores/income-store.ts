@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
-import { IncomeDetailResponse, IncomeInRequest, IncomeInResponse } from 'src/api';
-import _ from 'lodash';
+import { IncomeDetailResponse, IncomeInRequest, IncomeInResponse, PaginationResponsePagination } from 'src/api';
 import { api } from 'boot/api';
 
 interface GetIncomeListRequest {
@@ -32,33 +31,36 @@ export const useIncomeStore = defineStore('income', {
       this.list = [];
       this.formModel = {};
     },
-    async getIncomeList(params: GetIncomeListRequest) {
-      const defaultParams: GetIncomeListRequest = {
-        itemsPerPage: 15,
-        page: 1,
-      }
-      const query = _.defaults(params, defaultParams)
+    async getIncomeList(
+      itemsPerPage?: number,
+      page?: number,
+      year?: number,
+      month?: number,
+      onlyUnconfirmed?: boolean,
+      query?: string
+    ): Promise<PaginationResponsePagination> {
       const resp = await api.getIncomes(
-        query.itemsPerPage,
-        query.page,
-        query.year,
-        query.month,
-        query.onlyUnconfirmed,
-        query.query,
+        itemsPerPage,
+        page,
+        year,
+        month,
+        onlyUnconfirmed,
+        query,
       );
       this.list = resp.items ?? [];
+      return resp.pagination ?? {} as PaginationResponsePagination;
     },
     async getIncome(id: string) {
       this.formModel = await api.getIncome(id);
     },
     async createIncome(data: IncomeInRequest) {
-      return await api.createIncome(data);
+      return api.createIncome(data);
     },
     async updateIncome(id: string, data: IncomeInRequest) {
-      await api.updateIncome(data, id);
+      return api.updateIncome(data, id);
     },
     async deleteIncome(id: string) {
-      await api.deleteIncome(id);
+      return api.deleteIncome(id);
     },
   },
 });
