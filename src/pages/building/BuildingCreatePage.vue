@@ -6,7 +6,7 @@ import { useBuildingStore } from 'stores/building-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { FormValidationResult } from 'vee-validate';
 
-const loading = ref(true);
+const loading = ref(false);
 const form = ref<InstanceType<typeof BuildingForm>>();
 const { toastHandler } = useErrorHandler();
 const router = useRouter();

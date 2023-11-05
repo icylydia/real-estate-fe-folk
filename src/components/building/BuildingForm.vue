@@ -161,7 +161,6 @@ const onMainPhotoChange = async (file: File) => {
 const validationSchema = toTypedSchema(object({
   id: string().notRequired().nullable().label('物件番号'),
   name: string().required().label('物件名'),
-  image: string().notRequired().nullable().label('物件画像'),
   description: string().notRequired().nullable().label('物件説明'),
   price: string().notRequired().nullable().label('価格'),
   grossYield: string().notRequired().nullable().label('表面利回り'),
