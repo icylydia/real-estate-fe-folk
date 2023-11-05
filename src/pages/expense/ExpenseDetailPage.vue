@@ -1,38 +1,30 @@
 <script setup lang="ts">
 import ExpenseForm from 'components/payment/ExpenseForm.vue';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia';
-import { ExpenseInResponse } from 'src/api';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
-const { getExpense } = useExpenseStore();
-
-const { formModel: expense } = storeToRefs(useExpenseStore());
 const router = useRouter();
-const route = useRoute();
-const expenseId = typeof route.params.id == 'string' ? route.params.id : '';
+const { toastHandler } = useErrorHandler();
 
-onMounted(async () => {
-  loading.value = true;
-  try {
-    await getExpense(expenseId);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    loading.value = false;
+const expenseId = computed(() => {
+  const id = useRoute().params.id;
+  if (typeof id != 'string') {
+    throw new Error('Invalid building id');
   }
+  return id;
 });
 
 const toEdit = async () => {
   try {
     await router.push({
       name: 'expense-edit',
-      params: { id: expenseId },
+      params: { id: expenseId.value },
     });
   } catch (error) {
-    console.log(error);
+    toastHandler(error);
   }
 };
 
@@ -42,9 +34,22 @@ const backToList = async () => {
       name: 'expense-list',
     });
   } catch (error) {
-    console.log(error);
+    toastHandler(error);
   }
 };
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    useExpenseStore().resetFormModel();
+    await useExpenseStore().getExpense(expenseId.value);
+  } catch (error) {
+    toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
+});
+
 </script>
 
 <template>

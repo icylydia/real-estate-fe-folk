@@ -57,6 +57,7 @@ const save = async () => {
 onMounted(async () => {
   loading.value = true;
   try {
+    useIncomeStore().resetFormModel();
     await useIncomeStore().getIncome(incomeId.value);
   } catch (error) {
     console.log(error);

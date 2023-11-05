@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ExpenseForm from 'components/payment/ExpenseForm.vue';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { ExpenseModel,useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
 import { FormValidationResult } from 'vee-validate';
@@ -8,18 +8,22 @@ import { storeToRefs } from 'pinia';
 
 const loading = ref(false);
 const router = useRouter();
-const route = useRoute();
-
-const expenseId = typeof route.params.id == 'string' ? route.params.id : '';
-const { getExpense, updateExpense } = useExpenseStore();
 const form = ref<InstanceType<typeof ExpenseForm>>();
 const { formModel: expense } = storeToRefs(useExpenseStore());
 
+const expenseId = computed(() => {
+  const id = useRoute().params.id;
+  if (typeof id != 'string') {
+    throw new Error('Invalid building id');
+  }
+  return id;
+});
 
 onMounted(async () => {
   loading.value = true;
   try {
-    await getExpense(expenseId);
+    useExpenseStore().resetFormModel();
+    await useExpenseStore().getExpense(expenseId.value);
   } catch (error) {
     console.log(error);
   } finally {
@@ -31,12 +35,13 @@ const cancel = async () => {
   try {
     await router.push({
       name: 'expense-detail',
-      params: { id: expenseId },
+      params: { id: expenseId.value },
     });
   } catch (error) {
     console.log(error);
   }
 };
+
 const save = async () => {
   const validation: FormValidationResult<any> = await form.value?.validate();
   if (!validation.valid) {
@@ -44,15 +49,15 @@ const save = async () => {
   }
   loading.value = true;
   try {
-      const data = validation.values;
-      const newExpense: ExpenseModel = {
-        ...expense.value,
-        ...data,
-      };
-      await updateExpense(expenseId, newExpense);
-      await router.push({
+    const data = validation.values;
+    const newExpense: ExpenseModel = {
+      ...expense.value,
+      ...data,
+    };
+    await useExpenseStore().updateExpense(expenseId.value, newExpense);
+    await router.push({
       name: 'expense-detail',
-      params: { id: expenseId },
+      params: { id: expenseId.value },
     });
   } catch (error) {
     console.log(error);

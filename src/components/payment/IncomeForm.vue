@@ -3,7 +3,6 @@ import QInputCurrency from 'components/extension/QInputCurrency.vue';
 import { storeToRefs } from 'pinia';
 import { useIncomeStore } from 'stores/income-store';
 import { usePayment } from 'src/utils/payment';
-import { PaymentBase } from 'src/api';
 import { Field, useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 import { toTypedSchema } from '@vee-validate/yup';
@@ -269,9 +268,9 @@ const validationSchema = toTypedSchema(object({
   id: string().nullable().notRequired().label('管理番号'),
   title: string().required().label('件名'),
   category: string().required().label('種類'),
-  description: string().nullable().notRequired().label('種類'),
+  description: string().nullable().notRequired().label('説明'),
   paymentMethod: string().required().label('支払方法'),
-  otherPaymentDescription: string().nullable().notRequired().label('支払方法'),
+  otherPaymentDescription: string().nullable().notRequired().label('その他支払方法'),
   amount: string().required().label('金額'),
   date: string().required().label('日付'),
   building: object({
@@ -290,7 +289,7 @@ const validationSchema = toTypedSchema(object({
     id: string().nullable().notRequired().label('大家さんID'),
     name: string().nullable().notRequired().label('大家さん名'),
   }).nullable().notRequired().label('大家さん'),
-  note: string().nullable().notRequired().label('説明'),
+  note: string().nullable().notRequired().label('備考'),
 }));
 
 const initialValues: any = computed( () => {
@@ -401,8 +400,9 @@ defineExpose({
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="支払方法"
-            :readonly="readonly || income.paymentMethod != PaymentBase.PaymentMethodEnum.Other"
+            label="その他支払方法"
+            :readonly="readonly"
+            :disable="values.paymentMethod !== 'other'"
           />
         </q-item-section>
       </q-item>
@@ -523,7 +523,7 @@ defineExpose({
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="説明"
+            label="備考"
             autogrow
             clearable
             :readonly="readonly"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, Ref, ref } from 'vue';
 import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useExpenseStore } from 'stores/expense-store';
 import { storeToRefs } from 'pinia';
@@ -9,6 +9,9 @@ import { usePayment } from 'src/utils/payment';
 
 const loading = ref(false);
 const $q = useQuasar();
+const { list: rows, searchParams } = storeToRefs(useExpenseStore());
+const router = useRouter();
+const { describeCategory: describeExpenseCategory } = usePayment();
 
 const columns: QTableProps['columns'] = [
   {
@@ -48,43 +51,13 @@ const columns: QTableProps['columns'] = [
   },
 ];
 
-const { reset, getExpenseList,deleteExpense } = useExpenseStore();
-const { list: rows, searchParams } = storeToRefs(useExpenseStore());
-
-const loadExpenses = async () => {
-  try {
-    loading.value = true;
-    reset();
-    await getExpenseList({});
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
-};
 onMounted(async () => {
-  try {
-    loading.value = true;
-    await getExpenseList({});
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
+  tableRef.value?.requestServerInteraction();
 });
 
 const search = async () => {
-  try {
-    loading.value = true;
-    await getExpenseList(searchParams.value);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
+  tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
-
-const router = useRouter();
 
 const toCreate = async () => {
   try {
@@ -125,8 +98,8 @@ const toEdit = async (id: number) => {
 const remove = (expense: ExpenseInResponse) => {
   console.log(expense.id);
   $q.dialog({
-    title: 'エクスペンス 削除',
-    message: `エクスペンス「${expense.title} 」を削除しますか？`,
+    title: '支出削除',
+    message: `支出「${expense.title} 」を削除しますか？`,
     ok: { label: '確認', color: 'negative'},
     cancel: { label: 'キャンセル', color: 'grey-8'},
     persistent: true,
@@ -135,16 +108,69 @@ const remove = (expense: ExpenseInResponse) => {
       return;
     }
     try {
-      await deleteExpense(expense.id);
+      await useExpenseStore().deleteExpense(expense.id);
     } catch (e) {
       console.error(e);
     }
-
-    await loadExpenses();
+    tableRef.value?.requestServerInteraction();
   });
 };
 
-const { describeCategory: describeExpenseCategory } = usePayment();
+/**********************
+ * Pagination
+ **********************/
+type Pagination = {
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  rowsPerPage?: number;
+  rowsNumber?: number;
+};
+
+const pagination: Ref<Pagination> = ref({
+  sortBy: undefined,
+  descending: false,
+  page: 1,
+  rowsPerPage: 15,
+  rowsNumber: 0,
+});
+
+const paginationMax = computed(() => {
+  if (!pagination.value.rowsPerPage || !pagination.value.rowsNumber) {
+    return 0;
+  }
+  return Math.ceil(pagination.value.rowsNumber / pagination.value.rowsPerPage)
+});
+
+const tableRef = ref<QTable | null>(null);
+const onPageChange = async () => {
+  tableRef.value?.requestServerInteraction({ pagination: pagination.value });
+};
+
+const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
+  try {
+    loading.value = true;
+    const { page, rowsPerPage } = _pagination;
+    const pageMeta = await useExpenseStore().getExpenseList(
+      rowsPerPage,
+      page,
+      searchParams.value.year,
+      searchParams.value.month,
+      searchParams.value.query,
+    );
+    pagination.value = {
+      sortBy: undefined,
+      descending: false,
+      page: pageMeta.currentPage ?? 1,
+      rowsPerPage: pageMeta.itemsPerPage ?? 10,
+      rowsNumber: pageMeta.total ?? 0,
+    };
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <template>
@@ -187,9 +213,10 @@ const { describeCategory: describeExpenseCategory } = usePayment();
               :columns="columns"
               :rows="rows"
               row-key="id"
-              :pagination="{
-                rowsPerPage: 15,
-              }"
+              hide-pagination
+              v-model:pagination="pagination"
+              @request="onRequest"
+              ref="tableRef"
             >
               <template #top-left>
                 <div class="text-h6">支出一覧</div>
@@ -215,6 +242,15 @@ const { describeCategory: describeExpenseCategory } = usePayment();
                 </q-td>
               </template>
             </q-table>
+            <div class="row justify-center q-my-md">
+              <q-pagination
+                v-model="pagination.page"
+                color="primary"
+                :max="paginationMax"
+                max-pages="9"
+                @update:model-value="onPageChange"
+              />
+            </div>
           </q-card-section>
         </q-card>
       </div>

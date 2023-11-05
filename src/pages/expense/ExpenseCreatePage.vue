@@ -1,21 +1,13 @@
 <script setup lang="ts">
 import ExpenseForm from 'components/payment/ExpenseForm.vue';
-import { useRouter ,useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useExpenseStore } from 'stores/expense-store';
 import { FormValidationResult } from 'vee-validate';
-import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const route = useRoute();
-
 const loading = ref(false);
-const { createExpense } = useExpenseStore();
-
 const form = ref<InstanceType<typeof ExpenseForm>>();
-//const { formModel: expense } = storeToRefs(useExpenseStore());
-
-//const expenseId = typeof route.params.id == 'string' ? route.params.id : '';
 
 const save = async () => {
   const validation: FormValidationResult<any> = await form.value?.validate();
@@ -25,9 +17,10 @@ const save = async () => {
   loading.value = true;
   try {
     const data = validation.values;
-    const newExpense= await createExpense(data);
+    const newExpense = await useExpenseStore().createExpense(data);
     await router.push({
-      name: 'expense-list'
+      name: 'expense-detail',
+      params: { id: newExpense.id },
     });
   } catch (error) {
     console.log(error);
@@ -35,6 +28,10 @@ const save = async () => {
     loading.value = false;
   }
 };
+
+onMounted(() => {
+  useExpenseStore().resetFormModel();
+});
 </script>
 
 <template>

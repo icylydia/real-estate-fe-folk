@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
-import { ExpenseDetailResponse, ExpenseInRequest, ExpenseInResponse } from 'src/api';
-import _ from 'lodash';
+import { ExpenseDetailResponse, ExpenseInRequest, ExpenseInResponse, PaginationResponsePagination } from 'src/api';
 import { api } from 'boot/api';
 
 interface GetExpenseListRequest {
@@ -14,7 +13,12 @@ interface GetExpenseListRequest {
 export type ExpenseModel = Partial<
   ExpenseInRequest & ExpenseInResponse  & ExpenseDetailResponse
 >
-const defaultFormModel: ExpenseModel = {}
+const defaultFormModel: ExpenseModel = {
+  building: undefined,
+  room: undefined,
+  owner: undefined,
+  tenant: undefined,
+}
 
 export const useExpenseStore = defineStore('expense', {
   state: () => ({
@@ -23,38 +27,37 @@ export const useExpenseStore = defineStore('expense', {
     formModel: defaultFormModel,
   }),
   actions: {
-    reset() {
-      this.list = [];
-      this.formModel = {};
+    resetFormModel() {
+      this.formModel = defaultFormModel;
     },
-    async getExpenseList(params: GetExpenseListRequest) {
-      this.reset();
-      const defaultParams: GetExpenseListRequest = {
-        itemsPerPage: 15,
-        page: 1,
-      }
-      const query = _.defaults(params, defaultParams)
+    async getExpenseList(
+      itemsPerPage?: number,
+      page?: number,
+      year?: number,
+      month?: number,
+      query?: string,
+    ): Promise<PaginationResponsePagination> {
       const resp = await api.getExpenses(
-        query.itemsPerPage,
-        query.page,
-        query.year,
-        query.month,
-        query.query,
+        itemsPerPage,
+        page,
+        year,
+        month,
+        query,
       );
       this.list = resp.items ?? [];
+      return resp.pagination ?? {} as PaginationResponsePagination;
     },
     async getExpense(id: string) {
-      this.reset();
       this.formModel = await api.getExpense(id);
     },
     async createExpense(data: ExpenseInRequest) {
-      return await api.createExpense(data);
+      return api.createExpense(data);
     },
     async updateExpense(id: string, data: ExpenseInRequest) {
-      await api.updateExpense(data, id);
+      return api.updateExpense(data, id);
     },
     async deleteExpense(id: string) {
-      await api.deleteExpense(id);
+      return api.deleteExpense(id);
     },
   },
 });
