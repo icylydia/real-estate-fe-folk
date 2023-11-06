@@ -37,13 +37,8 @@ export const useBuildingStore = defineStore('building', {
     roomOptions: [] as RoomOptionsResponse[],
   }),
   actions: {
-    reset() {
-      this.list = [];
-      this.formModel = defaultFormModel;
-    },
-
     resetFormModel() {
-      this.formModel = defaultFormModel;
+      this.formModel = Object.assign({}, defaultFormModel);
     },
 
     resetRegularExpenseModel() {

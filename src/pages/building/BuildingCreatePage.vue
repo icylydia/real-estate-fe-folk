@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import BuildingForm from 'components/building/BuildingForm.vue';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBuildingStore } from 'stores/building-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { FormValidationResult } from 'vee-validate';
+import _ from 'lodash';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof BuildingForm>>();
@@ -12,8 +13,12 @@ const { toastHandler } = useErrorHandler();
 const router = useRouter();
 
 
-onMounted(() => {
+onMounted(async () => {
+  loading.value = true;
   useBuildingStore().resetFormModel();
+  await nextTick(() => {
+    loading.value = false;
+  });
 });
 
 const onSave = async () => {
@@ -24,7 +29,12 @@ const onSave = async () => {
   try {
     loading.value = true;
     const data = validation.values;
-    const building = await useBuildingStore().createBuilding(data);
+    const necessaryData = _.omit(data, ['image', 'regularExpenses']);
+    const newBuilding = {
+      ...useBuildingStore().formModel,
+      ...necessaryData,
+    };
+    const building = await useBuildingStore().createBuilding(newBuilding);
     await router.push({
       name: 'building-detail',
       params: { id: building.id },
@@ -47,7 +57,7 @@ const onSave = async () => {
         <q-separator></q-separator>
         <q-linear-progress indeterminate v-if="loading" />
         <q-card-section>
-          <building-form new-building ref="form" />
+          <building-form new-building ref="form" v-if="!loading" />
         </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">

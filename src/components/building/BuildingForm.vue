@@ -10,7 +10,7 @@ import _ from 'lodash';
 import { useFileStore } from 'stores/file-store';
 import { useBuildingStore } from 'stores/building-store';
 import { toTypedSchema } from '@vee-validate/yup';
-import { object, string, array } from 'yup';
+import { object, string } from 'yup';
 import { Field, useForm, ValidationResult } from 'vee-validate';
 import { useBuilding } from 'src/utils/building';
 import { useAddressStore } from 'stores/address-store';
@@ -95,26 +95,17 @@ const showAddingDialog = () => {
 const handleDialogSubmit = (regularExpense: RegularExpenseBase) => {
   if (dialogMode.value === 'add') {
     building.value.regularExpenses?.push(regularExpense);
-    setValues({
-      regularExpenses: building.value.regularExpenses,
-    });
   } else {
     const index = editingIndex.value;
     if (index === null) {
       return;
     }
     building.value.regularExpenses?.splice(index, 1, regularExpense);
-    setValues({
-      regularExpenses: building.value.regularExpenses,
-    });
   }
 }
 
 const removeRegularExpense = (index: number) => {
   building.value.regularExpenses?.splice(index, 1);
-  setValues({
-    regularExpenses: building.value.regularExpenses,
-  });
 }
 
 const editRegularExpense = (index: number) => {
@@ -205,22 +196,9 @@ const validationSchema = toTypedSchema(object({
     detailAddress2: string().notRequired().nullable().label('丁目'),
     detailAddress3: string().notRequired().nullable().label('それ以降の住所'),
   }).notRequired().nullable().label('住所'),
-  regularExpenses: array()
-    .of(object({
-      name: string().notRequired().nullable().label('項目'),
-      months: array()
-        .of(string().notRequired().nullable().label('月'))
-        .label('月'),
-      defaultAmount: string().notRequired().nullable().label('デフォルト金額'),
-    }))
-    .notRequired()
-    .nullable()
-    .label('経常支出'),
 }));
 
-const initialValues: any = computed(() => {
-  return building.value;
-});
+const initialValues: any = useBuildingStore().formModel;
 
 const { validate, validateField, values, setValues } = useForm({
   validationSchema,

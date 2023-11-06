@@ -5,6 +5,7 @@ import useErrorHandler from 'components/app/useErrorHandler';
 import { computed, onMounted, ref } from 'vue';
 import { useBuildingStore } from 'stores/building-store';
 import { FormValidationResult } from 'vee-validate';
+import _ from 'lodash';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof BuildingForm>>();
@@ -41,9 +42,10 @@ const onSave = async () => {
   try {
     loading.value = true;
     const data = validation.values;
+    const necessaryData = _.omit(data, ['image', 'regularExpenses']);
     const newBuilding = {
       ...useBuildingStore().formModel,
-      ...data,
+      ...necessaryData,
     };
     await useBuildingStore().updateBuilding(buildingId.value, newBuilding);
     await router.push({
