@@ -38,7 +38,6 @@ const columns: QTableProps['columns'] = [
     :rows="buildings"
     :columns="columns"
     row-key="id"
-    :grid="$q.screen.lt.md"
     hide-bottom
     no-data-label="物件がありません"
     :pagination="{

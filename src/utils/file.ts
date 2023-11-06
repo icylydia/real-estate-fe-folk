@@ -1,5 +1,5 @@
-import { ModelFile } from 'src/api';
-import CategoryEnum = ModelFile.CategoryEnum;
+import { FileBase } from 'src/api';
+import CategoryEnum = FileBase.CategoryEnum;
 
 export const useFile = () => {
   const describeCategory = (category: CategoryEnum) => {

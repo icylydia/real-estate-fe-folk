@@ -1,7 +1,7 @@
 import { boot } from 'quasar/wrappers';
 import { inject } from 'vue';
 import { getToken } from 'src/auth';
-import { DefaultApi, Configuration } from 'src/api';
+import { DefaultApi, Configuration, FileBase } from 'src/api';
 import axios from 'axios';
 
 export interface UploadMainPhotoResponse {
@@ -22,6 +22,33 @@ class CustomAPI extends DefaultApi {
       },
     });
     return resp.data as UploadMainPhotoResponse;
+  }
+
+  public uploadFile = async (data: FileBase, file: File): Promise<FileBase> => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`;
+    const url = `${this.configuration.basePath}/file/upload-file`;
+    const formData = new FormData();
+    formData.append('file', file);
+    data.name && formData.append('name', data.name);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    data.category && formData.append('category', data.category);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    data.entity && formData.append('entity', data.entity);
+    data.entityId && formData.append('entityId', data.entityId);
+    const resp = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return resp.data as FileBase;
+  }
+
+  public deleteFile = async (id: string): Promise<void> => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`;
+    const url = `${this.configuration.basePath}/file/${id}`;
+    await axios.delete(url);
   }
 }
 

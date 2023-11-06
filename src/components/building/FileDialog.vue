@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 import { useBuilding } from 'src/utils/building';
+import { ref } from 'vue';
 
 defineProps({
   show: {
@@ -16,6 +17,7 @@ defineEmits([
 ]);
 
 const { fileModel: model } = storeToRefs(useBuildingStore());
+const file = ref<File | undefined>(undefined)
 const { fileCategoryOptions } = useBuilding();
 </script>
 
@@ -36,17 +38,19 @@ const { fileCategoryOptions } = useBuilding();
               <q-item class="col-12">
                 <q-item-section>
                   <q-select
-                    v-model="model.name"
+                    v-model="model.category"
                     label="カテゴリー"
                     :options="fileCategoryOptions"
                     clearable
+                    emit-value
+                    map-options
                   />
                 </q-item-section>
               </q-item>
               <q-item class="col-12">
                 <q-item-section>
                   <q-file
-                    v-model="model.file"
+                    v-model="file"
                     label="ファイル"
                     :clearable="true"
                   >
@@ -61,7 +65,7 @@ const { fileCategoryOptions } = useBuilding();
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn label="取消" color="negative" @click="$emit('update:show', false)" />
-          <q-btn label="確認" color="primary" @click="$emit('submit', model); $emit('update:show', false);" />
+          <q-btn label="確認" color="primary" @click="$emit('submit', model, file); $emit('update:show', false);" />
         </q-card-actions>
       </q-card>
     </q-dialog>

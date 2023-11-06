@@ -66,7 +66,6 @@ const editEmployee = async (key: number) => {
     :rows="department.employees"
     :columns="columns"
     row-key="id"
-    :grid="$q.screen.lt.md"
     hide-bottom
     :pagination="{
       rowsPerPage: 0,

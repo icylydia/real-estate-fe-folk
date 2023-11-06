@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
+import { FileBase } from 'src/api';
 
 const DEFAULT_MAIN_PHOTO_URL = import.meta.env.VITE_APP_DEFAULT_MAIN_PHOTO;
 
@@ -10,6 +11,12 @@ export const useFileStore = defineStore('file', {
   actions: {
     async uploadMainPhoto(file: File) {
       return api.uploadMainPhoto(file);
-    }
+    },
+    async uploadFile(data: FileBase, file: File) {
+      return api.uploadFile(data, file);
+    },
+    async deleteFile(id: string) {
+      return api.deleteFile(id);
+    },
   }
 });

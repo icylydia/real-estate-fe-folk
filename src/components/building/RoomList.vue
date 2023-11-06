@@ -4,7 +4,6 @@
     :rows="rooms"
     :columns="columns"
     row-key="id"
-    :grid="$q.screen.lt.md"
     hide-bottom
     :pagination="{
       rowsPerPage: 0,

@@ -43,7 +43,6 @@ const columns: QTableProps['columns'] = [
     :rows="contracts"
     :columns="columns"
     row-key="id"
-    :grid="$q.screen.lt.md"
     hide-bottom
     :pagination="{
       rowsPerPage: 0,

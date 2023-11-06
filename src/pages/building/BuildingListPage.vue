@@ -175,7 +175,6 @@ const remove = async (building: BuildingInResponse) => {
           <q-card-section class="q-pa-none">
             <q-table
               :loading="loading"
-              :grid="$q.screen.lt.md"
               :columns="columns"
               :rows="rows"
               row-key="id"

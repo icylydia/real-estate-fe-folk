@@ -139,7 +139,6 @@ const removeEmployee = (employee: EmployeeModel) => {
           :columns="columns"
           row-key="id"
           :loading="loading"
-          :grid="$q.screen.lt.md"
           hide-bottom
           :pagination="{
             rowsPerPage: 0,

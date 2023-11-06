@@ -430,10 +430,10 @@ export interface BuildingDetailResponse extends BuildingInResponse {
   activeEntrustContracts?: Array<EntrustContractInResponse>;
   /**
    *
-   * @type {Array<any>}
+   * @type {Array<FileBase>}
    * @memberof BuildingDetailResponse
    */
-  files?: Array<any>;
+  files?: Array<FileBase>;
 }
 /**
  *
@@ -1259,6 +1259,84 @@ export interface ExpenseListResponse extends PaginationResponse {
 /**
  *
  * @export
+ * @interface FileBase
+ */
+export interface FileBase {
+  /**
+   * 文件ID
+   * @type {string}
+   * @memberof FileBase
+   */
+  id?: string;
+  /**
+   * 文件名
+   * @type {string}
+   * @memberof FileBase
+   */
+  name?: string;
+  /**
+   * 文件分类    - `contract`: 合同/売買契約    - `propertyManagement`: 资产管理/資産管理・物件管理    - `rentalManagement`: 出租管理/賃貸借管理    - `insurance`: 保险/保険    - `tax`: 税务/税務    - `loan`: 贷款・融资/ローン・融資    - `construction`: 施工相关/工事関係    - `other`: 其他/その他
+   * @type {string}
+   * @memberof FileBase
+   */
+  category?: FileBase.CategoryEnum;
+  /**
+   * 文件URL
+   * @type {string}
+   * @memberof FileBase
+   */
+  url?: string;
+  /**
+   * 文件所属实体    - `building`: 楼宇/建物    - `room`: 房间/部屋
+   * @type {string}
+   * @memberof FileBase
+   */
+  entity?: FileBase.EntityEnum;
+  /**
+   * 文件所属实体ID
+   * @type {string}
+   * @memberof FileBase
+   */
+  entityId?: string;
+  /**
+   * 文件上传时间
+   * @type {string}
+   * @memberof FileBase
+   */
+  uploadedAt?: string;
+}
+
+/**
+ * @export
+ * @namespace FileBase
+ */
+export namespace FileBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum CategoryEnum {
+    Contract = <any> 'contract',
+    PropertyManagement = <any> 'propertyManagement',
+    RentalManagement = <any> 'rentalManagement',
+    Insurance = <any> 'insurance',
+    Tax = <any> 'tax',
+    Loan = <any> 'loan',
+    Construction = <any> 'construction',
+    Other = <any> 'other'
+  }
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum EntityEnum {
+    Building = <any> 'building',
+    Room = <any> 'room'
+  }
+}
+/**
+ *
+ * @export
  * @interface IncomeBase
  */
 export interface IncomeBase extends PaymentBase {
@@ -1364,84 +1442,6 @@ export interface LoginSuccessResponseData {
    * @memberof LoginSuccessResponseData
    */
   token?: string;
-}
-/**
- *
- * @export
- * @interface ModelFile
- */
-export interface ModelFile {
-  /**
-   * 文件ID
-   * @type {string}
-   * @memberof ModelFile
-   */
-  id?: string;
-  /**
-   * 文件名
-   * @type {string}
-   * @memberof ModelFile
-   */
-  name?: string;
-  /**
-   * 文件分类    - `contract`: 合同/売買契約    - `propertyManagement`: 资产管理/資産管理・物件管理    - `rentalManagement`: 出租管理/賃貸借管理    - `insurance`: 保险/保険    - `tax`: 税务/税務    - `loan`: 贷款・融资/ローン・融資    - `construction`: 施工相关/工事関係    - `other`: 其他/その他
-   * @type {string}
-   * @memberof ModelFile
-   */
-  category?: ModelFile.CategoryEnum;
-  /**
-   * 文件URL
-   * @type {string}
-   * @memberof ModelFile
-   */
-  url?: string;
-  /**
-   * 文件所属实体    - `building`: 楼宇/建物    - `room`: 房间/部屋
-   * @type {string}
-   * @memberof ModelFile
-   */
-  entity?: ModelFile.EntityEnum;
-  /**
-   * 文件所属实体ID
-   * @type {string}
-   * @memberof ModelFile
-   */
-  entityId?: string;
-  /**
-   * 文件上传时间
-   * @type {string}
-   * @memberof ModelFile
-   */
-  uploadedAt?: string;
-}
-
-/**
- * @export
- * @namespace ModelFile
- */
-export namespace ModelFile {
-  /**
-   * @export
-   * @enum {string}
-   */
-  export enum CategoryEnum {
-    Contract = <any> 'contract',
-    PropertyManagement = <any> 'propertyManagement',
-    RentalManagement = <any> 'rentalManagement',
-    Insurance = <any> 'insurance',
-    Tax = <any> 'tax',
-    Loan = <any> 'loan',
-    Construction = <any> 'construction',
-    Other = <any> 'other'
-  }
-  /**
-   * @export
-   * @enum {string}
-   */
-  export enum EntityEnum {
-    Building = <any> 'building',
-    Room = <any> 'room'
-  }
 }
 /**
  * 业主/オーナー
@@ -2018,10 +2018,10 @@ export interface RoomInResponse extends RoomBase {
   contractStatus?: RoomInResponse.ContractStatusEnum;
   /**
    *
-   * @type {Array<any>}
+   * @type {Array<FileBase>}
    * @memberof RoomInResponse
    */
-  files?: Array<any>;
+  files?: Array<FileBase>;
 }
 
 /**

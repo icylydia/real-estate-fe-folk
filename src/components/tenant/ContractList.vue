@@ -106,7 +106,6 @@ const promptToUpdateContract = async (id?: string) => {
     :rows="contracts"
     :columns="columns"
     row-key="id"
-    :grid="$q.screen.lt.md"
     hide-bottom
     no-data-label="契約がありません"
     :pagination="{

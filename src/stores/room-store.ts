@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ModelFile, RoomInRequest, RoomInResponse } from 'src/api';
+import { FileBase, RoomInRequest, RoomInResponse } from 'src/api';
 import { api } from 'boot/api';
 
 export type RoomFormModel = Partial<
@@ -7,8 +7,8 @@ export type RoomFormModel = Partial<
 >
 
 export type FileModel = Partial<
-  ModelFile & {
-  file: File;
+  FileBase & {
+    file: File;
   }
 >
 

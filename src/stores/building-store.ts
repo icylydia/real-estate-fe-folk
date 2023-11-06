@@ -4,20 +4,13 @@ import _ from 'lodash';
 import {
   BuildingDetailResponse,
   BuildingInRequest,
-  BuildingListResponseItems, BuildingOptionsResponse,
-  ModelFile,
+  BuildingListResponseItems, BuildingOptionsResponse, FileBase,
   PaginationResponsePagination,
   RegularExpenseBase, RoomOptionsResponse
 } from 'src/api';
 
 export type BuildingFormModel = Partial<
   BuildingInRequest & BuildingDetailResponse
->
-
-export type FileModel = Partial<
-  ModelFile & {
-    file: File;
-  }
 >
 
 const defaultFormModel: BuildingFormModel = {
@@ -38,7 +31,7 @@ export const useBuildingStore = defineStore('building', {
     list: [] as BuildingListResponseItems[],
     formModel: defaultFormModel,
     regularExpenseModel: {} as RegularExpenseBase,
-    fileModel: {} as FileModel,
+    fileModel: {} as FileBase,
     buildingOptions: [] as BuildingOptionsResponse[],
     roomOptions: [] as RoomOptionsResponse[],
   }),
@@ -57,7 +50,7 @@ export const useBuildingStore = defineStore('building', {
     },
 
     resetFileModel() {
-      this.fileModel = {} as FileModel;
+      this.fileModel = {} as FileBase;
     },
 
     async getBuildingList(params: GetBuildingListRequest): Promise<PaginationResponsePagination> {
@@ -108,6 +101,20 @@ export const useBuildingStore = defineStore('building', {
     async getRoomOptions(buildingId: string) {
       const resp = await api.getRoomOptions(buildingId);
       this.roomOptions = resp ?? [];
+    },
+
+    appendFile(file: FileBase) {
+      if (this.formModel.files) {
+        this.formModel.files.push(file)
+      } else {
+        this.formModel.files = [file]
+      }
+    },
+
+    removeFile(id: string) {
+      if (this.formModel.files) {
+        this.formModel.files = this.formModel.files.filter(file => file.id !== id)
+      }
     },
   },
 });

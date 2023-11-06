@@ -3,11 +3,11 @@ import { storeToRefs } from 'pinia';
 import { useRoomStore } from 'stores/room-store';
 import { computed, ref } from 'vue';
 import { QTableProps } from 'quasar';
-import { ModelFile } from 'src/api';
+import { FileBase } from 'src/api';
 import { useFile } from 'src/utils/file';
 import FileDialog from 'components/room/FileDialog.vue';
 
-const handleDialogSubmit = (file: ModelFile) => {
+const handleDialogSubmit = (file: FileBase) => {
   console.log(file);
 }
 
@@ -61,7 +61,6 @@ const columns: QTableProps['columns'] = [
     :rows="files"
     :columns="columns"
     row-key="id"
-    :grid="$q.screen.lt.md"
     hide-bottom
     :pagination="{
       rowsPerPage: 5,
@@ -74,21 +73,21 @@ const columns: QTableProps['columns'] = [
     <template #top-right>
       <q-btn label="アプロード" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="showAddingDialog" />
     </template>
-    <template #[`body-cell-name`]="{ row }: { row: ModelFile }">
+    <template #[`body-cell-name`]="{ row }: { row: FileBase }">
       <q-td>
         <a :href="row.url" target="_blank">
           {{ row.name }}
         </a>
       </q-td>
     </template>
-    <template #[`body-cell-category`]="{ row }: { row: ModelFile }">
+    <template #[`body-cell-category`]="{ row }: { row: FileBase }">
       <q-td>
         {{ describeCategory(row.category) }}
       </q-td>
     </template>
-    <template #[`body-cell-uploadTime`]="{ row }: { row: ModelFile }">
+    <template #[`body-cell-uploadTime`]="{ row }: { row: FileBase }">
       <q-td>
-        {{ $filters.dateTime(row.uploadTime, "minute") }}
+        {{ $filters.dateTime(row.uploadedAt, "minute") }}
       </q-td>
     </template>
     <template #[`body-cell-actions`]>
