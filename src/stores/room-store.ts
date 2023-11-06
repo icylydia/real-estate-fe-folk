@@ -6,22 +6,14 @@ export type RoomFormModel = Partial<
   RoomInRequest & RoomInResponse
 >
 
-export type FileModel = Partial<
-  FileBase & {
-    file: File;
-  }
->
-
 const defaultFormModel: RoomFormModel = {
   building: {},
 }
 
-const defaultFileModel: FileModel = {}
-
 export const useRoomStore = defineStore('room', {
   state: () => ({
     formModel: defaultFormModel as RoomFormModel,
-    fileModel: defaultFileModel as FileModel,
+    fileModel: {} as FileBase,
   }),
   actions: {
     async getRoomDetail(id: string) {
@@ -37,7 +29,19 @@ export const useRoomStore = defineStore('room', {
       this.formModel = defaultFormModel;
     },
     resetFileModel() {
-      this.fileModel = {} as FileModel;
+      this.fileModel = {} as FileBase;
+    },
+    appendFile(file: FileBase) {
+      if (this.formModel.files) {
+        this.formModel.files.push(file)
+      } else {
+        this.formModel.files = [file]
+      }
+    },
+    removeFile(id: string) {
+      if (this.formModel.files) {
+        this.formModel.files = this.formModel.files.filter(file => file.id !== id)
+      }
     },
   }
 });

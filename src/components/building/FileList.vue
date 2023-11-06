@@ -7,6 +7,9 @@ import { useFile } from 'src/utils/file';
 import FileDialog from 'components/building/FileDialog.vue';
 import { FileBase } from 'src/api';
 import { useFileStore } from 'stores/file-store';
+import useErrorHandler from 'components/app/useErrorHandler';
+
+const { toastHandler } = useErrorHandler();
 
 const handleDialogSubmit = async (data: FileBase, file: File) => {
   if (!file) return;
@@ -17,9 +20,13 @@ const handleDialogSubmit = async (data: FileBase, file: File) => {
     entity: FileBase.EntityEnum.Building,
     entityId: building.value.id,
   }
-  const resp = await useFileStore().uploadFile(formData, file);
-  if (resp) {
-    useBuildingStore().appendFile(resp);
+  try {
+    const resp = await useFileStore().uploadFile(formData, file);
+    if (resp) {
+      useBuildingStore().appendFile(resp);
+    }
+  } catch (e) {
+    toastHandler('ファイルのアップロードに失敗しました');
   }
 }
 
@@ -48,7 +55,7 @@ const deleteFile = async (file: FileBase) => {
       await useFileStore().deleteFile(file.id);
       useBuildingStore().removeFile(file.id);
     } catch (e) {
-      console.error(e);
+      toastHandler('ファイルの削除に失敗しました');
     }
   });
 }
@@ -70,8 +77,8 @@ const columns: QTableProps['columns'] = [
   },
   {
     label: 'アップロード日時',
-    field: 'uploadTime',
-    name: 'uploadTime',
+    field: 'uploadedAt',
+    name: 'uploadedAt',
     sortable: false,
     align: 'left',
   },
@@ -115,7 +122,7 @@ const columns: QTableProps['columns'] = [
         {{ describeCategory(row.category) }}
       </q-td>
     </template>
-    <template #[`body-cell-uploadTime`]="{ row }: { row: FileBase }">
+    <template #[`body-cell-uploadedAt`]="{ row }: { row: FileBase }">
       <q-td>
         {{ $filters.dateTime(row.uploadedAt, "minute") }}
       </q-td>

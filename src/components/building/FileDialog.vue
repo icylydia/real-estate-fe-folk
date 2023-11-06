@@ -30,7 +30,7 @@ const { fileCategoryOptions } = useBuilding();
     >
       <q-card class="card">
         <q-card-section class="bg-primary">
-          <div class="text-h6">ファイル</div>
+          <div class="text-h6">書類</div>
         </q-card-section>
         <q-card-section>
           <q-form>

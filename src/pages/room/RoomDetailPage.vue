@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FileList from 'components/building/FileList.vue';
+import FileList from 'components/room/FileList.vue';
 import RoomForm from 'components/room/RoomForm.vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

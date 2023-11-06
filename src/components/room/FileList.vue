@@ -2,30 +2,68 @@
 import { storeToRefs } from 'pinia';
 import { useRoomStore } from 'stores/room-store';
 import { computed, ref } from 'vue';
-import { QTableProps } from 'quasar';
+import { QTableProps, useQuasar } from 'quasar';
 import { FileBase } from 'src/api';
 import { useFile } from 'src/utils/file';
 import FileDialog from 'components/room/FileDialog.vue';
+import { useFileStore } from 'stores/file-store';
+import useErrorHandler from 'components/app/useErrorHandler';
+import { useBuildingStore } from 'stores/building-store';
 
-const handleDialogSubmit = (file: FileBase) => {
-  console.log(file);
+const { toastHandler } = useErrorHandler();
+
+const handleDialogSubmit = async (data: FileBase, file: File) => {
+  if (!file) return;
+  if (!data.category) return;
+  const formData: FileBase = {
+    category: data.category,
+    name: file.name,
+    entity: FileBase.EntityEnum.Room,
+    entityId: room.value.id,
+  }
+  try {
+    const resp = await useFileStore().uploadFile(formData, file);
+    if (resp) {
+      useRoomStore().appendFile(resp);
+    }
+  } catch (e) {
+    toastHandler('ファイルのアップロードに失敗しました');
+  }
 }
 
 const { formModel: room } = storeToRefs(useRoomStore());
-const { resetFileModel } = useRoomStore();
 const files = computed(() => room.value.files);
 
 const { describeCategory } = useFile();
 
 const showDialog = ref(false);
 const showAddingDialog = () => {
-  resetFileModel();
+  useRoomStore().resetFileModel();
   showDialog.value = true;
+}
+
+const $q = useQuasar();
+const deleteFile = async (file: FileBase) => {
+  $q.dialog({
+    title: '書類削除',
+    message: `「${file.name}」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!file.id) return;
+    try {
+      await useFileStore().deleteFile(file.id);
+      useBuildingStore().removeFile(file.id);
+    } catch (e) {
+      toastHandler('ファイルの削除に失敗しました');
+    }
+  });
 }
 
 const columns: QTableProps['columns'] = [
   {
-    label: 'ファイル名',
+    label: '書類名',
     field: 'name',
     name: 'name',
     sortable: false,
@@ -40,8 +78,8 @@ const columns: QTableProps['columns'] = [
   },
   {
     label: 'アップロード日時',
-    field: 'uploadTime',
-    name: 'uploadTime',
+    field: 'uploadedAt',
+    name: 'uploadedAt',
     sortable: false,
     align: 'left',
   },
@@ -65,10 +103,10 @@ const columns: QTableProps['columns'] = [
     :pagination="{
       rowsPerPage: 5,
     }"
-    no-data-label="ファイルがありません"
+    no-data-label="書類がありません"
   >
     <template #top-left>
-      <div class="text-h6">ファイル一覧</div>
+      <div class="text-h6">書類一覧</div>
     </template>
     <template #top-right>
       <q-btn label="アプロード" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="showAddingDialog" />
@@ -85,15 +123,14 @@ const columns: QTableProps['columns'] = [
         {{ describeCategory(row.category) }}
       </q-td>
     </template>
-    <template #[`body-cell-uploadTime`]="{ row }: { row: FileBase }">
+    <template #[`body-cell-uploadedAt`]="{ row }: { row: FileBase }">
       <q-td>
         {{ $filters.dateTime(row.uploadedAt, "minute") }}
       </q-td>
     </template>
-    <template #[`body-cell-actions`]>
+    <template #[`body-cell-actions`]="{ row }: { row: FileBase }">
       <q-td class="text-right">
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_download" @click="() => {}" />
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="() => {}" />
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="deleteFile(row)" />
       </q-td>
     </template>
   </q-table>

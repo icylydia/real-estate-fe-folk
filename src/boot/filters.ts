@@ -1,4 +1,5 @@
 import { boot } from 'quasar/wrappers';
+import moment from 'moment';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -22,31 +23,25 @@ const percentage = (value: number) => {
 };
 
 const dateTime = (value: string, precision: 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year' = 'second') => {
-  const date = new Date(value);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  const second = date.getSeconds();
-
-  switch (precision) {
-    case 'second':
-      return `${year}年${month}月${day}日 ${hour}:${minute}:${second}`;
-    case 'minute':
-      return `${year}年${month}月${day}日 ${hour}:${minute}`;
-    case 'hour':
-      return `${year}年${month}月${day}日 ${hour}`;
-    case 'day':
-      return `${year}年${month}月${day}日`;
-    case 'month':
-      return `${year}年${month}月`;
-    case 'year':
-      return `${year}年`;
-    default:
-      return `${year}年${month}月${day}日 ${hour}:${minute}:${second}`;
+  const getFormatByPrecision = (precision: 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year') => {
+    switch (precision) {
+      case 'second':
+        return 'YYYY-MM-DD HH:mm:ss';
+      case 'minute':
+        return 'YYYY-MM-DD HH:mm';
+      case 'hour':
+        return 'YYYY-MM-DD HH';
+      case 'day':
+        return 'YYYY-MM-DD';
+      case 'month':
+        return 'YYYY-MM';
+      case 'year':
+        return 'YYYY';
+    }
   }
+
+  const format = getFormatByPrecision(precision);
+  return moment(value).format(format);
 }
 
 export default boot(({ app }) => {
