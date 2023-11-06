@@ -16,6 +16,7 @@ export type BuildingFormModel = Partial<
 const defaultFormModel: BuildingFormModel = {
   address: {},
   accesses: [],
+  regularExpenses: [],
 }
 
 interface GetBuildingListRequest {

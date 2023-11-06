@@ -57,9 +57,16 @@ const regularExpenseColumns: QTableProps['columns'] = (() => {
       name: 'months',
       label: '月',
       field: 'months',
-      align: 'left',
+      align: 'right',
       sortable: false,
     },
+    {
+      name: 'defaultAmount',
+      label: 'デフォルト金額',
+      field: 'defaultAmount',
+      align: 'right',
+      sortable: false,
+    }
   ];
   if (!props.readonly) {
     columns.push({
@@ -88,17 +95,26 @@ const showAddingDialog = () => {
 const handleDialogSubmit = (regularExpense: RegularExpenseBase) => {
   if (dialogMode.value === 'add') {
     building.value.regularExpenses?.push(regularExpense);
+    setValues({
+      regularExpenses: building.value.regularExpenses,
+    });
   } else {
     const index = editingIndex.value;
     if (index === null) {
       return;
     }
     building.value.regularExpenses?.splice(index, 1, regularExpense);
+    setValues({
+      regularExpenses: building.value.regularExpenses,
+    });
   }
 }
 
 const removeRegularExpense = (index: number) => {
   building.value.regularExpenses?.splice(index, 1);
+  setValues({
+    regularExpenses: building.value.regularExpenses,
+  });
 }
 
 const editRegularExpense = (index: number) => {
@@ -192,7 +208,10 @@ const validationSchema = toTypedSchema(object({
   regularExpenses: array()
     .of(object({
       name: string().notRequired().nullable().label('項目'),
-      months: string().notRequired().nullable().label('月'),
+      months: array()
+        .of(string().notRequired().nullable().label('月'))
+        .label('月'),
+      defaultAmount: string().notRequired().nullable().label('デフォルト金額'),
     }))
     .notRequired()
     .nullable()
@@ -621,7 +640,7 @@ defineExpose({
     }"
   >
     <template #[`body-cell-months`]="{ row }: { row: RegularExpenseBase }">
-      <q-td>
+      <q-td class="text-right">
         {{ row.months?.join(', ') }}
       </q-td>
     </template>

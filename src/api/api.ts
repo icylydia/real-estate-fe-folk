@@ -1769,6 +1769,12 @@ export interface RegularExpenseBase {
    * @memberof RegularExpenseBase
    */
   months?: Array<number>;
+  /**
+   * 默认金额
+   * @type {number}
+   * @memberof RegularExpenseBase
+   */
+  defaultAmount?: number;
 }
 /**
  *

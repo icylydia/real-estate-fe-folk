@@ -82,6 +82,8 @@ const onMonthChange = (values: number[]) => {
                     clearable
                     @new-value="createNameOption"
                     @filter="filterNameFn"
+                    emit-value
+                    map-options
                   />
                 </q-item-section>
               </q-item>
@@ -94,6 +96,15 @@ const onMonthChange = (values: number[]) => {
                     clearable
                     multiple
                     @update:model-value="onMonthChange"
+                  />
+                </q-item-section>
+              </q-item>
+              <q-item class="col-12">
+                <q-item-section>
+                  <q-input
+                    v-model="model.defaultAmount"
+                    label="金額"
+                    clearable
                   />
                 </q-item-section>
               </q-item>
