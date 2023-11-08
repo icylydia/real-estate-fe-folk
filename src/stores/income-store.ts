@@ -61,5 +61,11 @@ export const useIncomeStore = defineStore('income', {
     async deleteIncome(id: string) {
       return api.deleteIncome(id);
     },
+    async confirmAll(ids: string[]) {
+      return api.updateIncomeConfirmed({ ids });
+    },
+    async rejectAll(ids: string[]) {
+      return api.updateIncomeReject({ ids });
+    },
   },
 });

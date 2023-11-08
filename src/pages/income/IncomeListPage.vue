@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { IncomeInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const $q = useQuasar();
@@ -16,6 +17,7 @@ const {
 const selectedRows = ref<IncomeInResponse[]>([]);
 const { list: rows, searchParams } = storeToRefs(useIncomeStore());
 const router = useRouter();
+const { toastHandler } = useErrorHandler();
 
 const columns: QTableProps['columns'] = [
   {
@@ -183,6 +185,44 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
     loading.value = false;
   }
 };
+
+const confirmAll = (incomes: IncomeInResponse[]) => {
+  $q.dialog({
+    title: '収入一括承認',
+    message: '選択した収入を一括で承認しますか？',
+    ok: { label: '確認', color: 'primary'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const incomeIds = incomes.map((income) => income.id!);
+      await useIncomeStore().confirmAll(incomeIds);
+    } catch (e) {
+      toastHandler('承認に失敗しました');
+    }
+    tableRef.value?.requestServerInteraction();
+  });
+};
+
+const rejectAll = (incomes: IncomeInResponse[]) => {
+  $q.dialog({
+    title: '収入一括拒否',
+    message: '選択した収入を一括で拒否しますか？',
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const incomeIds = incomes.map((income) => income.id!);
+      await useIncomeStore().rejectAll(incomeIds);
+    } catch (e) {
+      toastHandler('拒否に失敗しました');
+    }
+    tableRef.value?.requestServerInteraction();
+  });
+};
 </script>
 
 <template>
@@ -240,8 +280,20 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
               </template>
               <template #top-right>
                 <template v-if="selectedRows.length > 0">
-                  <q-btn label="一括承認" color="primary" class="float-right text-capitalize shadow-3 q-mx-sm" icon="sym_r_check" />
-                  <q-btn label="一括拒否" color="negative" class="float-right text-capitalize shadow-3" icon="sym_r_do_not_disturb_on" />
+                  <q-btn
+                    label="一括承認"
+                    color="primary"
+                    class="float-right text-capitalize shadow-3 q-mx-sm"
+                    icon="sym_r_check"
+                    @click="confirmAll(selectedRows)"
+                  />
+                  <q-btn
+                    label="一括拒否"
+                    color="negative"
+                    class="float-right text-capitalize shadow-3"
+                    icon="sym_r_do_not_disturb_on"
+                    @click="rejectAll(selectedRows)"
+                  />
                   <q-separator vertical class="q-mx-lg" />
                 </template>
                 <q-btn label="新規" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="toCreate()" />

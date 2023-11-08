@@ -1406,6 +1406,45 @@ export interface IncomeListResponse extends PaginationResponse {
   items?: Array<IncomeInResponse>;
 }
 /**
+ *
+ * @export
+ * @interface IncomesConfirmBody
+ */
+export interface IncomesConfirmBody {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof IncomesConfirmBody
+   */
+  ids?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface IncomesRejectBody
+ */
+export interface IncomesRejectBody {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof IncomesRejectBody
+   */
+  ids?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface IncomesUnconfirmBody
+ */
+export interface IncomesUnconfirmBody {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof IncomesUnconfirmBody
+   */
+  ids?: Array<string>;
+}
+/**
  * 登录成功返回结果
  * @export
  * @interface LoginSuccessResponse
@@ -4812,6 +4851,135 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 变更多个收入状态至已确认
+     * @summary 变更收入状态至已确认
+     * @param {IncomesConfirmBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeConfirmed(body: IncomesConfirmBody, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateIncomeConfirmed.');
+      }
+      const localVarPath = `/incomes/confirm`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"IncomesConfirmBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 变更多个收入状态至已拒絕
+     * @summary 变更收入状态至已拒絕
+     * @param {IncomesRejectBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeReject(body: IncomesRejectBody, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateIncomeReject.');
+      }
+      const localVarPath = `/incomes/reject`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"IncomesRejectBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 变更多个收入状态至未确认
+     * @summary 变更收入状态至未确认
+     * @param {IncomesUnconfirmBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeUnconfirm(body: IncomesUnconfirmBody, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateIncomeUnconfirm.');
+      }
+      const localVarPath = `/incomes/unconfirm`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"IncomesUnconfirmBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID更新业主
      * @summary 更新业主
      * @param {OwnerInRequest} body 业主信息
@@ -6300,6 +6468,63 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 变更多个收入状态至已确认
+     * @summary 变更收入状态至已确认
+     * @param {IncomesConfirmBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeConfirmed(body: IncomesConfirmBody, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateIncomeConfirmed(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 变更多个收入状态至已拒絕
+     * @summary 变更收入状态至已拒絕
+     * @param {IncomesRejectBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeReject(body: IncomesRejectBody, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateIncomeReject(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 变更多个收入状态至未确认
+     * @summary 变更收入状态至未确认
+     * @param {IncomesUnconfirmBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeUnconfirm(body: IncomesUnconfirmBody, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateIncomeUnconfirm(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID更新业主
      * @summary 更新业主
      * @param {OwnerInRequest} body 业主信息
@@ -7064,6 +7289,36 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     updateIncome(body: IncomeInRequest, id: string, options?: any) {
       return DefaultApiFp(configuration).updateIncome(body, id, options)(fetch, basePath);
+    },
+    /**
+     * 变更多个收入状态至已确认
+     * @summary 变更收入状态至已确认
+     * @param {IncomesConfirmBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeConfirmed(body: IncomesConfirmBody, options?: any) {
+      return DefaultApiFp(configuration).updateIncomeConfirmed(body, options)(fetch, basePath);
+    },
+    /**
+     * 变更多个收入状态至已拒絕
+     * @summary 变更收入状态至已拒絕
+     * @param {IncomesRejectBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeReject(body: IncomesRejectBody, options?: any) {
+      return DefaultApiFp(configuration).updateIncomeReject(body, options)(fetch, basePath);
+    },
+    /**
+     * 变更多个收入状态至未确认
+     * @summary 变更收入状态至未确认
+     * @param {IncomesUnconfirmBody} body 收入ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateIncomeUnconfirm(body: IncomesUnconfirmBody, options?: any) {
+      return DefaultApiFp(configuration).updateIncomeUnconfirm(body, options)(fetch, basePath);
     },
     /**
      * 根据ID更新业主
@@ -7874,6 +8129,42 @@ export class DefaultApi extends BaseAPI {
    */
   public updateIncome(body: IncomeInRequest, id: string, options?: any) {
     return DefaultApiFp(this.configuration).updateIncome(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 变更多个收入状态至已确认
+   * @summary 变更收入状态至已确认
+   * @param {IncomesConfirmBody} body 收入ID列表
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateIncomeConfirmed(body: IncomesConfirmBody, options?: any) {
+    return DefaultApiFp(this.configuration).updateIncomeConfirmed(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 变更多个收入状态至已拒絕
+   * @summary 变更收入状态至已拒絕
+   * @param {IncomesRejectBody} body 收入ID列表
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateIncomeReject(body: IncomesRejectBody, options?: any) {
+    return DefaultApiFp(this.configuration).updateIncomeReject(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 变更多个收入状态至未确认
+   * @summary 变更收入状态至未确认
+   * @param {IncomesUnconfirmBody} body 收入ID列表
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateIncomeUnconfirm(body: IncomesUnconfirmBody, options?: any) {
+    return DefaultApiFp(this.configuration).updateIncomeUnconfirm(body, options)(this.fetch, this.basePath);
   }
 
   /**

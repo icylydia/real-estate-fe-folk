@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import IncomeForm from 'components/payment/IncomeForm.vue';
 import { useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useIncomeStore } from 'stores/income-store';
 import { FormValidationResult } from 'vee-validate';
 
 const router = useRouter();
 const loading = ref(false);
-
-
 const form = ref<InstanceType<typeof IncomeForm>>();
 
 const onSave = async () => {
@@ -32,7 +30,11 @@ const onSave = async () => {
 };
 
 onMounted(() => {
+  loading.value = true;
   useIncomeStore().resetFormModel();
+  nextTick(() => {
+    loading.value = false;
+  });
 });
 </script>
 
@@ -46,7 +48,7 @@ onMounted(() => {
         <q-separator></q-separator>
         <q-linear-progress indeterminate v-if="loading" />
         <q-card-section>
-          <income-form new-income ref="form" />
+          <income-form new-income ref="form" v-if="!loading" />
         </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">
