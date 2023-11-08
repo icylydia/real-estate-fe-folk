@@ -5,6 +5,16 @@ import { QTable, QTableProps, useQuasar } from 'quasar';
 import { computed, onMounted, Ref, ref } from 'vue';
 import { RentalContractInResponse } from 'src/api';
 import { useRouter } from 'vue-router';
+import useErrorHandler from 'components/app/useErrorHandler';
+
+const { rentalContractList: contracts } = storeToRefs(useContractStore());
+const {
+  statusToChipProps,
+  promptRemindStatusToChipProps,
+} = useContractStore();
+const loading = ref(false);
+const $q = useQuasar();
+const { toastHandler } = useErrorHandler();
 
 const columns: QTableProps['columns'] = [
   {
@@ -65,13 +75,6 @@ const columns: QTableProps['columns'] = [
   },
 ];
 
-const { rentalContractList: contracts } = storeToRefs(useContractStore());
-const {
-  statusToChipProps,
-  promptRemindStatusToChipProps,
-} = useContractStore();
-const loading = ref(false);
-
 onMounted(async () => {
   tableRef.value?.requestServerInteraction();
 });
@@ -104,14 +107,20 @@ const toContractEdit = async (id?: string) => {
 
 const promptToUpdateContract = async (id?: string) => {
   if (!id) return;
-  try {
-    await router.push({
-      name: 'contract-prompt-update',
-      params: { id },
-    });
-  } catch (e) {
-    console.error(e);
-  }
+  $q.dialog({
+    title: '更新を促す',
+    message: '更新を促しますか？',
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    try {
+      await useContractStore().promptRemindRentalContract(id);
+    } catch (e) {
+      toastHandler('更新を促すに失敗しました。')
+    }
+    tableRef.value?.requestServerInteraction();
+  });
 };
 
 const toNewContract = async () => {
@@ -130,8 +139,6 @@ const search = async () => {
   tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
 const includeArchive = ref(false);
-
-const $q = useQuasar();
 
 const archiveContract = async (contract: RentalContractInResponse) => {
   $q.dialog({

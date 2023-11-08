@@ -5198,6 +5198,46 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID变更租赁合同催促状态至已催促
+     * @summary 变更租赁合同催促状态至已催促
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRentalContractPromptRenewal(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling updateRentalContractPromptRenewal.');
+      }
+      const localVarPath = `/rental-contract/{id}/prompt-renewal`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID变更租赁合同状态至解约
      * @summary 变更租赁合同状态至解约
      * @param {string} id 租赁合同ID
@@ -6622,6 +6662,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID变更租赁合同催促状态至已催促
+     * @summary 变更租赁合同催促状态至已催促
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRentalContractPromptRenewal(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RentalContractInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateRentalContractPromptRenewal(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID变更租赁合同状态至解约
      * @summary 变更租赁合同状态至解约
      * @param {string} id 租赁合同ID
@@ -7371,6 +7430,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     updateRentalContractPreTerminate(id: string, options?: any) {
       return DefaultApiFp(configuration).updateRentalContractPreTerminate(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID变更租赁合同催促状态至已催促
+     * @summary 变更租赁合同催促状态至已催促
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRentalContractPromptRenewal(id: string, options?: any) {
+      return DefaultApiFp(configuration).updateRentalContractPromptRenewal(id, options)(fetch, basePath);
     },
     /**
      * 根据ID变更租赁合同状态至解约
@@ -8227,6 +8296,18 @@ export class DefaultApi extends BaseAPI {
    */
   public updateRentalContractPreTerminate(id: string, options?: any) {
     return DefaultApiFp(this.configuration).updateRentalContractPreTerminate(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID变更租赁合同催促状态至已催促
+   * @summary 变更租赁合同催促状态至已催促
+   * @param {string} id 租赁合同ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateRentalContractPromptRenewal(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).updateRentalContractPromptRenewal(id, options)(this.fetch, this.basePath);
   }
 
   /**
