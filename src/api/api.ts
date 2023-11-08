@@ -679,11 +679,17 @@ export interface DepartmentBase {
    */
   name?: string;
   /**
-   * 父部门ID
-   * @type {string}
+   *
+   * @type {DepartmentInResponse}
    * @memberof DepartmentBase
    */
-  parentID?: string;
+  parent?: DepartmentInResponse;
+  /**
+   *
+   * @type {EmployeeInResponse}
+   * @memberof DepartmentBase
+   */
+  leader?: EmployeeInResponse;
 }
 /**
  *
@@ -704,12 +710,6 @@ export interface DepartmentDetailResponse extends DepartmentInResponse {
  * @interface DepartmentInRequest
  */
 export interface DepartmentInRequest extends DepartmentBase {
-  /**
-   * 部门负责人ID
-   * @type {string}
-   * @memberof DepartmentInRequest
-   */
-  leaderId?: string;
 }
 /**
  *
@@ -723,18 +723,6 @@ export interface DepartmentInResponse extends DepartmentBase {
    * @memberof DepartmentInResponse
    */
   id?: string;
-  /**
-   *
-   * @type {DepartmentInResponse}
-   * @memberof DepartmentInResponse
-   */
-  parent?: DepartmentInResponse;
-  /**
-   *
-   * @type {EmployeeBase}
-   * @memberof DepartmentInResponse
-   */
-  leader?: EmployeeBase;
   /**
    * 部门人数
    * @type {number}

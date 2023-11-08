@@ -17,14 +17,6 @@ const save = async () => {
   loading.value = true;
   try {
     const data = validation.values;
-    if (data.leader) {
-      data.leaderId = data.leader.id;
-      delete data.leader;
-    }
-    if (data.parent) {
-      data.parentId = data.parent.id;
-      delete data.parent;
-    }
     const newDepartment = await useDepartmentStore().createDepartment(data);
     await router.push({
       name: 'department-detail',

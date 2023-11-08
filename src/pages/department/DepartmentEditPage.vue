@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { DepartmentFormModel, useDepartmentStore } from 'stores/department-store';
 import { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const route = useRoute();
 const router = useRouter();
@@ -13,6 +14,7 @@ const loading = ref(false);
 const departmentId = typeof route.params.id == 'string' ? route.params.id : '';
 const form = ref<InstanceType<typeof DepartmentForm>>();
 const { formModel: department } = storeToRefs(useDepartmentStore());
+const { toastHandler } = useErrorHandler()
 
 onMounted(async () => {
   loading.value = true;
@@ -33,14 +35,6 @@ const save =  async () => {
   loading.value = true;
   try {
     const data = validation.values;
-    if (data.leader) {
-      data.leaderId = data.leader.id;
-      delete data.leader;
-    }
-    if (data.parent) {
-      data.parentId = data.parent.id;
-      delete data.parent;
-    }
     const newDepartment: DepartmentFormModel = {
       ...department.value,
       ...data,
@@ -51,7 +45,7 @@ const save =  async () => {
       params: { id: departmentId }
     });
   } catch (error) {
-    console.error(error);
+    toastHandler('部署の更新に失敗しました。')
   } finally {
     loading.value = false;
   }
