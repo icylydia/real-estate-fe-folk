@@ -4646,6 +4646,86 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID变更委托合同状态至已生效
+     * @summary 变更委托合同状态至已生效
+     * @param {string} id 委托合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntrustContractActive(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling updateEntrustContractActive.');
+      }
+      const localVarPath = `/entrust-contract/{id}/active`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据ID变更委托合同状态至已解約
+     * @summary 变更委托合同状态至已解約
+     * @param {string} id 委托合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntrustContractTerminate(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling updateEntrustContractTerminate.');
+      }
+      const localVarPath = `/entrust-contract/{id}/terminate`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID更新支出
      * @summary 更新支出
      * @param {ExpenseInRequest} body 支出信息
@@ -6154,6 +6234,44 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID变更委托合同状态至已生效
+     * @summary 变更委托合同状态至已生效
+     * @param {string} id 委托合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntrustContractActive(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<EntrustContractInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateEntrustContractActive(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据ID变更委托合同状态至已解約
+     * @summary 变更委托合同状态至已解約
+     * @param {string} id 委托合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntrustContractTerminate(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<EntrustContractInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateEntrustContractTerminate(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID更新支出
      * @summary 更新支出
      * @param {ExpenseInRequest} body 支出信息
@@ -6916,6 +7034,26 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     updateEntrustContract(body: EntrustContractInRequest, id: string, options?: any) {
       return DefaultApiFp(configuration).updateEntrustContract(body, id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID变更委托合同状态至已生效
+     * @summary 变更委托合同状态至已生效
+     * @param {string} id 委托合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntrustContractActive(id: string, options?: any) {
+      return DefaultApiFp(configuration).updateEntrustContractActive(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID变更委托合同状态至已解約
+     * @summary 变更委托合同状态至已解約
+     * @param {string} id 委托合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntrustContractTerminate(id: string, options?: any) {
+      return DefaultApiFp(configuration).updateEntrustContractTerminate(id, options)(fetch, basePath);
     },
     /**
      * 根据ID更新支出
@@ -7698,6 +7836,30 @@ export class DefaultApi extends BaseAPI {
    */
   public updateEntrustContract(body: EntrustContractInRequest, id: string, options?: any) {
     return DefaultApiFp(this.configuration).updateEntrustContract(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID变更委托合同状态至已生效
+   * @summary 变更委托合同状态至已生效
+   * @param {string} id 委托合同ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateEntrustContractActive(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).updateEntrustContractActive(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID变更委托合同状态至已解約
+   * @summary 变更委托合同状态至已解約
+   * @param {string} id 委托合同ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateEntrustContractTerminate(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).updateEntrustContractTerminate(id, options)(this.fetch, this.basePath);
   }
 
   /**

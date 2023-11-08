@@ -67,7 +67,7 @@ const toContractDetail = async (id?: string) => {
   if (!id) return;
   try {
     await router.push({
-      name: 'contract-detail',
+      name: 'rental-contract-detail',
       params: { id },
     });
   } catch (e) {

@@ -9,6 +9,9 @@ import { useBuildingStore } from 'stores/building-store';
 import { useTenantStore } from 'stores/tenant-store';
 import { useRentalContract } from 'src/utils/rental-contract';
 
+const { rentalContractFormModel: contract } = storeToRefs(useContractStore());
+const { describeStatus } = useRentalContract();
+
 defineProps({
   readonly: {
     type: Boolean,
@@ -19,9 +22,6 @@ defineProps({
     default: false,
   },
 });
-
-const { rentalContractFormModel: contract } = storeToRefs(useContractStore());
-const { describeStatus } = useRentalContract();
 
 /**********************
  * Building select

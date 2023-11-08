@@ -89,6 +89,12 @@ export const useContractStore = defineStore('contract', {
     async deleteEntrustContract(id: string) {
       return api.deleteEntrustContract(id);
     },
+    async activeEntrustContract(id: string) {
+      this.entrustContractFormModel = await  api.updateEntrustContractActive(id);
+    },
+    async terminateEntrustContract(id: string) {
+      this.entrustContractFormModel = await  api.updateEntrustContractTerminate(id);
+    },
     resetEntrustContractFormModel() {
       this.entrustContractFormModel = defaultEntrustContractFormModel;
     },

@@ -9,7 +9,8 @@ import { useBuildingStore } from 'stores/building-store';
 import { useOwnerStore } from 'stores/owner-store';
 import { useEntrustContract } from 'src/utils/entrust-contract';
 
-const { benefitTypeOptions } = useEntrustContract();
+const { benefitTypeOptions, describeStatus } = useEntrustContract();
+const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
 
 defineProps({
   readonly: {
@@ -21,8 +22,6 @@ defineProps({
     default: false,
   },
 });
-
-const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
 
 /**********************
  * Building select
@@ -204,8 +203,15 @@ const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
 </script>
 
 <template>
-  <div class="text-h6" v-if="!newContract">
-    管理委託契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+  <div class="row justify-between">
+    <div class="text-h6" v-if="!newContract">
+      管理委託契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+    </div>
+    <q-badge
+      v-if="!newContract"
+      :color="describeStatus(contract.status).color"
+      :label="describeStatus(contract.status).description"
+    />
   </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newContract">

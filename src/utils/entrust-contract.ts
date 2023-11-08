@@ -1,3 +1,5 @@
+import { ContractBase } from 'src/api';
+
 const benefitTypeOptions: Array<{ label: string, value: string }> = [
   {
     label: '定額',
@@ -9,8 +11,34 @@ const benefitTypeOptions: Array<{ label: string, value: string }> = [
   },
 ];
 
+const describeStatus = (status?: ContractBase.StatusEnum ): { description: string, color: string } => {
+  switch (status) {
+    case ContractBase.StatusEnum.BeforeStart:
+      return {
+        description: '契約予定',
+        color: 'lime-7',
+      };
+    case ContractBase.StatusEnum.Active:
+      return {
+        description: '契約中',
+        color: 'blue',
+      };
+    case ContractBase.StatusEnum.Terminated:
+      return {
+        description: '解約済み',
+        color: 'red',
+      };
+    default:
+      return {
+        description: '不明',
+        color: 'grey',
+      };
+  }
+}
+
 export const useEntrustContract = () => {
   return {
     benefitTypeOptions,
+    describeStatus,
   };
 }

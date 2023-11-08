@@ -85,7 +85,6 @@ const statusToTerminated = async () => {
           color="primary"
           label="状態変更"
           v-if="!loading && contract.status"
-          @before-show="() => console.log(contract.status.toString())"
           :disable="['terminated'].includes(contract.status.toString())"
         >
           <q-list>

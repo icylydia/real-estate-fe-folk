@@ -4,10 +4,12 @@ import { computed, onMounted, ref } from 'vue';
 import { useContractStore } from 'stores/contract-store';
 import { useRoute, useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { storeToRefs } from 'pinia';
 
 const loading = ref(false);
 const router = useRouter();
 const { toastHandler } = useErrorHandler();
+const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
 
 const toEdit = async () => {
   try {
@@ -36,6 +38,22 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+const statusToActive = async () => {
+  try {
+    await useContractStore().activeEntrustContract(contractId.value);
+  } catch (error) {
+    toastHandler(error);
+  }
+};
+
+const statusToTerminated = async () => {
+  try {
+    await useContractStore().terminateEntrustContract(contractId.value);
+  } catch (error) {
+    toastHandler(error);
+  }
+};
 </script>
 
 <template>
@@ -47,6 +65,37 @@ onMounted(async () => {
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
+        <q-btn-dropdown
+          color="primary"
+          label="状態変更"
+          v-if="!loading && contract.status"
+          :disable="['terminated'].includes(contract.status.toString())"
+        >
+          <q-list>
+            <q-item
+              clickable
+              v-close-popup
+              @click="statusToActive"
+              v-if="['beforeStart'].includes(contract.status.toString())"
+            >
+              <q-item-section>
+                <q-item-label>契約確定</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-close-popup
+              @click="statusToTerminated"
+              v-if="['active'].includes(contract.status.toString())"
+            >
+              <q-item-section>
+                <q-item-label>解約確定</q-item-label>
+              </q-item-section>
+            </q-item>
+
+          </q-list>
+        </q-btn-dropdown>
         <q-btn
           style="width: 100px"
           color="negative"
