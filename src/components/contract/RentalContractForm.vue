@@ -7,6 +7,7 @@ import { computed, ref } from 'vue';
 import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
 import { useTenantStore } from 'stores/tenant-store';
+import { useRentalContract } from 'src/utils/rental-contract';
 
 defineProps({
   readonly: {
@@ -20,6 +21,7 @@ defineProps({
 });
 
 const { rentalContractFormModel: contract } = storeToRefs(useContractStore());
+const { describeStatus } = useRentalContract();
 
 /**********************
  * Building select
@@ -244,8 +246,15 @@ defineExpose({
 </script>
 
 <template>
-  <div class="text-h6" v-if="!newContract">
-    賃貸契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+  <div class="row justify-between">
+    <div class="text-h6" v-if="!newContract">
+      賃貸契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+    </div>
+    <q-badge
+      v-if="!newContract"
+      :color="describeStatus(contract.status).color"
+      :label="describeStatus(contract.status).description"
+    />
   </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newContract">

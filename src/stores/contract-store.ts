@@ -57,6 +57,18 @@ export const useContractStore = defineStore('contract', {
     async deleteRentalContract(id: string) {
       return api.deleteRentalContract(id);
     },
+    async activeRentalContract(id: string) {
+      this.rentalContractFormModel = await  api.updateRentalContractActive(id);
+    },
+    async preRenewRentalContract(id: string) {
+      this.rentalContractFormModel = await  api.updateRentalContractPreRenewal(id);
+    },
+    async preTerminateRentalContract(id: string) {
+      this.rentalContractFormModel = await  api.updateRentalContractPreTerminate(id);
+    },
+    async terminateRentalContract(id: string) {
+      this.rentalContractFormModel = await  api.updateRentalContractTerminate(id);
+    },
     resetRentalContractFormModel() {
       this.rentalContractFormModel = defaultRentalContractFormModel;
     },
