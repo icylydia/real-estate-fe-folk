@@ -5,10 +5,11 @@ import { useContractStore } from 'stores/contract-store';
 import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { EntrustContractBase, EntrustContractInResponse } from 'src/api';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const $q = useQuasar();
-
+const { toastHandler } = useErrorHandler();
 const { entrustContractList: contracts } = storeToRefs(useContractStore());
 const {
   statusToChipProps,
@@ -161,7 +162,12 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
   try {
     loading.value = true;
     const { page, rowsPerPage } = _pagination;
-    const pageMeta = await useContractStore().getEntrustContractList(rowsPerPage, page);
+    const pageMeta = await useContractStore().getEntrustContractList(
+      rowsPerPage,
+      page,
+      searchText.value || undefined,
+      includeArchive.value,
+    );
     pagination.value = {
       sortBy: undefined,
       descending: false,
@@ -170,7 +176,7 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
       rowsNumber: pageMeta.total ?? 0,
     };
   } catch (e) {
-    console.error(e);
+    toastHandler(e);
   } finally {
     loading.value = false;
   }

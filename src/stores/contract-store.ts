@@ -75,8 +75,8 @@ export const useContractStore = defineStore('contract', {
     resetRentalContractFormModel() {
       this.rentalContractFormModel = defaultRentalContractFormModel;
     },
-    async getEntrustContractList(itemsPerPage?: number, page?: number, buildingId?: string, ownerId?: string,) {
-      const resp = await api.getEntrustContracts(itemsPerPage, page, buildingId, ownerId);
+    async getEntrustContractList(itemsPerPage?: number, page?: number, query?: string, includeArchived?: boolean,) {
+      const resp = await api.getEntrustContracts(itemsPerPage, page, query, includeArchived);
       this.entrustContractList = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;
     },
