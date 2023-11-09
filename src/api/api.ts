@@ -1211,6 +1211,13 @@ export namespace ExpenseBase {
  */
 export interface ExpenseDetailResponse extends ExpenseInResponse {
 }
+
+/**
+ * @export
+ * @namespace ExpenseDetailResponse
+ */
+export namespace ExpenseDetailResponse {
+}
 /**
  *
  * @export
@@ -1230,6 +1237,28 @@ export interface ExpenseInResponse extends ExpenseBase {
    * @memberof ExpenseInResponse
    */
   id?: string;
+  /**
+   * 收入确认状态/確認狀態 - unconfirmed: 未确认/未確認 - confirmed: 已确认/確認済み - rejected: 已拒绝/却下
+   * @type {string}
+   * @memberof ExpenseInResponse
+   */
+  confirmStatus?: ExpenseInResponse.ConfirmStatusEnum;
+}
+
+/**
+ * @export
+ * @namespace ExpenseInResponse
+ */
+export namespace ExpenseInResponse {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum ConfirmStatusEnum {
+    Unconfirmed = <any> 'unconfirmed',
+    Confirmed = <any> 'confirmed',
+    Rejected = <any> 'rejected'
+  }
 }
 /**
  *
@@ -1243,6 +1272,45 @@ export interface ExpenseListResponse extends PaginationResponse {
    * @memberof ExpenseListResponse
    */
   items?: Array<ExpenseInResponse>;
+}
+/**
+ *
+ * @export
+ * @interface ExpensesConfirmBody
+ */
+export interface ExpensesConfirmBody {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ExpensesConfirmBody
+   */
+  ids?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ExpensesRejectBody
+ */
+export interface ExpensesRejectBody {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ExpensesRejectBody
+   */
+  ids?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ExpensesUnconfirmBody
+ */
+export interface ExpensesUnconfirmBody {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ExpensesUnconfirmBody
+   */
+  ids?: Array<string>;
 }
 /**
  *
@@ -1694,6 +1762,18 @@ export interface PaymentBase {
    * @memberof PaymentBase
    */
   date?: string;
+  /**
+   * 对象月份
+   * @type {number}
+   * @memberof PaymentBase
+   */
+  targetMonth?: number;
+  /**
+   * 对象年份
+   * @type {number}
+   * @memberof PaymentBase
+   */
+  targetYear?: number;
   /**
    * 备注
    * @type {string}
@@ -4802,6 +4882,135 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 变更多个支出状态至已确认
+     * @summary 变更支出状态至已确认
+     * @param {ExpensesConfirmBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseConfirmed(body: ExpensesConfirmBody, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateExpenseConfirmed.');
+      }
+      const localVarPath = `/expenses/confirm`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"ExpensesConfirmBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 变更多个支出状态至被拒绝
+     * @summary 变更支出状态至被拒绝
+     * @param {ExpensesRejectBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseRejected(body: ExpensesRejectBody, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateExpenseRejected.');
+      }
+      const localVarPath = `/expenses/reject`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"ExpensesRejectBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 变更多个支出状态至未确认
+     * @summary 变更支出状态至未确认
+     * @param {ExpensesUnconfirmBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseUnconfirm(body: ExpensesUnconfirmBody, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateExpenseUnconfirm.');
+      }
+      const localVarPath = `/expenses/unconfirm`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PATCH' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"ExpensesUnconfirmBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID更新收入
      * @summary 更新收入
      * @param {IncomeInRequest} body 收入信息
@@ -6488,6 +6697,63 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 变更多个支出状态至已确认
+     * @summary 变更支出状态至已确认
+     * @param {ExpensesConfirmBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseConfirmed(body: ExpensesConfirmBody, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateExpenseConfirmed(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 变更多个支出状态至被拒绝
+     * @summary 变更支出状态至被拒绝
+     * @param {ExpensesRejectBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseRejected(body: ExpensesRejectBody, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateExpenseRejected(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 变更多个支出状态至未确认
+     * @summary 变更支出状态至未确认
+     * @param {ExpensesUnconfirmBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseUnconfirm(body: ExpensesUnconfirmBody, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateExpenseUnconfirm(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID更新收入
      * @summary 更新收入
      * @param {IncomeInRequest} body 收入信息
@@ -7339,6 +7605,36 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).updateExpense(body, id, options)(fetch, basePath);
     },
     /**
+     * 变更多个支出状态至已确认
+     * @summary 变更支出状态至已确认
+     * @param {ExpensesConfirmBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseConfirmed(body: ExpensesConfirmBody, options?: any) {
+      return DefaultApiFp(configuration).updateExpenseConfirmed(body, options)(fetch, basePath);
+    },
+    /**
+     * 变更多个支出状态至被拒绝
+     * @summary 变更支出状态至被拒绝
+     * @param {ExpensesRejectBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseRejected(body: ExpensesRejectBody, options?: any) {
+      return DefaultApiFp(configuration).updateExpenseRejected(body, options)(fetch, basePath);
+    },
+    /**
+     * 变更多个支出状态至未确认
+     * @summary 变更支出状态至未确认
+     * @param {ExpensesUnconfirmBody} body 支出ID列表
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateExpenseUnconfirm(body: ExpensesUnconfirmBody, options?: any) {
+      return DefaultApiFp(configuration).updateExpenseUnconfirm(body, options)(fetch, basePath);
+    },
+    /**
      * 根据ID更新收入
      * @summary 更新收入
      * @param {IncomeInRequest} body 收入信息
@@ -8185,6 +8481,42 @@ export class DefaultApi extends BaseAPI {
    */
   public updateExpense(body: ExpenseInRequest, id: string, options?: any) {
     return DefaultApiFp(this.configuration).updateExpense(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 变更多个支出状态至已确认
+   * @summary 变更支出状态至已确认
+   * @param {ExpensesConfirmBody} body 支出ID列表
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateExpenseConfirmed(body: ExpensesConfirmBody, options?: any) {
+    return DefaultApiFp(this.configuration).updateExpenseConfirmed(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 变更多个支出状态至被拒绝
+   * @summary 变更支出状态至被拒绝
+   * @param {ExpensesRejectBody} body 支出ID列表
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateExpenseRejected(body: ExpensesRejectBody, options?: any) {
+    return DefaultApiFp(this.configuration).updateExpenseRejected(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 变更多个支出状态至未确认
+   * @summary 变更支出状态至未确认
+   * @param {ExpensesUnconfirmBody} body 支出ID列表
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateExpenseUnconfirm(body: ExpensesUnconfirmBody, options?: any) {
+    return DefaultApiFp(this.configuration).updateExpenseUnconfirm(body, options)(this.fetch, this.basePath);
   }
 
   /**

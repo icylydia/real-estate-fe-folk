@@ -4,14 +4,20 @@ import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useExpenseStore } from 'stores/expense-store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { ExpenseInResponse, IncomeInResponse } from 'src/api';
+import { ExpenseInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const $q = useQuasar();
 const { list: rows, searchParams } = storeToRefs(useExpenseStore());
 const router = useRouter();
-const { describeCategory: describeExpenseCategory } = usePayment();
+const {
+  describeCategory: describeExpenseCategory,
+  describeIncomeConfirmStatus: describeConfirmStatus,
+} = usePayment();
+const selectedRows = ref<ExpenseInResponse[]>([]);
+const { toastHandler } = useErrorHandler();
 
 const columns: QTableProps['columns'] = [
   {
@@ -41,6 +47,13 @@ const columns: QTableProps['columns'] = [
     name: 'date',
     sortable: false,
     align: 'right',
+  },
+  {
+    label: '確認状態',
+    field: 'confirmStatus',
+    name: 'confirmStatus',
+    sortable: false,
+    align: 'left',
   },
   {
     label: '操作',
@@ -171,6 +184,42 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
     loading.value = false;
   }
 };
+
+const confirmAll = (expenses: ExpenseInResponse[]) => {
+  $q.dialog({
+    title: '支出一括承認',
+    message: '選択した支出を一括で承認しますか？',
+    ok: { label: '確認', color: 'primary'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await useExpenseStore().confirmAll(expenses.map((expense) => expense.id!));
+    } catch (e) {
+      toastHandler('承認に失敗しました');
+    }
+    tableRef.value?.requestServerInteraction();
+  });
+};
+
+const rejectAll = (expenses: ExpenseInResponse[]) => {
+  $q.dialog({
+    title: '支出一括拒否',
+    message: '選択した支出を一括で拒否しますか？',
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await useExpenseStore().rejectAll(expenses.map((expense) => expense.id!));
+    } catch (e) {
+      toastHandler('拒否に失敗しました');
+    }
+    tableRef.value?.requestServerInteraction();
+  });
+};
 </script>
 
 <template>
@@ -212,6 +261,8 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
               :columns="columns"
               :rows="rows"
               row-key="id"
+              selection="multiple"
+              v-model:selected="selectedRows"
               hide-pagination
               v-model:pagination="pagination"
               @request="onRequest"
@@ -221,9 +272,26 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
                 <div class="text-h6">支出一覧</div>
               </template>
               <template #top-right>
+                <template v-if="selectedRows.length > 0">
+                  <q-btn
+                    label="一括承認"
+                    color="primary"
+                    class="float-right text-capitalize shadow-3 q-mx-sm"
+                    icon="sym_r_check"
+                    @click="confirmAll(selectedRows)"
+                  />
+                  <q-btn
+                    label="一括拒否"
+                    color="negative"
+                    class="float-right text-capitalize shadow-3"
+                    icon="sym_r_do_not_disturb_on"
+                    @click="rejectAll(selectedRows)"
+                  />
+                  <q-separator vertical class="q-mx-lg" />
+                </template>
                 <q-btn label="新規" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="toCreate()" />
               </template>
-              <template #[`body-cell-category`]="{ row }: { row: IncomeInResponse }">
+              <template #[`body-cell-category`]="{ row }: { row: ExpenseInResponse }">
                 <q-td>
                   {{ describeExpenseCategory(row.category) }}
                 </q-td>
@@ -231,6 +299,14 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
               <template #[`body-cell-amount`]="{ row }: { row: ExpenseInResponse }">
                 <q-td class="text-right">
                   {{ $filters.jpyCurrency(row.amount) }}
+                </q-td>
+              </template>
+              <template #[`body-cell-confirmStatus`]="{ row }: { row: ExpenseInResponse }">
+                <q-td>
+                  <q-chip
+                    :label="describeConfirmStatus(row.confirmStatus).description"
+                    :color="describeConfirmStatus(row.confirmStatus).color"
+                  />
                 </q-td>
               </template>
               <template #[`body-cell-actions`]="{ key , row }">

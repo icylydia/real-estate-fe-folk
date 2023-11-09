@@ -59,5 +59,11 @@ export const useExpenseStore = defineStore('expense', {
     async deleteExpense(id: string) {
       return api.deleteExpense(id);
     },
+    async confirmAll(ids: string[]) {
+      return api.updateExpenseConfirmed({ ids });
+    },
+    async rejectAll(ids: string[]) {
+      return api.updateExpenseRejected({ ids });
+    },
   },
 });

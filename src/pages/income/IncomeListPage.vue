@@ -109,7 +109,6 @@ const toEdit = async (id: number) => {
 };
 
 const remove = (income: IncomeInResponse) => {
-  console.log(income);
   $q.dialog({
     title: '収入削除',
     message: `収入「${income.title} 」を削除しますか？`,

@@ -14,6 +14,7 @@ import { useBuildingStore } from 'stores/building-store';
 const {
   expenseCategoryOptions: categoryOptions,
   paymentMethodOptions,
+  describeIncomeConfirmStatus: describeConfirmStatus,
 } = usePayment();
 const { formModel: expense } = storeToRefs(useExpenseStore());
 
@@ -306,9 +307,17 @@ defineExpose({
 </script>
 
 <template>
-  <div class="text-h6">
-    支出基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+  <div class="row justify-between">
+    <div class="text-h6">
+      支出基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+    </div>
+    <q-badge
+      v-if="!newExpense"
+      :color="describeConfirmStatus(expense.confirmStatus).color"
+      :label="describeConfirmStatus(expense.confirmStatus).description"
+    />
   </div>
+
   <q-list class="row">
     <q-item class="col-12" v-if="!newExpense">
       <q-item-section>

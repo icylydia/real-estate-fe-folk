@@ -4,10 +4,15 @@ import { computed, onMounted, ref } from 'vue';
 import { useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { storeToRefs } from 'pinia';
+import { ExpenseInResponse } from 'src/api';
+import { useQuasar } from 'quasar';
 
 const loading = ref(false);
 const router = useRouter();
 const { toastHandler } = useErrorHandler();
+const { formModel: expense } = storeToRefs(useExpenseStore());
+const $q = useQuasar();
 
 const expenseId = computed(() => {
   const id = useRoute().params.id;
@@ -39,17 +44,59 @@ const backToList = async () => {
 };
 
 onMounted(async () => {
+  await reload();
+});
+
+const reload = async () => {
   loading.value = true;
   try {
-    useExpenseStore().resetFormModel();
     await useExpenseStore().getExpense(expenseId.value);
   } catch (error) {
     toastHandler(error);
   } finally {
     loading.value = false;
   }
-});
+};
 
+const approve = async () => {
+  try {
+    await useExpenseStore().confirmAll([expenseId.value]);
+    await reload();
+  } catch (error) {
+    toastHandler(error);
+  }
+};
+
+const reject = async () => {
+  try {
+    await useExpenseStore().rejectAll([expenseId.value]);
+    await reload();
+  } catch (error) {
+    toastHandler(error);
+  }
+};
+
+const remove = async () => {
+  $q.dialog({
+    title: '支出削除',
+    message: `支出「${expense.value.title} 」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!expense.value.id) {
+      return;
+    }
+    try {
+      await useExpenseStore().deleteExpense(expense.value.id);
+    } catch (e) {
+      toastHandler('支出の削除に失敗しました。');
+    }
+    await router.push({
+      name: 'expense-list',
+    });
+  });
+};
 </script>
 
 <template>
@@ -61,6 +108,36 @@ onMounted(async () => {
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
+        <template v-if="!loading && expense.confirmStatus == ExpenseInResponse.ConfirmStatusEnum.Unconfirmed">
+          <q-btn
+            style="width: 100px"
+            color="primary"
+            label="承認"
+            @click="approve"
+          />
+          <q-btn
+            style="width: 100px"
+            color="negative"
+            label="拒否"
+            @click="reject"
+          />
+          <q-separator vertical class="q-mx-lg" />
+        </template>
+        <template v-if="!loading && expense.confirmStatus == ExpenseInResponse.ConfirmStatusEnum.Rejected">
+          <q-btn
+            style="width: 100px"
+            color="primary"
+            label="承認"
+            @click="approve"
+          />
+          <q-btn
+            style="width: 100px"
+            color="negative"
+            label="削除"
+            @click="remove"
+          />
+          <q-separator vertical class="q-mx-lg" />
+        </template>
         <q-btn
           style="width: 100px"
           color="primary"
