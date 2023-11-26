@@ -253,6 +253,7 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
           <template #[`body-cell-buildingName`]="{ row }: { row: RentalContractInResponse }">
             <q-td>
               <a
+                v-if="row.building"
                 :href="$router.resolve({
                   name: 'building-detail',
                   params: { id: row.building!.id },
@@ -260,11 +261,13 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
               >
                 {{ row.building.name }}
               </a>
+              <template v-else>-</template>
             </q-td>
           </template>
           <template #[`body-cell-roomName`]="{ row }: { row: RentalContractInResponse }">
             <q-td>
               <a
+                v-if="row.room"
                 :href="$router.resolve({
                   name: 'room-detail',
                   params: { id: row.room!.id },
@@ -272,11 +275,13 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
               >
                 {{ row.room.name }}
               </a>
+              <template v-else>-</template>
             </q-td>
           </template>
           <template #[`body-cell-tenant`]="{ row }: { row: RentalContractInResponse }">
             <q-td>
               <a
+                v-if="row.tenant"
                 :href="$router.resolve({
                   name: 'tenant-detail',
                   params: { id: row.tenant!.id },
@@ -284,6 +289,7 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
               >
                 {{ row.tenant.lastName }} {{ row.tenant.firstName }}
               </a>
+              <template v-else>-</template>
             </q-td>
           </template>
           <template #[`body-cell-status`]="{ row }">

@@ -227,6 +227,7 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
           <template #[`body-cell-buildingName`]="{ row }: { row: EntrustContractInResponse }">
             <q-td>
               <a
+                v-if="row.building"
                 :href="$router.resolve({
                   name: 'building-detail',
                   params: { id: row.building!.id },
@@ -234,11 +235,13 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
               >
                 {{ row.building.name }}
               </a>
+              <template v-else>-</template>
             </q-td>
           </template>
           <template #[`body-cell-owner`]="{ row }: { row: EntrustContractInResponse }">
             <q-td>
               <a
+                v-if="row.owner"
                 :href="$router.resolve({
                   name: 'owner-detail',
                   params: { id: row.owner!.id },
@@ -246,6 +249,7 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
               >
                 {{ row.owner.lastName }} {{ row.owner.firstName }}
               </a>
+              <template v-else>-</template>
             </q-td>
           </template>
           <template #[`body-cell-benefitType`]="{ row }: { row: EntrustContractInResponse }">
