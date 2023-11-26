@@ -37,6 +37,7 @@ const mainPhotoName = computed(() => {
 });
 
 const {
+  buildingTypeOptions,
   buildingStructureOptions,
   landRightsOptions,
   landUseZoneOptions,
@@ -168,6 +169,7 @@ const onMainPhotoChange = async (file: File) => {
 const validationSchema = toTypedSchema(object({
   id: string().notRequired().nullable().label('物件番号'),
   name: string().required().label('物件名'),
+  type: string().notRequired().nullable().label('物件類'),
   description: string().notRequired().nullable().label('物件説明'),
   price: string().notRequired().nullable().label('価格'),
   grossYield: string().notRequired().nullable().label('表面利回り'),
@@ -259,6 +261,24 @@ defineExpose({
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="物件名"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="type" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            emit-value
+            map-options
+            label="物件類"
+            :options="buildingTypeOptions"
+            clearable
             :readonly="readonly"
           />
         </q-item-section>

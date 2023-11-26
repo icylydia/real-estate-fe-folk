@@ -1,4 +1,18 @@
 export const useBuilding = () => {
+  const buildingTypeOptions: Array<{ label: string, value: string }> = [
+    {
+      label: '一戸建',
+      value: 'detachedHouse',
+    },
+    {
+      label: '一棟もの',
+      value: 'building',
+    },
+    {
+      label: '区分',
+      value: 'division',
+    },
+  ];
   const buildingStructureOptions: Array<{ label: string, value: string }> = [
     {
       label: '木造(W)',
@@ -122,6 +136,7 @@ export const useBuilding = () => {
     },
   ];
   return {
+    buildingTypeOptions,
     buildingStructureOptions,
     landRightsOptions,
     landUseZoneOptions,
