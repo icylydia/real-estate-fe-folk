@@ -26,6 +26,7 @@ const props = defineProps({
     default: {} as PropType<{
       id: string;
       name: string;
+      type: string;
     }>,
   },
 });
@@ -128,7 +129,11 @@ defineExpose({
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="price" #="{errorMessage, value, handleChange}">
+    <Field
+      v-if="room.building?.type != 'building'"
+      name="price"
+      #="{errorMessage, value, handleChange}"
+    >
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-currency
@@ -184,7 +189,11 @@ defineExpose({
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="maintenanceFund" #="{errorMessage, value, handleChange}">
+    <Field
+      v-if="room.building?.type != 'building'"
+      name="maintenanceFund"
+      #="{errorMessage, value, handleChange}"
+    >
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-currency
@@ -198,7 +207,11 @@ defineExpose({
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="managementFee" #="{errorMessage, value, handleChange}">
+    <Field
+      v-if="room.building?.type != 'building'"
+      name="managementFee"
+      #="{errorMessage, value, handleChange}"
+    >
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-currency

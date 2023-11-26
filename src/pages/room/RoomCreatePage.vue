@@ -24,6 +24,7 @@ const simplifiedBuilding = computed(() => {
   return {
     id: building.value.id,
     name: building.value.name,
+    type: building.value.type,
   };
 });
 
@@ -72,7 +73,7 @@ const save = async () => {
           <room-form
             new-room
             :room-building="simplifiedBuilding"
-            v-if="simplifiedBuilding.id && simplifiedBuilding.name"
+            v-if="simplifiedBuilding.id && simplifiedBuilding.name && simplifiedBuilding.type"
             ref="form"
           />
         </q-card-section>
