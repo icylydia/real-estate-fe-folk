@@ -178,7 +178,12 @@ const validationSchema = toTypedSchema(object({
   buildingStructure: string().notRequired().nullable().label('建物構造'),
   floorsAboveGround: string().notRequired().nullable().label('地上階数'),
   floorsUnderGround: string().notRequired().nullable().label('地下階数'),
-  completionDate: string().notRequired().nullable().label('新築年月日'),
+  completionDate: string()
+    .date()
+    .transform((value) => value === '' ? null : value)
+    .notRequired()
+    .nullable()
+    .label('新築年月日'),
   totalUnits: string().notRequired().nullable().label('総戸数'),
   landRights: string().notRequired().nullable().label('土地权利'),
   landUseZone: string().notRequired().nullable().label('用途地域'),
@@ -412,6 +417,7 @@ defineExpose({
             :error="!!errorMessage"
             label="新築年月日"
             :readonly="readonly"
+            hint="フォーマット: 2021-01-01"
           />
         </q-item-section>
       </q-item>

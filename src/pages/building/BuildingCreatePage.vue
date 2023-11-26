@@ -40,7 +40,7 @@ const onSave = async () => {
       params: { id: building.id },
     })
   } catch (e) {
-    toastHandler(e);
+    toastHandler('保存に失敗しました。');
   } finally {
     loading.value = false;
   }
