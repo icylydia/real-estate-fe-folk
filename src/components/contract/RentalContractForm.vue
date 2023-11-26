@@ -362,6 +362,7 @@ defineExpose({
             :error="!!errorMessage"
             label="契約開始日"
             :readonly="readonly"
+            hint="フォーマット: 2021-01-01"
           />
         </q-item-section>
       </q-item>
@@ -376,6 +377,7 @@ defineExpose({
             :error="!!errorMessage"
             label="契約終了日"
             :readonly="readonly"
+            hint="フォーマット: 2021-01-01"
           />
         </q-item-section>
       </q-item>
