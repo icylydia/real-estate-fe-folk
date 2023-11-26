@@ -94,6 +94,8 @@ export const useBuilding = () => {
   const regularExpenseOptions: Array<string> = [
     '修繕積立金',
     '管理費',
+    '固定資産税',
+    '都市計画税',
     'PM(賃貸管理)費用',
     'BM(建物管理)費用',
     '水道代',
