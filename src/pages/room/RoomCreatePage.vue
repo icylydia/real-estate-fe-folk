@@ -73,7 +73,7 @@ const save = async () => {
           <room-form
             new-room
             :room-building="simplifiedBuilding"
-            v-if="simplifiedBuilding.id && simplifiedBuilding.name && simplifiedBuilding.type"
+            v-if="simplifiedBuilding.id && simplifiedBuilding.name"
             ref="form"
           />
         </q-card-section>
