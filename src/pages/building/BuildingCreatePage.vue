@@ -8,6 +8,7 @@ import { FormValidationResult } from 'vee-validate';
 import _ from 'lodash';
 
 const loading = ref(false);
+const saving = ref(false);
 const form = ref<InstanceType<typeof BuildingForm>>();
 const { toastHandler } = useErrorHandler();
 const router = useRouter();
@@ -27,7 +28,7 @@ const onSave = async () => {
     return;
   }
   try {
-    loading.value = true;
+    saving.value = true;
     const data = validation.values;
     const necessaryData = _.omit(data, ['image', 'regularExpenses']);
     const newBuilding = {
@@ -42,7 +43,7 @@ const onSave = async () => {
   } catch (e) {
     toastHandler('保存に失敗しました。');
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 };
 </script>
@@ -55,7 +56,7 @@ const onSave = async () => {
           <div class="text-h5">新規物件</div>
         </q-card-section>
         <q-separator></q-separator>
-        <q-linear-progress indeterminate v-if="loading" />
+        <q-linear-progress indeterminate v-if="saving" />
         <q-card-section>
           <building-form new-building ref="form" v-if="!loading" />
         </q-card-section>

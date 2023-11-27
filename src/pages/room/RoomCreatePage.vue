@@ -6,10 +6,12 @@ import { useRoomStore } from 'stores/room-store';
 import { useBuildingStore } from 'stores/building-store';
 import { storeToRefs } from 'pinia';
 import { FormValidationResult } from 'vee-validate';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(true);
 const { formModel: building } = storeToRefs(useBuildingStore());
 const form = ref<InstanceType<typeof RoomForm>>();
+const { toastHandler } = useErrorHandler();
 const router = useRouter();
 
 const buildingId = computed(() => {
@@ -54,7 +56,7 @@ const save = async () => {
       params: { id: room.id },
     });
   } catch (error) {
-    console.error(error);
+    toastHandler('保存に失敗しました。');
   } finally {
     loading.value = false;
   }

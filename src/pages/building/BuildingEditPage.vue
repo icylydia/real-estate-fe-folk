@@ -8,6 +8,7 @@ import { FormValidationResult } from 'vee-validate';
 import _ from 'lodash';
 
 const loading = ref(false);
+const saving = ref(false);
 const form = ref<InstanceType<typeof BuildingForm>>();
 
 const router = useRouter();
@@ -40,7 +41,7 @@ const onSave = async () => {
     return;
   }
   try {
-    loading.value = true;
+    saving.value = true;
     const data = validation.values;
     const necessaryData = _.omit(data, ['image', 'regularExpenses']);
     const newBuilding = {
@@ -55,7 +56,7 @@ const onSave = async () => {
   } catch (e) {
     toastHandler(e);
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 };
 
@@ -67,9 +68,9 @@ const onCancel = () => {
 <template>
   <q-page padding>
     <q-card bordered>
-      <q-linear-progress indeterminate v-if="loading" />
+      <q-linear-progress indeterminate v-if="saving" />
       <q-card-section>
-        <building-form ref="form" />
+        <building-form ref="form" v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
