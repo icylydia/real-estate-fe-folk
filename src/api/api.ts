@@ -439,6 +439,12 @@ export interface BuildingDetailResponse extends BuildingInResponse {
   rooms?: Array<RoomInResponse>;
   /**
    *
+   * @type {Array<RentalContractInResponse>}
+   * @memberof BuildingDetailResponse
+   */
+  activeContracts?: Array<RentalContractInResponse>;
+  /**
+   *
    * @type {Array<EntrustContractInResponse>}
    * @memberof BuildingDetailResponse
    */

@@ -7,6 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBuildingStore } from 'stores/building-store';
 import useErrorHandler from 'components/app/useErrorHandler';
+import RentalContractList from 'components/building/RentalContractList.vue';
 
 const loading = ref(false);
 const router = useRouter();
@@ -67,7 +68,7 @@ const toEdit = async () => {
     </q-card>
     <q-card bordered class="q-mt-md">
       <q-card-section>
-        <contract-list />
+        <rental-contract-list />
       </q-card-section>
     </q-card>
     <q-card bordered class="q-mt-md">
