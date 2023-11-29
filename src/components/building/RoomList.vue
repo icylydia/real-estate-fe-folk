@@ -1,53 +1,18 @@
-<template>
-  <q-table
-    flat
-    :rows="rooms"
-    :columns="columns"
-    row-key="id"
-    hide-bottom
-    :pagination="{
-      rowsPerPage: 0,
-    }"
-  >
-    <template #top-left>
-      <div class="text-h6">部屋一覧</div>
-    </template>
-    <template #top-right>
-      <q-btn label="追加" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="createRoom()" />
-    </template>
-    <template #[`body-cell-contractStatus`]="{ row }: { row: RoomInResponse }">
-      <q-td>
-        <q-chip
-          v-bind="contractStatusToChipProps(row.contractStatus)"
-        />
-      </q-td>
-    </template>
-    <template #[`body-cell-layout`]="{ row }: { row: RoomInResponse }">
-      <q-td>
-        {{ row.roomLayoutNumber }}{{ row.roomLayoutUnit }}
-      </q-td>
-    </template>
-    <template #[`body-cell-area`]="{ row }: { row: RoomInResponse }">
-      <q-td class="text-right">
-        {{ row.exclusiveArea }} m<sup>2</sup>
-      </q-td>
-    </template>
-    <template #[`body-cell-actions`]="{ key }">
-      <q-td class="text-right">
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="roomDetail(key)" />
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRoom(key)" />
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRoom(key)" />
-      </q-td>
-    </template>
-  </q-table>
-</template>
-
 <script setup lang="ts">
-import { QTableProps } from 'quasar';
+import { QTableProps, useQuasar } from 'quasar';
 import { RoomInResponse } from 'src/api';
 import { useRoom } from 'src/utils/room';
+import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useBuildingStore } from 'stores/building-store';
+import { useRoomStore } from 'stores/room-store';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const { contractStatusToChipProps } = useRoom();
+const router = useRouter();
+const $q = useQuasar();
+const { toastHandler } = useErrorHandler();
 
 const columns: QTableProps['columns'] = [
   {
@@ -86,34 +51,80 @@ const columns: QTableProps['columns'] = [
     align: 'right',
   },
 ]
+
+const rooms = computed(() => storeToRefs(useBuildingStore()).formModel.value.rooms);
+const buildingId = computed(() => storeToRefs(useBuildingStore()).formModel.value.id);
+
+const roomDetail = (key: number) => {
+  router.push({ name: 'room-detail', params: { id: key } });
+}
+const editRoom = (key: number) => {
+  router.push({ name: 'room-edit', params: { id: key } });
+}
+
+const removeRoom = (room: RoomInResponse) => {
+  $q.dialog({
+    title: '部屋削除',
+    message: `部屋「${room.name}」を削除しますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!room.id) return;
+    try {
+      await useRoomStore().deleteRoom(room.id);
+      useBuildingStore().removeRoom(room.id);
+    } catch (e) {
+      toastHandler('ファイルの削除に失敗しました');
+    }
+  });
+}
+
+const createRoom = () => {
+  router.push({ name: 'room-create', params: { buildingId: buildingId.value } });
+}
 </script>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapState } from 'pinia';
-import { useBuildingStore } from 'stores/building-store';
-
-export default defineComponent({
-  name: 'RoomList',
-  methods: {
-    roomDetail(key: number) {
-      this.$router.push({ name: 'room-detail', params: { id: key } });
-    },
-    editRoom(key: number) {
-      this.$router.push({ name: 'room-edit', params: { id: key } });
-    },
-    removeRoom(key: number) {
-      console.log('remove room', key);
-    },
-    createRoom() {
-      this.$router.push({ name: 'room-create', params: { buildingId: this.buildingId } });
-    },
-  },
-  computed: {
-    ...mapState(useBuildingStore, {
-      rooms: store => store.formModel.rooms,
-      buildingId: store => store.formModel.id,
-    })
-  }
-});
-</script>
+<template>
+  <q-table
+    flat
+    :rows="rooms"
+    :columns="columns"
+    row-key="id"
+    hide-bottom
+    :pagination="{
+      rowsPerPage: 0,
+    }"
+  >
+    <template #top-left>
+      <div class="text-h6">部屋一覧</div>
+    </template>
+    <template #top-right>
+      <q-btn label="追加" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="createRoom()" />
+    </template>
+    <template #[`body-cell-contractStatus`]="{ row }: { row: RoomInResponse }">
+      <q-td>
+        <q-chip
+          v-bind="contractStatusToChipProps(row.contractStatus)"
+        />
+      </q-td>
+    </template>
+    <template #[`body-cell-layout`]="{ row }: { row: RoomInResponse }">
+      <q-td>
+        {{ row.roomLayoutNumber }}{{ row.roomLayoutUnit }}
+      </q-td>
+    </template>
+    <template #[`body-cell-area`]="{ row }: { row: RoomInResponse }">
+      <q-td class="text-right">
+        {{ row.exclusiveArea }} m<sup>2</sup>
+      </q-td>
+    </template>
+    <template #[`body-cell-actions`]="{ key, row }: { key: number, row: RoomInResponse}">
+      <q-td class="text-right">
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="roomDetail(key)" />
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRoom(key)" />
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRoom(row)" />
+      </q-td>
+    </template>
+  </q-table>
+</template>

@@ -112,5 +112,11 @@ export const useBuildingStore = defineStore('building', {
         this.formModel.files = this.formModel.files.filter(file => file.id !== id)
       }
     },
+
+    removeRoom(id: string) {
+      if (this.formModel.rooms) {
+        this.formModel.rooms = this.formModel.rooms.filter(room => room.id !== id)
+      }
+    },
   },
 });

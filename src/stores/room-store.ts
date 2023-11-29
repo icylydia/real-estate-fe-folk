@@ -25,6 +25,9 @@ export const useRoomStore = defineStore('room', {
     async updateRoom(id: string, data: RoomInRequest) {
       return await api.updateRoom(data, id);
     },
+    async deleteRoom(id: string) {
+      return await api.deleteRoom(id);
+    },
     resetFormModel() {
       this.formModel = defaultFormModel;
     },
