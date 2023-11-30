@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import BuildingForm from 'components/building/BuildingForm.vue';
 import RoomList from 'components/building/RoomList.vue';
-import ContractList from 'components/tenant/ContractList.vue';
 import FileList from 'components/building/FileList.vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

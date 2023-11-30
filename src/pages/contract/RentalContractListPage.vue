@@ -113,7 +113,7 @@ const promptToUpdateContract = async (id?: string) => {
     ok: { label: '確認', color: 'negative'},
     cancel: { label: 'キャンセル', color: 'grey-8'},
     persistent: true,
-  }).onOk(async () => {
+  }).onOk(async (): Promise<void> => {
     try {
       await useContractStore().promptRemindRentalContract(id);
     } catch (e) {
@@ -156,7 +156,6 @@ const archiveContract = async (contract: RentalContractInResponse) => {
     } catch (e) {
       console.error(e);
     }
-
     tableRef.value?.requestServerInteraction();
   });
 };
