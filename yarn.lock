@@ -660,10 +660,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@vee-validate/i18n@^4.8.3":
-  version "4.11.7"
-  resolved "https://registry.npmjs.org/@vee-validate/i18n/-/i18n-4.11.7.tgz#002d8da968392a59198610cb8fe6bc966c7f8ebe"
-  integrity sha512-m648JC3fQTbKAr896UOdNbsGzqlf+F5q+7B44xl7Dd9GO9sr/+ELng00cz9sk0RU1dODoEKq4Md1mkywsTxg5w==
+"@vee-validate/i18n@^4.12.2":
+  version "4.12.2"
+  resolved "https://registry.yarnpkg.com/@vee-validate/i18n/-/i18n-4.12.2.tgz#07cac14614ffbbc7eb0c88c051c3aa6a866f7d88"
+  integrity sha512-wkepZ8GNYdPMUiTYYYli6bseV9XwOK9cKkQPm9Bdj/ZMUq0cfbTZhvI+/5n8bWwF46IDmlTy3ybxLIE5C46Msw==
 
 "@vee-validate/yup@^4.12.2":
   version "4.12.2"
