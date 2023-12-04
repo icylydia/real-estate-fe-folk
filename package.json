@@ -33,7 +33,7 @@
     "@quasar/app-vite": "^1.7.0",
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.14.202",
-    "@types/node": "^20.10.1",
+    "@types/node": "^20.10.3",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "autoprefixer": "^10.4.2",
