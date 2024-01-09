@@ -136,6 +136,11 @@ export default defineComponent({
               icon: 'sym_r_trending_down',
               link: this.$router.resolve({ name: 'expense-list' }).href,
             },
+            {
+              title: '月次収支',
+              icon: 'sym_r_summarize',
+              link: this.$router.resolve({ name: 'monthly-income-expense-report-list' }).href,
+            },
           ],
         },
         {

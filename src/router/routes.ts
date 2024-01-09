@@ -215,6 +215,12 @@ const routes: RouteRecordRaw[] = [
         name: 'expense-edit',
         component: () => import('pages/expense/ExpenseEditPage.vue'),
       },
+      // レポート
+      {
+        path: 'report/monthly-income-expense',
+        name: 'monthly-income-expense-report-list',
+        component: () => import('pages/report/MonthlyIncomeExpenseReportListPage.vue'),
+      }
     ],
     meta: {
       requiresAuth: true,
