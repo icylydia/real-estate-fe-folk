@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DepartmentForm from 'components/department/DepartmentForm.vue';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useDepartmentStore } from 'stores/department-store';
 import { useRoute, useRouter } from 'vue-router';
 import EmployeeList from 'components/department/EmployeeList.vue';
@@ -18,10 +18,12 @@ onMounted(async () => {
     loading.value = true;
     resetDepartmentStore()
     await getDepartment(departmentId);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    console.log(error);
-  } finally {
     loading.value = false;
+    console.log(error);
   }
 });
 
@@ -45,7 +47,7 @@ const backToList = () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <department-form readonly />
+        <department-form readonly v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

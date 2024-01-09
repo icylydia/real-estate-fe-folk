@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import ExpenseForm from 'components/payment/ExpenseForm.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { ExpenseModel,useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
 import { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
 
 const loading = ref(false);
+const saving = ref(false);
 const router = useRouter();
 const form = ref<InstanceType<typeof ExpenseForm>>();
 const { formModel: expense } = storeToRefs(useExpenseStore());
@@ -24,10 +25,12 @@ onMounted(async () => {
   try {
     useExpenseStore().resetFormModel();
     await useExpenseStore().getExpense(expenseId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    console.log(error);
-  } finally {
     loading.value = false;
+    console.log(error);
   }
 });
 
@@ -47,7 +50,7 @@ const save = async () => {
   if (!validation.valid) {
     return;
   }
-  loading.value = true;
+  saving.value = true;
   try {
     const data = validation.values;
     const newExpense: ExpenseModel = {
@@ -61,6 +64,8 @@ const save = async () => {
     });
   } catch (error) {
     console.log(error);
+  } finally {
+    saving.value = false;
   }
 };
 </script>
@@ -68,9 +73,9 @@ const save = async () => {
 <template>
   <q-page padding>
     <q-card bordered>
-      <q-linear-progress indeterminate v-if="loading" />
+      <q-linear-progress indeterminate v-if="loading || saving" />
       <q-card-section>
-        <expense-form ref="form"/>
+        <expense-form ref="form" v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TenantForm from 'components/tenant/TenantForm.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useTenantStore } from 'stores/tenant-store';
 import ContractList from 'components/tenant/ContractList.vue';
 
@@ -30,10 +30,12 @@ onMounted(async () => {
     }
     reset();
     await getTenant(tenantId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    console.log(error);
-  } finally {
     loading.value = false;
+    console.log(error);
   }
 });
 </script>

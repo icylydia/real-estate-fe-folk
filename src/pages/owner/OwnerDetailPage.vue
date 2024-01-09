@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import BuildingList from 'components/owner/BuildingList.vue';
 import OwnerForm from 'components/owner/OwnerForm.vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -30,9 +30,11 @@ onMounted(async () => {
     }
     reset();
     await getOwner(ownerId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
     console.log(error);
-  } finally {
     loading.value = false;
   }
 });

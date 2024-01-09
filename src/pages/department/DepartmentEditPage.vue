@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DepartmentForm from 'components/department/DepartmentForm.vue';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { DepartmentFormModel, useDepartmentStore } from 'stores/department-store';
 import { FormValidationResult } from 'vee-validate';
@@ -11,6 +11,7 @@ const route = useRoute();
 const router = useRouter();
 
 const loading = ref(false);
+const saving = ref(false);
 const departmentId = typeof route.params.id == 'string' ? route.params.id : '';
 const form = ref<InstanceType<typeof DepartmentForm>>();
 const { formModel: department } = storeToRefs(useDepartmentStore());
@@ -20,10 +21,12 @@ onMounted(async () => {
   loading.value = true;
   try {
     await  useDepartmentStore().getDepartment(departmentId);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    console.error(error);
-  } finally {
     loading.value = false;
+    console.error(error);
   }
 });
 
@@ -32,7 +35,7 @@ const save =  async () => {
   if (!validation.valid) {
     return;
   }
-  loading.value = true;
+  saving.value = true;
   try {
     const data = validation.values;
     const newDepartment: DepartmentFormModel = {
@@ -47,7 +50,7 @@ const save =  async () => {
   } catch (error) {
     toastHandler('部署の更新に失敗しました。')
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 };
 
@@ -62,9 +65,9 @@ const cancel = () => {
 <template>
   <q-page padding>
     <q-card bordered>
-      <q-linear-progress indeterminate v-if="loading" />
+      <q-linear-progress indeterminate v-if="loading || saving" />
       <q-card-section>
-        <department-form ref="form" />
+        <department-form ref="form" v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

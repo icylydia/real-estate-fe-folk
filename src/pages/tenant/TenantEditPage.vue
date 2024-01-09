@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { TenantFormModel, useTenantStore } from 'stores/tenant-store';
 import TenantForm from 'components/tenant/TenantForm.vue';
@@ -21,10 +21,12 @@ onMounted(async () => {
   try {
     useTenantStore().resetFormModel();
     await useTenantStore().getTenant(tenantId);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    toastHandler(error);
-  } finally {
     loading.value = false;
+    toastHandler(error);
   }
 });
 
@@ -65,7 +67,7 @@ const cancel = () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <tenant-form ref="form" />
+        <tenant-form ref="form" v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

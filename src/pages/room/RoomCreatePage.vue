@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import RoomForm from 'components/room/RoomForm.vue';
 import { useRoomStore } from 'stores/room-store';
@@ -9,6 +9,7 @@ import { FormValidationResult } from 'vee-validate';
 import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(true);
+const saving = ref(false);
 const { formModel: building } = storeToRefs(useBuildingStore());
 const form = ref<InstanceType<typeof RoomForm>>();
 const { toastHandler } = useErrorHandler();
@@ -35,9 +36,11 @@ onMounted(async () => {
   try {
     useBuildingStore().resetFormModel();
     await useBuildingStore().getBuilding(buildingId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (e) {
     console.error(e);
-  } finally {
     loading.value = false;
   }
 });
@@ -47,7 +50,7 @@ const save = async () => {
   if (!validation.valid) {
     return;
   }
-  loading.value = true;
+  saving.value = true;
   try {
     const data = validation.values;
     const room = await useRoomStore().createRoom(data);
@@ -58,7 +61,7 @@ const save = async () => {
   } catch (error) {
     toastHandler('保存に失敗しました。');
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 };
 </script>
@@ -70,12 +73,12 @@ const save = async () => {
           <div class="text-h5">新規部屋</div>
         </q-card-section>
         <q-separator></q-separator>
-        <q-linear-progress indeterminate v-if="loading" />
+        <q-linear-progress indeterminate v-if="loading || saving" />
         <q-card-section>
           <room-form
             new-room
             :room-building="simplifiedBuilding"
-            v-if="simplifiedBuilding.id && simplifiedBuilding.name"
+            v-if="!loading && simplifiedBuilding.id && simplifiedBuilding.name"
             ref="form"
           />
         </q-card-section>

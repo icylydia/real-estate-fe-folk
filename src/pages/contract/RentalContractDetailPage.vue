@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RentalContractForm from 'components/contract/RentalContractForm.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useContractStore } from 'stores/contract-store';
 import useErrorHandler from 'components/app/useErrorHandler';
@@ -32,9 +32,11 @@ onMounted(async () => {
   try {
     useContractStore().resetRentalContractFormModel();
     await useContractStore().getRentalContract(contractId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
     toastHandler(error);
-  } finally {
     loading.value = false;
   }
 });

@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import FileList from 'components/room/FileList.vue';
 import RoomForm from 'components/room/RoomForm.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useRoomStore } from 'stores/room-store';
-import { storeToRefs } from 'pinia';
 import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const route = useRoute()
 const router = useRouter()
 const { toastHandler } = useErrorHandler();
-
-const { formModel: room } = storeToRefs(useRoomStore());
 
 const roomId = computed(() => {
   const id = route.params.id;
@@ -27,9 +24,11 @@ onMounted(async () => {
   try {
     useRoomStore().resetFormModel();
     await useRoomStore().getRoomDetail(roomId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
     toastHandler(error);
-  } finally {
     loading.value = false;
   }
 });
@@ -50,7 +49,7 @@ const backToBuilding = async () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <room-form readonly v-if="room" />
+        <room-form readonly v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import IncomeForm from 'components/payment/IncomeForm.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useIncomeStore } from 'stores/income-store';
 import { storeToRefs } from 'pinia';
 import { IncomeInResponse } from 'src/api';
@@ -51,10 +51,12 @@ const reload = async () => {
   loading.value = true;
   try {
     await useIncomeStore().getIncome(incomeId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    toastHandler(error);
-  } finally {
     loading.value = false;
+    toastHandler(error);
   }
 };
 
@@ -104,7 +106,7 @@ const remove = async () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <income-form readonly />
+        <income-form readonly v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

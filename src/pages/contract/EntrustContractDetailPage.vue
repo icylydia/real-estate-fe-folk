@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import EntrustContractForm from 'components/contract/EntrustContractForm.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useContractStore } from 'stores/contract-store';
 import { useRoute, useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
@@ -32,10 +32,12 @@ onMounted(async () => {
   try {
     useContractStore().resetEntrustContractFormModel();
     await useContractStore().getEntrustContract(contractId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    toastHandler(error);
-  } finally {
     loading.value = false;
+    toastHandler(error);
   }
 });
 

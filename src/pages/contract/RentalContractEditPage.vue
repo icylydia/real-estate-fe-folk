@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RentalContractForm from 'components/contract/RentalContractForm.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import TenantForm from 'components/tenant/TenantForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { RentalContractFormModel, useContractStore } from 'stores/contract-store';
@@ -26,9 +26,11 @@ onMounted(async () => {
   try {
     useContractStore().resetRentalContractFormModel();
     await useContractStore().getRentalContract(contractId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
     console.error(error);
-  } finally {
     loading.value = false;
   }
 });
@@ -69,7 +71,7 @@ const onCancel = () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <rental-contract-form ref="form" />
+        <rental-contract-form ref="form" v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

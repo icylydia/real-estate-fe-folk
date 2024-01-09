@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import EmployeeForm from 'components/employee/EmployeeForm.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useEmployeeStore } from 'stores/employee-store';
 
 const route = useRoute();
@@ -30,10 +30,12 @@ onMounted(async () => {
   loading.value = true;
   try {
     await getEmployeeDetail(employeeId);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    console.error(error);
-  } finally {
     loading.value = false;
+    console.error(error);
   }
 });
 </script>
@@ -43,7 +45,7 @@ onMounted(async () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <employee-form readonly />
+        <employee-form readonly v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

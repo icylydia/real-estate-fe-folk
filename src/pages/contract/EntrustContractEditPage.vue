@@ -8,6 +8,7 @@ import { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
 
 const loading = ref(false);
+const saving = ref(false);
 const form = ref<InstanceType<typeof TenantForm>>();
 const router = useRouter();
 const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
@@ -36,7 +37,7 @@ const onSave = async () => {
   if (!validation.valid) {
     return;
   }
-  loading.value = true;
+  saving.value = true;
   try {
     const data = validation.values;
     const newContract: EntrustContractFormModel = {
@@ -51,7 +52,7 @@ const onSave = async () => {
   } catch (error) {
     console.error(error);
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 };
 
@@ -66,9 +67,9 @@ const onCancel = () => {
 <template>
   <q-page padding>
     <q-card bordered>
-      <q-linear-progress indeterminate v-if="loading" />
+      <q-linear-progress indeterminate v-if="loading || saving" />
       <q-card-section>
-        <entrust-contract-form ref="form" />
+        <entrust-contract-form ref="form" v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

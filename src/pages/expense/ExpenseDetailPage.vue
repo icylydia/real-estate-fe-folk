@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ExpenseForm from 'components/payment/ExpenseForm.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
@@ -51,10 +51,12 @@ const reload = async () => {
   loading.value = true;
   try {
     await useExpenseStore().getExpense(expenseId.value);
+    await nextTick(() => {
+      loading.value = false;
+    });
   } catch (error) {
-    toastHandler(error);
-  } finally {
     loading.value = false;
+    toastHandler(error);
   }
 };
 
@@ -104,7 +106,7 @@ const remove = async () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading" />
       <q-card-section>
-        <expense-form readonly />
+        <expense-form readonly v-if="!loading" />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
