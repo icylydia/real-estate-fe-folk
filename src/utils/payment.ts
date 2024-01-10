@@ -39,6 +39,34 @@ export const usePayment = () => {
       value: 'renewalFee',
     },
     {
+      label: '管理料',
+      value: 'managementFee',
+    },
+    {
+      label: '振込手数料',
+      value: 'transactionFee',
+    },
+    {
+      label: '低圧電気料金',
+      value: 'lowVoltageFee',
+    },
+    {
+      label: '電気料金',
+      value: 'electricityFee',
+    },
+    {
+      label: 'ガス代',
+      value: 'gasFee',
+    },
+    {
+      label: '水道料金',
+      value: 'waterFee',
+    },
+    {
+      label: '管理修繕金',
+      value: 'repairFund',
+    },
+    {
       label: 'その他',
       value: 'other',
     },
@@ -56,7 +84,19 @@ export const usePayment = () => {
     ].includes(option.value);
   });
   const expenseCategoryOptions = _.filter(categoryOptions, (option) => {
-    return ['cleaningFee', 'ownerBenefits', 'securityDepositRefund', 'other'].includes(option.value);
+    return [
+      'cleaningFee',
+      'ownerBenefits',
+      'securityDepositRefund',
+      'managementFee',
+      'transactionFee',
+      'lowVoltageFee',
+      'electricityFee',
+      'gasFee',
+      'waterFee',
+      'repairFund',
+      'other'
+    ].includes(option.value);
   });
 
   const paymentMethodOptions = [

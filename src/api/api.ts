@@ -1834,7 +1834,7 @@ export interface PaymentBase {
    */
   title?: string;
   /**
-   * 支付类别 - `monthlyRent`: [收入] 月租/月額賃料 - `securityDeposit`: [收入] 押金/敷金 - `keyMoney`: [收入] 礼金/礼金 - `cleaningFee`: [收入/支出] 清洁费/清掃料金 - `ownerBenefits`: [支出] 房东收益/オーナー収益 - `securityDepositRefund`: [支出] 押金退还/敷金返還 - `keyMoneyRefund`: [支出] 礼金退还/礼金返還 - `maintenanceFee`: [收入] 管理共益費/管理共益費 - `parkingFee`: [收入] 停车费/駐車料金 - `renewalFee`: [收入] 续约费/更新料 - `other`: [收入/支出] 其他/その他
+   * 支付类别 - `monthlyRent`: [收入] 月租/月額賃料 - `securityDeposit`: [收入] 押金/敷金 - `keyMoney`: [收入] 礼金/礼金 - `cleaningFee`: [收入/支出] 清洁费/清掃料金 - `ownerBenefits`: [支出] 房东收益/オーナー収益 - `securityDepositRefund`: [支出] 押金退还/敷金返還 - `keyMoneyRefund`: [支出] 礼金退还/礼金返還 - `maintenanceFee`: [收入] 管理共益費/管理共益費 - `parkingFee`: [收入] 停车费/駐車料金 - `renewalFee`: [收入] 续约费/更新料 - `managementFee`: [支出] 管理费/管理費 - `transactionFee`: [支出] 交易费/取引手数料 - `lowVoltageFee`: [支出] 低压电费/低圧電気料金 - `electricityFee`: [支出] 电费/電気料金 - `gasFee`: [支出] 燃气费/ガス料金 - `waterFee`: [支出] 水费/水道料金 - `repairFund`: [支出] 维修基金/修繕積立金 - `other`: [收入/支出] 其他/その他
    * @type {string}
    * @memberof PaymentBase
    */
@@ -1927,6 +1927,13 @@ export namespace PaymentBase {
     MaintenanceFee = <any> 'maintenanceFee',
     ParkingFee = <any> 'parkingFee',
     RenewalFee = <any> 'renewalFee',
+    ManagementFee = <any> 'managementFee',
+    TransactionFee = <any> 'transactionFee',
+    LowVoltageFee = <any> 'lowVoltageFee',
+    ElectricityFee = <any> 'electricityFee',
+    GasFee = <any> 'gasFee',
+    WaterFee = <any> 'waterFee',
+    RepairFund = <any> 'repairFund',
     Other = <any> 'other'
   }
   /**
