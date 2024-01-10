@@ -1834,7 +1834,7 @@ export interface PaymentBase {
    */
   title?: string;
   /**
-   * 支付类别 - `monthlyRent`: [收入] 月租/月額賃料 - `securityDeposit`: [收入] 押金/敷金 - `keyMoney`: [收入] 礼金/礼金 - `cleaningFee`: [收入/支出] 清洁费/清掃料金 - `ownerBenefits`: [支出] 房东收益/オーナー収益 - `securityDepositRefund`: [支出] 押金退还/敷金返還 - `other`: [收入/支出] 其他/その他
+   * 支付类别 - `monthlyRent`: [收入] 月租/月額賃料 - `securityDeposit`: [收入] 押金/敷金 - `keyMoney`: [收入] 礼金/礼金 - `cleaningFee`: [收入/支出] 清洁费/清掃料金 - `ownerBenefits`: [支出] 房东收益/オーナー収益 - `securityDepositRefund`: [支出] 押金退还/敷金返還 - `keyMoneyRefund`: [支出] 礼金退还/礼金返還 - `maintenanceFee`: [收入] 管理共益費/管理共益費 - `parkingFee`: [收入] 停车费/駐車料金 - `renewalFee`: [收入] 续约费/更新料 - `other`: [收入/支出] 其他/その他
    * @type {string}
    * @memberof PaymentBase
    */
@@ -1924,6 +1924,9 @@ export namespace PaymentBase {
     OwnerBenefits = <any> 'ownerBenefits',
     SecurityDepositRefund = <any> 'securityDepositRefund',
     KeyMoneyRefund = <any> 'keyMoneyRefund',
+    MaintenanceFee = <any> 'maintenanceFee',
+    ParkingFee = <any> 'parkingFee',
+    RenewalFee = <any> 'renewalFee',
     Other = <any> 'other'
   }
   /**

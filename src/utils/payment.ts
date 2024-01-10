@@ -27,12 +27,33 @@ export const usePayment = () => {
       value: 'securityDepositRefund',
     },
     {
+      label: '管理共益費',
+      value: 'maintenanceFee',
+    },
+    {
+      label: '駐車料金',
+      value: 'parkingFee',
+    },
+    {
+      label: '更新料',
+      value: 'renewalFee',
+    },
+    {
       label: 'その他',
       value: 'other',
     },
   ];
   const incomeCategoryOptions = _.filter(categoryOptions, (option) => {
-    return ['monthlyRent', 'securityDeposit', 'keyMoney', 'cleaningFee', 'other'].includes(option.value);
+    return [
+      'monthlyRent',
+      'securityDeposit',
+      'keyMoney',
+      'cleaningFee',
+      'maintenanceFee',
+      'parkingFee',
+      'renewalFee',
+      'other',
+    ].includes(option.value);
   });
   const expenseCategoryOptions = _.filter(categoryOptions, (option) => {
     return ['cleaningFee', 'ownerBenefits', 'securityDepositRefund', 'other'].includes(option.value);
