@@ -30,7 +30,7 @@
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.7",
+    "@babel/core": "^7.23.9",
     "@intlify/vite-plugin-vue-i18n": "^7.0.0",
     "@quasar/app-vite": "^1.7.1",
     "@types/isomorphic-fetch": "^0.0.39",
