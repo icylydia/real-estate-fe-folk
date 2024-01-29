@@ -32,7 +32,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.9",
     "@intlify/vite-plugin-vue-i18n": "^7.0.0",
-    "@quasar/app-vite": "^1.7.1",
+    "@quasar/app-vite": "^1.7.3",
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.11.10",
