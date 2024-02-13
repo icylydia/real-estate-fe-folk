@@ -71,7 +71,7 @@ export class BaseAPI {
  * @extends {Error}
  */
 export class RequiredError extends Error {
-  name: "RequiredError"
+  name = "RequiredError"
   constructor(public field: string, msg?: string) {
     super(msg);
   }
@@ -1675,6 +1675,24 @@ export interface OwnerBase {
    * @memberof OwnerBase
    */
   phone?: string;
+  /**
+   * 用户名
+   * @type {string}
+   * @memberof OwnerBase
+   */
+  username?: string;
+  /**
+   * 初始密码
+   * @type {string}
+   * @memberof OwnerBase
+   */
+  initialPassword?: string;
+  /**
+   * 是否使用自定义密码
+   * @type {boolean}
+   * @memberof OwnerBase
+   */
+  useCustomPassword?: boolean;
   /**
    *
    * @type {AddressInResponse}
@@ -4831,6 +4849,46 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 重置业主初始密码
+     * @summary 重置业主初始密码
+     * @param {string} id 业主ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resetOwnerInitialPassword(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling resetOwnerInitialPassword.');
+      }
+      const localVarPath = `/owner/{id}/resetInitialPassword`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID更新建筑
      * @summary 更新建筑
      * @param {BuildingInRequest} body 建筑信息
@@ -6909,6 +6967,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 重置业主初始密码
+     * @summary 重置业主初始密码
+     * @param {string} id 业主ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resetOwnerInitialPassword(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<OwnerInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).resetOwnerInitialPassword(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID更新建筑
      * @summary 更新建筑
      * @param {BuildingInRequest} body 建筑信息
@@ -7920,6 +7997,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).login(body, options)(fetch, basePath);
     },
     /**
+     * 重置业主初始密码
+     * @summary 重置业主初始密码
+     * @param {string} id 业主ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resetOwnerInitialPassword(id: string, options?: any) {
+      return DefaultApiFp(configuration).resetOwnerInitialPassword(id, options)(fetch, basePath);
+    },
+    /**
      * 根据ID更新建筑
      * @summary 更新建筑
      * @param {BuildingInRequest} body 建筑信息
@@ -8830,6 +8917,18 @@ export class DefaultApi extends BaseAPI {
    */
   public login(body: AuthLoginBody, options?: any) {
     return DefaultApiFp(this.configuration).login(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 重置业主初始密码
+   * @summary 重置业主初始密码
+   * @param {string} id 业主ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public resetOwnerInitialPassword(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).resetOwnerInitialPassword(id, options)(this.fetch, this.basePath);
   }
 
   /**

@@ -5,6 +5,8 @@ import { OwnerFormModel, useOwnerStore } from 'stores/owner-store';
 import OwnerForm from 'components/owner/OwnerForm.vue';
 import { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const saving = ref(false);
@@ -14,6 +16,7 @@ const route = useRoute();
 const router = useRouter();
 const ownerId = typeof route.params.id == 'string' ? route.params.id : '';
 const { formModel: owner } = storeToRefs(useOwnerStore());
+const { toastHandler } = useErrorHandler();
 
 onMounted(async () => {
   loading.value = true;
@@ -29,8 +32,8 @@ onMounted(async () => {
 });
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: FormValidationResult<any> | undefined = await form.value?.validate();
+  if (!validation || !validation.valid) {
     return;
   }
   saving.value = true;
@@ -46,7 +49,7 @@ const save = async () => {
       params: { id: ownerId }
     });
   } catch (error) {
-    console.error(error);
+    await toastHandler(error)
   } finally {
     saving.value = false;
   }
@@ -58,6 +61,30 @@ const cancel = () => {
     params: { id: ownerId }
   });
 };
+
+const $q = useQuasar();
+const onResetPassword = () => {
+  $q.dialog({
+    title: 'パスワードリセット',
+    message: `オーナー「${owner.value.lastName} ${owner.value.firstName}」のパスワードをリセットしますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!owner.value.id) {
+      return;
+    }
+    try {
+      await useOwnerStore().resetPassword(owner.value.id);
+      await router.push({
+        name: 'owner-detail',
+        params: { id: ownerId }
+      });
+    } catch (error) {
+      await toastHandler(error)
+    }
+  });
+};
 </script>
 
 <template>
@@ -65,7 +92,11 @@ const cancel = () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading || saving" />
       <q-card-section>
-        <owner-form ref="form" v-if="!loading" />
+        <owner-form
+          ref="form"
+          v-if="!loading"
+          @reset-password="onResetPassword"
+        />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

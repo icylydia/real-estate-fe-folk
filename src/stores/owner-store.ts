@@ -43,6 +43,9 @@ export const useOwnerStore = defineStore('owner', {
     async deleteOwner(id: string) {
       await api.deleteOwner(id);
     },
+    async resetPassword(id: string): Promise<OwnerInResponse> {
+      return api.resetOwnerInitialPassword(id);
+    },
     resetOwnerOptions() {
       this.ownerOptions = [];
     },

@@ -4,15 +4,17 @@ import { onMounted, ref } from 'vue';
 import OwnerForm from 'components/owner/OwnerForm.vue';
 import { useOwnerStore } from 'stores/owner-store';
 import { FormValidationResult } from 'vee-validate';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof OwnerForm>>();
 
 const router = useRouter();
+const { toastHandler } = useErrorHandler();
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: FormValidationResult<any> | undefined = await form.value?.validate();
+  if (!validation || !validation.valid) {
     return;
   }
   loading.value = true;
@@ -23,8 +25,8 @@ const save = async () => {
       name: 'owner-detail',
       params: { id: newOwner.id }
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    await toastHandler(error);
   } finally {
     loading.value = false;
   }
