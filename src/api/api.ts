@@ -4334,11 +4334,14 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
      * @summary 业主列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [query] 查询条件
+     * @param {string} [id] 业主ID
+     * @param {string} [name] 业主姓名
+     * @param {string} [email] 业主邮箱
+     * @param {string} [phone] 业主电话
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getOwners(itemsPerPage?: number, page?: number, query?: string, options: any = {}): FetchArgs {
+    getOwners(itemsPerPage?: number, page?: number, id?: string, name?: string, email?: string, phone?: string, options: any = {}): FetchArgs {
       const localVarPath = `/owners`;
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
@@ -4364,8 +4367,20 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         localVarQueryParameter['page'] = page;
       }
 
-      if (query !== undefined) {
-        localVarQueryParameter['query'] = query;
+      if (id !== undefined) {
+        localVarQueryParameter['id'] = id;
+      }
+
+      if (name !== undefined) {
+        localVarQueryParameter['name'] = name;
+      }
+
+      if (email !== undefined) {
+        localVarQueryParameter['email'] = email;
+      }
+
+      if (phone !== undefined) {
+        localVarQueryParameter['phone'] = phone;
       }
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
@@ -6771,12 +6786,15 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      * @summary 业主列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [query] 查询条件
+     * @param {string} [id] 业主ID
+     * @param {string} [name] 业主姓名
+     * @param {string} [email] 业主邮箱
+     * @param {string} [phone] 业主电话
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getOwners(itemsPerPage?: number, page?: number, query?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<OwnerListResponse> {
-      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getOwners(itemsPerPage, page, query, options);
+    getOwners(itemsPerPage?: number, page?: number, id?: string, name?: string, email?: string, phone?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<OwnerListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getOwners(itemsPerPage, page, id, name, email, phone, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -7937,12 +7955,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      * @summary 业主列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [query] 查询条件
+     * @param {string} [id] 业主ID
+     * @param {string} [name] 业主姓名
+     * @param {string} [email] 业主邮箱
+     * @param {string} [phone] 业主电话
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getOwners(itemsPerPage?: number, page?: number, query?: string, options?: any) {
-      return DefaultApiFp(configuration).getOwners(itemsPerPage, page, query, options)(fetch, basePath);
+    getOwners(itemsPerPage?: number, page?: number, id?: string, name?: string, email?: string, phone?: string, options?: any) {
+      return DefaultApiFp(configuration).getOwners(itemsPerPage, page, id, name, email, phone, options)(fetch, basePath);
     },
     /**
      * 获取所有的都道府县
@@ -8844,13 +8865,16 @@ export class DefaultApi extends BaseAPI {
    * @summary 业主列表
    * @param {number} [itemsPerPage] 每页条数
    * @param {number} [page] 页码
-   * @param {string} [query] 查询条件
+   * @param {string} [id] 业主ID
+   * @param {string} [name] 业主姓名
+   * @param {string} [email] 业主邮箱
+   * @param {string} [phone] 业主电话
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getOwners(itemsPerPage?: number, page?: number, query?: string, options?: any) {
-    return DefaultApiFp(this.configuration).getOwners(itemsPerPage, page, query, options)(this.fetch, this.basePath);
+  public getOwners(itemsPerPage?: number, page?: number, id?: string, name?: string, email?: string, phone?: string, options?: any) {
+    return DefaultApiFp(this.configuration).getOwners(itemsPerPage, page, id, name, email, phone, options)(this.fetch, this.basePath);
   }
 
   /**

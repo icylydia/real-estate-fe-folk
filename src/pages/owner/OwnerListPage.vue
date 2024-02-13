@@ -6,26 +6,35 @@ import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useGender } from 'src/utils/gender';
 import { useRouter } from 'vue-router';
 import { OwnerInResponse, TenantInResponse } from 'src/api';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false)
 const tableRef = ref<QTable | null>(null);
 const { ownerList: owners } = storeToRefs(useOwnerStore());
 const { getOwnerList, deleteOwner } = useOwnerStore();
+const { toastHandler } = useErrorHandler();
 
 const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
   try {
     loading.value = true;
     const { page, rowsPerPage } = _pagination;
-    const pageMeta = await getOwnerList(rowsPerPage, page, searchText.value ?? null);
+    const pageMeta = await getOwnerList(
+      rowsPerPage,
+      page,
+      searchId.value ?? null,
+      searchName.value ?? null,
+      searchEmail.value ?? null,
+      searchPhone.value ?? null,
+    );
     pagination.value = {
       sortBy: undefined,
       descending: false,
       page: pageMeta.currentPage ?? 1,
-      rowsPerPage: pageMeta.itemsPerPage ?? 10,
+      rowsPerPage: pageMeta.itemsPerPage ?? 15,
       rowsNumber: pageMeta.total ?? 0,
     };
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    await toastHandler(error);
   } finally {
     loading.value = false;
   }
@@ -35,7 +44,10 @@ onMounted(async () => {
   tableRef.value?.requestServerInteraction();
 });
 
-const searchText = ref('');
+const searchId = ref('');
+const searchName = ref('');
+const searchEmail = ref('');
+const searchPhone = ref('');
 const search = async () => {
   tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
@@ -89,6 +101,13 @@ const removeOwner = (owner: OwnerInResponse) => {
 
 const columns: QTableProps['columns'] = [
   {
+    label: 'ID',
+    field: 'id',
+    name: 'id',
+    sortable: false,
+    align: 'left',
+  },
+  {
     label: 'オーナー名',
     field: 'name',
     name: 'name',
@@ -137,7 +156,7 @@ const pagination: Ref<Pagination> = ref({
   sortBy: undefined,
   descending: false,
   page: 1,
-  rowsPerPage: 10,
+  rowsPerPage: 15,
   rowsNumber: 0,
 });
 
@@ -159,6 +178,7 @@ const onPageChange = async () => {
       <q-card-section>
         <q-table
           flat
+          dense
           title="オーナー一覧"
           :rows="owners"
           :columns="columns"
@@ -169,25 +189,64 @@ const onPageChange = async () => {
           @request="onRequest"
           ref="tableRef"
         >
-          <template #top-right>
-            <q-input
-              outlined
-              dense
-              placeholder="検索"
-              class="q-mr-sm"
-              v-model="searchText"
-              @keydown.enter.prevent="search"
-            >
-              <template #append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-            <q-btn
-              color="primary"
-              icon="sym_r_add"
-              label="新規オーナー"
-              @click="newOwner"
-            />
+          <template #top>
+            <div id="top1" class="flex justify-between">
+              <div class="title">オーナー一覧</div>
+              <q-btn
+                color="primary"
+                icon="sym_r_add"
+                label="新規オーナー"
+                @click="newOwner"
+              />
+            </div>
+            <div id="top2" class="flex justify-md-start">
+              <q-input
+                square
+                dense
+                label="ID"
+                style="width: 60px"
+                class="q-mr-sm"
+                v-model="searchId"
+                @keyup.enter="search"
+              />
+              <q-input
+                square
+                dense
+                label="名前"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchName"
+                @keyup.enter="search"
+              />
+              <q-input
+                square
+                dense
+                label="メールアドレス"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchEmail"
+                @keyup.enter="search"
+              />
+              <q-input
+                square
+                dense
+                label="電話番号"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchPhone"
+                @keyup.enter="search"
+              />
+              <div class="col-grow">
+                <q-btn
+                  color="primary"
+                  icon="search"
+                  label="検索"
+                  @click="search"
+                  class="float-right"
+                  @keyup.enter="search"
+                />
+              </div>
+            </div>
           </template>
           <template #[`body-cell-name`]="{ row }: { row: TenantInResponse }">
             <q-td>
@@ -227,3 +286,21 @@ const onPageChange = async () => {
     </q-card>
   </q-page>
 </template>
+
+<style scoped lang="scss">
+#top1 {
+  flex: 0 0 100%;
+  margin-bottom: 12px;
+  .title {
+    font-size: 20px;
+    letter-spacing: 0.005em;
+    font-weight: 400;
+  }
+}
+#top2 {
+  flex: 0 0 100%;
+  border-radius: 4px;
+  border: 1px solid #c8c8c8;
+  padding: 8px;
+}
+</style>

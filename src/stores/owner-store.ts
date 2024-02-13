@@ -26,8 +26,22 @@ export const useOwnerStore = defineStore('owner', {
       this.ownerList = [];
       this.formModel = defaultFormModel;
     },
-    async getOwnerList(itemsPerPage?: number, page?: number, query?: string) {
-      const resp = await api.getOwners(itemsPerPage, page, query);
+    async getOwnerList(
+      itemsPerPage?: number,
+      page?: number,
+      id?: string,
+      name?: string,
+      email?: string,
+      phone?: string,
+    ): Promise<PaginationResponsePagination> {
+      const resp = await api.getOwners(
+        itemsPerPage,
+        page,
+        id,
+        name,
+        email,
+        phone,
+      );
       this.ownerList = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;
     },
