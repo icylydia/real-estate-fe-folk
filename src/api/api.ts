@@ -892,6 +892,18 @@ export interface EmployeeBase {
    * @memberof EmployeeBase
    */
   birthday?: string;
+  /**
+   * 初始密码
+   * @type {string}
+   * @memberof EmployeeBase
+   */
+  initialPassword?: string;
+  /**
+   * 是否使用自定义密码
+   * @type {boolean}
+   * @memberof EmployeeBase
+   */
+  useCustomPassword?: boolean;
 }
 
 /**
@@ -4849,6 +4861,46 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 重置员工初始密码
+     * @summary 重置员工初始密码
+     * @param {string} id 员工ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resetEmployeeInitialPassword(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling resetEmployeeInitialPassword.');
+      }
+      const localVarPath = `/employee/{id}/resetInitialPassword`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 重置业主初始密码
      * @summary 重置业主初始密码
      * @param {string} id 业主ID
@@ -6967,6 +7019,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 重置员工初始密码
+     * @summary 重置员工初始密码
+     * @param {string} id 员工ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resetEmployeeInitialPassword(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<EmployeeInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).resetEmployeeInitialPassword(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 重置业主初始密码
      * @summary 重置业主初始密码
      * @param {string} id 业主ID
@@ -7997,6 +8068,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).login(body, options)(fetch, basePath);
     },
     /**
+     * 重置员工初始密码
+     * @summary 重置员工初始密码
+     * @param {string} id 员工ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resetEmployeeInitialPassword(id: string, options?: any) {
+      return DefaultApiFp(configuration).resetEmployeeInitialPassword(id, options)(fetch, basePath);
+    },
+    /**
      * 重置业主初始密码
      * @summary 重置业主初始密码
      * @param {string} id 业主ID
@@ -8917,6 +8998,18 @@ export class DefaultApi extends BaseAPI {
    */
   public login(body: AuthLoginBody, options?: any) {
     return DefaultApiFp(this.configuration).login(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 重置员工初始密码
+   * @summary 重置员工初始密码
+   * @param {string} id 员工ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public resetEmployeeInitialPassword(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).resetEmployeeInitialPassword(id, options)(this.fetch, this.basePath);
   }
 
   /**

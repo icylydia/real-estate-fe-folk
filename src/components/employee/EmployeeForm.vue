@@ -15,6 +15,7 @@ const options = ref<Array<{
 }> | undefined>(undefined);
 
 const { selectOptions: genderOptions } = useGender()
+const showPassword = ref(false);
 
 enum DepartmentLoadingStatus {
   BeforeLoad = 0,
@@ -113,6 +114,10 @@ const { validate } = useForm({
 defineExpose({
   validate,
 })
+
+defineEmits<{
+  'reset-password': [],
+}>();
 </script>
 
 <template>
@@ -120,13 +125,20 @@ defineExpose({
     社員基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
   </div>
   <q-list class="row">
-    <q-item class="col-12" v-if="!newEmployee">
+    <q-item class="col-12 q-pb-none" v-if="!newEmployee">
       <q-item-section>
-        <q-input v-model="employee.id" label="社員ID" readonly />
+        <q-input
+          v-model="employee.id"
+          label="社員ID"
+          readonly
+          :error="false"
+          error-message=""
+          dense
+        />
       </q-item-section>
     </q-item>
     <Field name="lastName" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
         <q-item-section>
           <q-input
             :model-value="value"
@@ -135,12 +147,13 @@ defineExpose({
             :error="!!errorMessage"
             label="姓"
             :readonly="readonly"
+            dense
           />
         </q-item-section>
       </q-item>
     </Field>
     <Field name="firstName" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
         <q-item-section>
           <q-input
             :model-value="value"
@@ -149,12 +162,13 @@ defineExpose({
             :error="!!errorMessage"
             label="名"
             :readonly="readonly"
+            dense
           />
         </q-item-section>
       </q-item>
     </Field>
     <Field name="lastNameKana" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
         <q-item-section>
           <q-input
             :model-value="value"
@@ -163,12 +177,13 @@ defineExpose({
             :error="!!errorMessage"
             label="姓(カナ)"
             :readonly="readonly"
+            dense
           />
         </q-item-section>
       </q-item>
     </Field>
     <Field name="firstNameKana" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
         <q-item-section>
           <q-input
             :model-value="value"
@@ -177,12 +192,13 @@ defineExpose({
             :error="!!errorMessage"
             label="名(カナ)"
             :readonly="readonly"
+            dense
           />
         </q-item-section>
       </q-item>
     </Field>
     <Field name="gender" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
         <q-item-section>
           <q-select
             :model-value="value"
@@ -195,27 +211,14 @@ defineExpose({
             map-options
             :options="genderOptions"
             clearable
+            dense
           >
           </q-select>
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="email" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            v-bind="field"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="メールアドレス"
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
     <Field name="phone" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
         <q-item-section>
           <q-input
             :model-value="value"
@@ -224,12 +227,13 @@ defineExpose({
             :error="!!errorMessage"
             label="電話番号"
             :readonly="readonly"
+            dense
           />
         </q-item-section>
       </q-item>
     </Field>
     <Field name="birthday" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
         <q-item-section>
           <q-input
             :model-value="value"
@@ -238,12 +242,13 @@ defineExpose({
             :error="!!errorMessage"
             label="生年月日"
             :readonly="readonly"
+            dense
           />
         </q-item-section>
       </q-item>
     </Field>
     <Field name="departments" #="{errorMessage, value, handleChange}">
-      <q-item class="col-12">
+      <q-item class="col-12 q-py-none">
         <q-item-section>
           <q-select
             :model-value="value"
@@ -259,10 +264,83 @@ defineExpose({
             :readonly="readonly"
             use-input
             multiple
+            dense
           >
           </q-select>
         </q-item-section>
       </q-item>
     </Field>
+  </q-list>
+  <q-separator class="q-my-md" />
+  <div class="text-h6" v-if="!newEmployee">
+    社員アカウント情報{{ readonly ? '（閲覧）' : '（編集）'}}
+  </div>
+  <q-list class="row">
+    <Field name="email" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="メールアドレス"
+            :readonly="readonly"
+            dense
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <template v-if="employee.useCustomPassword ?? false">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
+        <q-item-section>
+          <q-chip
+            label="パスワード設定済み"
+            color="primary"
+            icon="sym_r_key"
+            icon-remove="sym_r_refresh"
+            dense
+            square
+            :removable="!readonly"
+            @remove="() => $emit('reset-password')"
+          />
+        </q-item-section>
+      </q-item>
+    </template>
+    <template v-else>
+      <template v-if="!newEmployee">
+        <Field name="initialPassword" #="{errorMessage, value, field}">
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-py-none">
+            <q-item-section>
+              <q-input
+                :model-value="value"
+                v-bind="field"
+                :error-message="errorMessage"
+                :error="!!errorMessage"
+                label="パスワード"
+                readonly
+                dense
+                :type="showPassword ? 'text' : 'password'"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="showPassword ? 'visibility_off' : 'visibility'"
+                    @click="showPassword = !showPassword"
+                    class="cursor-pointer"
+                  />
+                </template>
+                <template v-slot:after v-if="!readonly">
+                  <q-icon
+                    name="sym_r_refresh"
+                    @click="() => $emit('reset-password')"
+                    class="cursor-pointer"
+                  />
+                </template>
+              </q-input>
+            </q-item-section>
+          </q-item>
+        </Field>
+      </template>
+    </template>
   </q-list>
 </template>

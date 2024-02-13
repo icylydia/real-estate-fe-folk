@@ -31,5 +31,8 @@ export const useEmployeeStore = defineStore('employee', {
     async deleteEmployee(id: string) {
       return await api.deleteEmployee(id);
     },
+    async resetPassword(id: string): Promise<EmployeeInResponse> {
+      return await api.resetEmployeeInitialPassword(id);
+    },
   }
 });

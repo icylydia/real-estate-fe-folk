@@ -5,6 +5,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { useEmployeeStore } from 'stores/employee-store';
 import { storeToRefs } from 'pinia';
 import { FormValidationResult } from 'vee-validate';
+import { useQuasar } from 'quasar';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const route = useRoute();
 const router = useRouter();
@@ -14,6 +16,7 @@ const saving = ref(false);
 const employeeId = typeof route.params.id == 'string' ? route.params.id : '';
 const form = ref<InstanceType<typeof EmployeeForm>>();
 const { formModel: employee } = storeToRefs(useEmployeeStore());
+const { toastHandler } = useErrorHandler();
 
 onMounted(async () => {
   loading.value = true;
@@ -29,8 +32,8 @@ onMounted(async () => {
 });
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: FormValidationResult<any> | undefined = await form.value?.validate();
+  if (!validation || !validation.valid) {
     return;
   }
   saving.value = true;
@@ -50,7 +53,7 @@ const save = async () => {
       params: { id: employeeId }
     });
   } catch (error) {
-    console.error(error);
+    await toastHandler(error);
   } finally {
     saving.value = false;
   }
@@ -62,6 +65,30 @@ const cancel = () => {
     params: { id: employeeId }
   });
 };
+
+const $q = useQuasar();
+const onResetPassword = () => {
+  $q.dialog({
+    title: 'パスワードリセット',
+    message: `社員「${employee.value.lastName} ${employee.value.firstName}」のパスワードをリセットしますか？`,
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async () => {
+    if (!employee.value.id) {
+      return;
+    }
+    try {
+      await useEmployeeStore().resetPassword(employee.value.id);
+      await router.push({
+        name: 'employee-detail',
+        params: { id: employee.value.id }
+      });
+    } catch (error) {
+      await toastHandler(error)
+    }
+  });
+};
 </script>
 
 <template>
@@ -69,7 +96,11 @@ const cancel = () => {
     <q-card bordered>
       <q-linear-progress indeterminate v-if="loading || saving" />
       <q-card-section>
-        <employee-form ref="form" v-if="!loading" />
+        <employee-form
+          ref="form"
+          v-if="!loading"
+          @reset-password="onResetPassword"
+        />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">

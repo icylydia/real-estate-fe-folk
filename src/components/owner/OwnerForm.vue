@@ -194,7 +194,7 @@ defineEmits<{
                 :error-message="errorMessage"
                 :error="!!errorMessage"
                 label="パスワード"
-                :readonly="readonly"
+                readonly
                 dense
                 :type="showPassword ? 'text' : 'password'"
               >
