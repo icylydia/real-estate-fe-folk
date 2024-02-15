@@ -5,12 +5,15 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { IncomeModel, useIncomeStore } from 'stores/income-store';
 import { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
+import useErrorHandler from 'components/app/useErrorHandler';
+import { Optional } from 'src/utils/framework';
 
 const router = useRouter();
 const loading = ref(false);
 const saving = ref(false);
 const form = ref<InstanceType<typeof IncomeForm>>();
 const { formModel: income } = storeToRefs(useIncomeStore());
+const { toastHandler } = useErrorHandler();
 
 const incomeId = computed(() => {
   const id = useRoute().params.id;
@@ -31,8 +34,8 @@ const cancel = async () => {
   }
 };
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation || !validation.valid) {
     return;
   }
   saving.value = true;
@@ -48,7 +51,7 @@ const save = async () => {
       params: { id: incomeId.value },
     });
   } catch (error) {
-    console.error(error);
+    await toastHandler(error)
   } finally {
     saving.value = false;
   }

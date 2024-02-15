@@ -3,6 +3,7 @@ import { setLocale } from 'yup'
 
 // "async" is optional;
 // more info on params: https://v2.quasar.dev/quasar-cli/boot-files
+// noinspection JSUnusedGlobalSymbols
 export default boot(async (/* { app, router, ... } */) => {
   setLocale({
     mixed: {

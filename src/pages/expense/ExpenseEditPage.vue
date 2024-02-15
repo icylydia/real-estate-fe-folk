@@ -5,12 +5,15 @@ import { ExpenseModel,useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
 import { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
+import useErrorHandler from 'components/app/useErrorHandler';
+import { Optional } from 'src/utils/framework';
 
 const loading = ref(false);
 const saving = ref(false);
 const router = useRouter();
 const form = ref<InstanceType<typeof ExpenseForm>>();
 const { formModel: expense } = storeToRefs(useExpenseStore());
+const { toastHandler } = useErrorHandler();
 
 const expenseId = computed(() => {
   const id = useRoute().params.id;
@@ -46,8 +49,8 @@ const cancel = async () => {
 };
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation || !validation.valid) {
     return;
   }
   saving.value = true;
@@ -63,7 +66,7 @@ const save = async () => {
       params: { id: expenseId.value },
     });
   } catch (error) {
-    console.log(error);
+    await toastHandler(error)
   } finally {
     saving.value = false;
   }

@@ -54,7 +54,7 @@ enum BuildingLoadingStatus {
 }
 
 const buildingsStatus = ref<BuildingLoadingStatus>(BuildingLoadingStatus.BeforeLoad);
-const buildingFilterFn = (val: string, update: () => void) => {
+const onFilterBuilding = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   if (
     buildingsStatus.value === BuildingLoadingStatus.BeforeLoad
     || buildingsStatus.value === BuildingLoadingStatus.Aborted
@@ -63,23 +63,27 @@ const buildingFilterFn = (val: string, update: () => void) => {
     useBuildingStore()
       .getBuildingOptions()
       .then(() => {
-        buildingsStatus.value = BuildingLoadingStatus.Loaded;
         buildingOptions.value = getAllBuildingOptions();
-        update();
+        buildingsStatus.value = BuildingLoadingStatus.Loaded;
+        doneFn(() => {});
       })
       .catch(() => {
         buildingsStatus.value = BuildingLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    buildingOptions.value = getAllBuildingOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      buildingOptions.value = getAllBuildingOptions();
+    });
   } else {
-    buildingOptions.value = getAllBuildingOptions().filter((v) => {
-      return v.name && v.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      buildingOptions.value = getAllBuildingOptions().filter((v) => {
+        return v.name && v.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
-};
+}
 
 const handleBuildingChange = (e: any, callback: (e: any) => void) => {
   setFieldValue('room', null, false);
@@ -113,11 +117,11 @@ enum RoomLoadingStatus {
 }
 
 const roomsStatus = ref<RoomLoadingStatus>(RoomLoadingStatus.BeforeLoad);
-const roomFilterFn = (val: string, update: () => void) => {
+const onFilterRoom = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   const buildingId = values.building?.id;
   if (!buildingId) {
     useBuildingStore().resetRoomOptions();
-    update();
+    doneFn(() => {});
     return;
   }
 
@@ -129,32 +133,37 @@ const roomFilterFn = (val: string, update: () => void) => {
     useBuildingStore()
       .getRoomOptions(buildingId)
       .then(() => {
-        roomsStatus.value = RoomLoadingStatus.Loaded;
         roomOptions.value = getAllRoomOptions();
-        update();
+        roomsStatus.value = RoomLoadingStatus.Loaded;
+        doneFn(() => {});
       })
       .catch(() => {
         roomsStatus.value = RoomLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    roomOptions.value = getAllRoomOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      roomOptions.value = getAllRoomOptions();
+    });
   } else {
-    roomOptions.value = getAllRoomOptions().filter((v) => {
-      return v.name && v.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      roomOptions.value = getAllRoomOptions().filter((v) => {
+        return v.name && v.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
-};
+}
 
 /**********************
  * Renter select
  **********************/
-const renterOptions = ref<Array<{
+type RenterOption = {
+  id: number | string | undefined;
   lastName: string | undefined;
   firstName: string | undefined;
-  id: string | number | undefined;
-}> | undefined>(undefined);
+}
+const renterOptions = ref<Array<RenterOption> | undefined>(undefined);
 
 const getAllRenterOptions = () => {
   return useTenantStore().renterOptions.map((v) => {
@@ -174,8 +183,7 @@ enum RenterLoadingStatus {
 }
 
 const rentersStatus = ref<RenterLoadingStatus>(RenterLoadingStatus.BeforeLoad);
-
-const renterFilterFn = (val: string, update: () => void) => {
+const onFilterRenter = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   if (
     rentersStatus.value === RenterLoadingStatus.BeforeLoad
     || rentersStatus.value === RenterLoadingStatus.Aborted
@@ -184,34 +192,39 @@ const renterFilterFn = (val: string, update: () => void) => {
     useTenantStore()
       .getRenterOptions()
       .then(() => {
-        rentersStatus.value = RenterLoadingStatus.Loaded;
         renterOptions.value = getAllRenterOptions();
-        update();
+        rentersStatus.value = RenterLoadingStatus.Loaded;
+        doneFn(() => {});
       })
       .catch(() => {
         rentersStatus.value = RenterLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    renterOptions.value = getAllRenterOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      renterOptions.value = getAllRenterOptions();
+    });
   } else {
-    renterOptions.value = getAllRenterOptions().filter((v) => {
-      return v.lastName && v.lastName.toLowerCase().indexOf(val.toLowerCase()) > -1
-        || v.firstName && v.firstName.toLowerCase().indexOf(val.toLowerCase()) > -1
-        || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      renterOptions.value = getAllRenterOptions().filter((v) => {
+        return v.lastName && v.lastName.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+          || v.firstName && v.firstName.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+          || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
-};
+}
 
 /**********************
  * Owner select
  **********************/
-const ownerOptions = ref<Array<{
+type OwnerOption = {
+  id: number | string | undefined;
   lastName: string | undefined;
   firstName: string | undefined;
-  id: string | number | undefined;
-}> | undefined>(undefined);
+}
+const ownerOptions = ref<Array<OwnerOption> | undefined>(undefined);
 
 const getAllOwnerOptions = () => {
   return useOwnerStore().ownerOptions.map((v) => {
@@ -231,8 +244,7 @@ enum OwnerLoadingStatus {
 }
 
 const ownersStatus = ref<OwnerLoadingStatus>(OwnerLoadingStatus.BeforeLoad);
-
-const ownerFilterFn = (val: string, update: () => void) => {
+const onFilterOwner = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   if (
     ownersStatus.value === OwnerLoadingStatus.BeforeLoad
     || ownersStatus.value === OwnerLoadingStatus.Aborted
@@ -241,38 +253,35 @@ const ownerFilterFn = (val: string, update: () => void) => {
     useOwnerStore()
       .getOwnerOptions()
       .then(() => {
-        ownersStatus.value = OwnerLoadingStatus.Loaded;
         ownerOptions.value = getAllOwnerOptions();
-        update();
+        ownersStatus.value = OwnerLoadingStatus.Loaded;
+        doneFn(() => {});
       })
       .catch(() => {
         ownersStatus.value = OwnerLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    ownerOptions.value = getAllOwnerOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      ownerOptions.value = getAllOwnerOptions();
+    });
   } else {
-    ownerOptions.value = getAllOwnerOptions().filter((v) => {
-      return v.lastName && v.lastName.toLowerCase().indexOf(val.toLowerCase()) > -1
-        || v.firstName && v.firstName.toLowerCase().indexOf(val.toLowerCase()) > -1
-        || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      ownerOptions.value = getAllOwnerOptions().filter((v) => {
+        return v.lastName && v.lastName.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+          || v.firstName && v.firstName.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+          || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
-};
+}
 
 /**********************
  * Form validation
  **********************/
 const validationSchema = toTypedSchema(object({
   id: string().nullable().notRequired().label('管理番号'),
-  title: string().required().label('件名'),
-  description: string().nullable().notRequired().label('説明'),
-  category: string().required().label('種類'),
-  paymentMethod: string().required().label('支払方法'),
-  otherPaymentDescription: string().nullable().notRequired().label('支払方法'),
-  amount: string().required().label('金額'),
-  date: string().required().label('日付'),
   building: object({
     id: string().nullable().notRequired().label('物件ID'),
     name: string().nullable().notRequired().label('物件名'),
@@ -286,9 +295,21 @@ const validationSchema = toTypedSchema(object({
     name: string().nullable().notRequired().label('入居者名'),
   }).nullable().notRequired().label('入居者'),
   owner: object({
-    id: string().nullable().notRequired().label('大家さんID'),
-    name: string().nullable().notRequired().label('大家さん名'),
-  }).nullable().notRequired().label('大家さん'),
+    id: string().nullable().notRequired().label('オーナーID'),
+    name: string().nullable().notRequired().label('オーナー名'),
+  }).nullable().notRequired().label('オーナー'),
+  category: string().required().label('種類'),
+  targetYear: string()
+    .required()
+    .matches(/^[0-9]{4}$/, '対象年は4桁の数字で入力してください。')
+    .label('対象年'),
+  targetMonth: string()
+    .required()
+    .label('対象月'),
+  amount: string().required().label('金額'),
+  date: string().date().required().label('日付'),
+  paymentMethod: string().required().label('支払方法'),
+  otherPaymentDescription: string().nullable().notRequired().label('支払方法'),
   note: string().nullable().notRequired().label('備考'),
 }));
 
@@ -307,12 +328,11 @@ defineExpose({
 </script>
 
 <template>
-  <div class="row justify-between">
+  <div class="row justify-between" v-if="!newExpense">
     <div class="text-h6">
       支出基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
     </div>
     <q-badge
-      v-if="!newExpense"
       :color="describeConfirmStatus(expense.confirmStatus).color"
       :label="describeConfirmStatus(expense.confirmStatus).description"
     />
@@ -324,17 +344,83 @@ defineExpose({
         <q-input v-model="expense.id" label="管理番号" readonly />
       </q-item-section>
     </q-item>
-    <Field name="title" #="{errorMessage, value, handleChange}">
+    <Field name="building" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-select
+            :model-value="value"
+            @update:model-value="(event) => handleBuildingChange(event, handleChange)"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="物件"
+            :options="buildingOptions"
+            option-label="name"
+            option-value="id"
+            @filter="onFilterBuilding"
+            :readonly="readonly"
+            use-input
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="room" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="件名"
+            label="部屋"
+            :options="roomOptions"
+            option-label="name"
+            option-value="id"
+            @filter="onFilterRoom"
             :readonly="readonly"
-          />
+            use-input
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="owner" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="オーナー"
+            :options="ownerOptions"
+            :option-label="(item: OwnerOption) => item.lastName + ' ' + item.firstName"
+            option-value="id"
+            @filter="onFilterOwner"
+            :readonly="readonly"
+            use-input
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="tenant" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="入居者"
+            :options="renterOptions"
+            :option-label="(item: RenterOption) => item.lastName + ' ' + item.firstName"
+            option-value="id"
+            @filter="onFilterRenter"
+            :readonly="readonly"
+            use-input
+          >
+          </q-select>
         </q-item-section>
       </q-item>
     </Field>
@@ -357,18 +443,65 @@ defineExpose({
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="description" #="{errorMessage, value, handleChange}">
-      <q-item class="col-12">
+    <Field name="targetYear" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
         <q-item-section>
           <q-input
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="説明"
-            autogrow
-            clearable
+            label="対象年"
             :readonly="readonly"
+            hint="フォーマット: 2021"
+          >
+          </q-input>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="targetMonth" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="対象月"
+            :readonly="readonly"
+            :options="[1,2,3,4,5,6,7,8,9,10,11,12].map((v) => ({ label: `${v}月`, value: v }))"
+            emit-value
+            map-options
+          >
+          </q-select>
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="amount" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input-currency
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="金額"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="date" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="日付"
+            :readonly="readonly"
+            hint="フォーマット: 2021-01-01"
           />
         </q-item-section>
       </q-item>
@@ -406,114 +539,6 @@ defineExpose({
             :readonly="readonly"
             :disable="values.paymentMethod !== 'other'"
           />
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="amount" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-input-currency
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="金額"
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="date" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="日付"
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="building" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-select
-            :model-value="value"
-            @update:model-value="(event) => handleBuildingChange(event, handleChange)"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="物件"
-            :options="buildingOptions"
-            option-label="name"
-            option-value="id"
-            @filter="buildingFilterFn"
-            :readonly="readonly"
-            use-input
-          >
-          </q-select>
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="room" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-select
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="部屋"
-            :options="roomOptions"
-            option-label="name"
-            option-value="id"
-            @filter="roomFilterFn"
-            :readonly="readonly"
-            use-input
-          >
-          </q-select>
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="owner" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-select
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="オーナー"
-            :options="ownerOptions"
-            :option-label="item => item.lastName + ' ' + item.firstName"
-            option-value="id"
-            @filter="ownerFilterFn"
-            :readonly="readonly"
-            use-input
-          >
-          </q-select>
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="tenant" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-select
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="入居者"
-            :options="renterOptions"
-            :option-label="item => item.lastName + ' ' + item.firstName"
-            option-value="id"
-            @filter="renterFilterFn"
-            :readonly="readonly"
-            use-input
-          >
-          </q-select>
         </q-item-section>
       </q-item>
     </Field>

@@ -4,14 +4,17 @@ import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useExpenseStore } from 'stores/expense-store';
 import { FormValidationResult } from 'vee-validate';
+import { Optional } from 'src/utils/framework';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const router = useRouter();
 const loading = ref(false);
 const form = ref<InstanceType<typeof ExpenseForm>>();
+const { toastHandler } = useErrorHandler();
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation || !validation.valid) {
     return;
   }
   loading.value = true;
@@ -23,7 +26,7 @@ const save = async () => {
       params: { id: newExpense.id },
     });
   } catch (error) {
-    console.log(error);
+    await toastHandler(error)
   } finally {
     loading.value = false;
   }
