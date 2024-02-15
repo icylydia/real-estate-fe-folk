@@ -6,14 +6,23 @@ import { TenantInResponse } from 'src/api';
 import { useRouter } from 'vue-router';
 import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useGender } from 'src/utils/gender';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
+const { toastHandler } = useErrorHandler();
 
 const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
   try {
     loading.value = true;
     const { page, rowsPerPage } = _pagination;
-    const pageMeta = await useTenantStore().getTenantList(rowsPerPage, page, searchText.value ?? null);
+    const pageMeta = await useTenantStore().getTenantList(
+      rowsPerPage,
+      page,
+      searchId.value ?? null,
+      searchName.value ?? null,
+      searchEmail.value ?? null,
+      searchPhone.value ?? null,
+    );
     pagination.value = {
       sortBy: undefined,
       descending: false,
@@ -21,8 +30,8 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
       rowsPerPage: pageMeta.itemsPerPage ?? 10,
       rowsNumber: pageMeta.total ?? 0,
     };
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    await toastHandler(error);
   } finally {
     loading.value = false;
   }
@@ -33,8 +42,19 @@ onMounted(async () => {
 });
 
 const { tenantList: tenants } = storeToRefs(useTenantStore());
+const searchId = ref('');
+const searchName = ref('');
+const searchEmail = ref('');
+const searchPhone = ref('');
 
 const columns: QTableProps['columns'] = [
+  {
+    label: 'ID',
+    field: 'id',
+    name: 'id',
+    sortable: false,
+    align: 'left',
+  },
   {
     label: '入居者名',
     field: 'name',
@@ -117,7 +137,6 @@ const newTenant = () => {
   });
 };
 
-const searchText = ref('');
 const search = async () => {
   tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
@@ -170,18 +189,6 @@ const onPageChange = async () => {
           ref="tableRef"
         >
           <template #top-right>
-            <q-input
-              outlined
-              dense
-              placeholder="検索"
-              class="q-mr-sm"
-              v-model="searchText"
-              @keydown.enter.prevent="search"
-            >
-              <template #append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
             <q-btn
               color="primary"
               icon="sym_r_add"
@@ -211,6 +218,54 @@ const onPageChange = async () => {
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="tenantDetail(key)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editTenant(key)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeTenant(row)" />
+            </q-td>
+          </template>
+          <template #bottom-row>
+            <q-td>
+              <q-input
+                square
+                dense
+                label="ID"
+                style="width: 60px"
+                class="q-mr-sm"
+                v-model="searchId"
+                @keyup.enter="search"
+              />
+            </q-td>
+            <q-td>
+              <q-input
+                square
+                dense
+                label="名前"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchName"
+                @keyup.enter="search"
+              />
+            </q-td>
+            <q-td>
+            </q-td>
+            <q-td>
+              <q-input
+                square
+                dense
+                label="メールアドレス"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchEmail"
+                @keyup.enter="search"
+              />
+            </q-td>
+            <q-td>
+              <q-input
+                square
+                dense
+                label="電話番号"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchPhone"
+                @keyup.enter="search"
+              />
             </q-td>
           </template>
         </q-table>

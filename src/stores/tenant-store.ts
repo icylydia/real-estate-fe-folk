@@ -35,8 +35,22 @@ export const useTenantStore = defineStore('tenant', {
     resetFormModel() {
       this.formModel = defaultFormModel;
     },
-    async getTenantList(itemsPerPage?: number, page?: number, query?: string) {
-      const resp = await api.getTenants(itemsPerPage, page, query);
+    async getTenantList(
+      itemsPerPage?: number,
+      page?: number,
+      id?: string,
+      name?: string,
+      email?: string,
+      phone?: string,
+    ): Promise<PaginationResponsePagination> {
+      const resp = await api.getTenants(
+        itemsPerPage,
+        page,
+        id,
+        name,
+        email,
+        phone,
+      );
       this.tenantList = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;
     },
