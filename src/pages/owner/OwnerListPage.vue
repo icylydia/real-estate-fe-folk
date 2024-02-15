@@ -199,54 +199,6 @@ const onPageChange = async () => {
                 @click="newOwner"
               />
             </div>
-            <div id="top2" class="flex justify-md-start">
-              <q-input
-                square
-                dense
-                label="ID"
-                style="width: 60px"
-                class="q-mr-sm"
-                v-model="searchId"
-                @keyup.enter="search"
-              />
-              <q-input
-                square
-                dense
-                label="名前"
-                style="width: 120px"
-                class="q-mr-sm"
-                v-model="searchName"
-                @keyup.enter="search"
-              />
-              <q-input
-                square
-                dense
-                label="メールアドレス"
-                style="width: 120px"
-                class="q-mr-sm"
-                v-model="searchEmail"
-                @keyup.enter="search"
-              />
-              <q-input
-                square
-                dense
-                label="電話番号"
-                style="width: 120px"
-                class="q-mr-sm"
-                v-model="searchPhone"
-                @keyup.enter="search"
-              />
-              <div class="col-grow">
-                <q-btn
-                  color="primary"
-                  icon="search"
-                  label="検索"
-                  @click="search"
-                  class="float-right"
-                  @keyup.enter="search"
-                />
-              </div>
-            </div>
           </template>
           <template #[`body-cell-name`]="{ row }: { row: TenantInResponse }">
             <q-td>
@@ -270,6 +222,54 @@ const onPageChange = async () => {
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="ownerDetail(key)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editOwner(key)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeOwner(row)" />
+            </q-td>
+          </template>
+          <template #bottom-row>
+            <q-td>
+              <q-input
+                square
+                dense
+                label="ID"
+                style="width: 60px"
+                class="q-mr-sm"
+                v-model="searchId"
+                @keyup.enter="search"
+              />
+            </q-td>
+            <q-td>
+              <q-input
+                square
+                dense
+                label="名前"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchName"
+                @keyup.enter="search"
+              />
+            </q-td>
+            <q-td>
+            </q-td>
+            <q-td>
+              <q-input
+                square
+                dense
+                label="メールアドレス"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchEmail"
+                @keyup.enter="search"
+              />
+            </q-td>
+            <q-td>
+              <q-input
+                square
+                dense
+                label="電話番号"
+                style="width: 120px"
+                class="q-mr-sm"
+                v-model="searchPhone"
+                @keyup.enter="search"
+              />
             </q-td>
           </template>
         </q-table>
