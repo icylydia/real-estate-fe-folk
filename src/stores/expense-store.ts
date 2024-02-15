@@ -5,9 +5,14 @@ import { api } from 'boot/api';
 interface GetExpenseListRequest {
   itemsPerPage?: number;
   page?: number;
-  year?: number;
-  month?: number;
-  query?: string;
+  building?: string;
+  room?: string;
+  category?: string;
+  targetYear?: number;
+  targetMonth?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  confirmStatuses?: string[];
 }
 
 export type ExpenseModel = Partial<
@@ -33,16 +38,26 @@ export const useExpenseStore = defineStore('expense', {
     async getExpenseList(
       itemsPerPage?: number,
       page?: number,
-      year?: number,
-      month?: number,
-      query?: string,
+      building?: string,
+      room?: string,
+      category?: string,
+      targetYear?: number,
+      targetMonth?: number,
+      dateFrom?: string,
+      dateTo?: string,
+      confirmStatuses?: Array<string>,
     ): Promise<PaginationResponsePagination> {
       const resp = await api.getExpenses(
         itemsPerPage,
         page,
-        year,
-        month,
-        query,
+        building,
+        room,
+        category,
+        targetYear,
+        targetMonth,
+        dateFrom,
+        dateTo,
+        confirmStatuses,
       );
       this.list = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;

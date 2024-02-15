@@ -4,7 +4,7 @@ import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useIncomeStore } from 'stores/income-store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { IncomeInResponse } from 'src/api';
+import { ExpenseInResponse, IncomeInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 import useErrorHandler from 'components/app/useErrorHandler';
 
@@ -21,9 +21,16 @@ const { toastHandler } = useErrorHandler();
 
 const columns: QTableProps['columns'] = [
   {
-    label: '件名',
-    field: 'title',
-    name: 'title',
+    label: '物件名',
+    field: (row: ExpenseInResponse) => row.building?.name ?? '',
+    name: 'buildingName',
+    sortable: false,
+    align: 'left',
+  },
+  {
+    label: '部屋番号',
+    field: (row: ExpenseInResponse) => row.room?.name ?? '',
+    name: 'roomName',
     sortable: false,
     align: 'left',
   },
@@ -31,6 +38,20 @@ const columns: QTableProps['columns'] = [
     label: '類別',
     field: 'category',
     name: 'category',
+    sortable: false,
+    align: 'left',
+  },
+  {
+    label: '対象年',
+    field: 'targetYear',
+    name: 'targetYear',
+    sortable: false,
+    align: 'left',
+  },
+  {
+    label: '対象月',
+    field: 'targetMonth',
+    name: 'targetMonth',
     sortable: false,
     align: 'left',
   },
@@ -111,7 +132,7 @@ const toEdit = async (id: number) => {
 const remove = (income: IncomeInResponse) => {
   $q.dialog({
     title: '収入削除',
-    message: `収入「${income.title} 」を削除しますか？`,
+    message: '選択した収入を削除しますか？',
     ok: { label: '確認', color: 'negative'},
     cancel: { label: 'キャンセル', color: 'grey-8'},
     persistent: true,
@@ -121,8 +142,8 @@ const remove = (income: IncomeInResponse) => {
     }
     try {
       await useIncomeStore().deleteIncome(income.id);
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      await toastHandler(error);
     }
     tableRef.value?.requestServerInteraction();
   });
@@ -166,10 +187,14 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
     const pageMeta = await useIncomeStore().getIncomeList(
       rowsPerPage,
       page,
-      searchParams.value.year,
-      searchParams.value.month,
-      searchParams.value.onlyUnconfirmed,
-      searchParams.value.query,
+      searchParams.value.building,
+      searchParams.value.room,
+      searchParams.value.category,
+      searchParams.value.targetYear,
+      searchParams.value.targetMonth,
+      searchParams.value.dateFrom,
+      searchParams.value.dateTo,
+      searchParams.value.confirmStatuses,
     );
     pagination.value = {
       sortBy: undefined,
@@ -178,8 +203,8 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
       rowsPerPage: pageMeta.itemsPerPage ?? 10,
       rowsNumber: pageMeta.total ?? 0,
     };
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    await toastHandler(error);
   } finally {
     loading.value = false;
   }
@@ -198,7 +223,7 @@ const confirmAll = (incomes: IncomeInResponse[]) => {
       const incomeIds = incomes.map((income) => income.id!);
       await useIncomeStore().confirmAll(incomeIds);
     } catch (e) {
-      toastHandler('承認に失敗しました');
+      await toastHandler('承認に失敗しました');
     }
     tableRef.value?.requestServerInteraction();
   });
@@ -217,7 +242,7 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
       const incomeIds = incomes.map((income) => income.id!);
       await useIncomeStore().rejectAll(incomeIds);
     } catch (e) {
-      toastHandler('拒否に失敗しました');
+      await toastHandler('拒否に失敗しました');
     }
     tableRef.value?.requestServerInteraction();
   });
@@ -227,39 +252,7 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
 <template>
   <q-page padding>
     <div class="row q-col-gutter-md">
-      <div class="col-12 col-md-4">
-        <q-card bordered>
-          <q-card-section class="text-h6">
-            検索条件
-            <q-input
-              v-model="searchParams.year"
-              label="年"
-            />
-            <q-input
-              v-model="searchParams.month"
-              label="月"
-            />
-            <q-checkbox
-              v-model="searchParams.onlyUnconfirmed"
-              label="未確認のみ"
-            />
-            <q-input
-              v-model="searchParams.query"
-              label="その他"
-            />
-          </q-card-section>
-          <q-card-actions>
-            <q-btn
-              class="q-mr-sm full-width"
-              color="primary"
-              label="検索"
-              icon="sym_r_location_on"
-              @click="search()"
-            />
-          </q-card-actions>
-        </q-card>
-      </div>
-      <div class="col-12 col-md-8">
+      <div class="col-12">
         <q-card bordered>
           <q-card-section class="q-pa-none">
             <q-table
@@ -282,20 +275,20 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
                   <q-btn
                     label="一括承認"
                     color="primary"
-                    class="float-right text-capitalize shadow-3 q-mx-sm"
+                    class="float-right q-mx-sm"
                     icon="sym_r_check"
                     @click="confirmAll(selectedRows)"
                   />
                   <q-btn
                     label="一括拒否"
                     color="negative"
-                    class="float-right text-capitalize shadow-3"
+                    class="float-right"
                     icon="sym_r_do_not_disturb_on"
                     @click="rejectAll(selectedRows)"
                   />
                   <q-separator vertical class="q-mx-lg" />
                 </template>
-                <q-btn label="新規" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="toCreate()" />
+                <q-btn label="新規" color="primary" class="float-right" icon="sym_r_add" @click="toCreate()" />
               </template>
               <template #[`body-cell-category`]="{ row }: { row: IncomeInResponse }">
                 <q-td>
@@ -321,6 +314,111 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="toEdit(key)" />
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(row)" />
                 </q-td>
+              </template>
+              <template #bottom-row>
+                <q-tr>
+                  <q-td>
+                  </q-td>
+                  <q-td>
+                    <q-input
+                      v-model="searchParams.building"
+                      label="物件名"
+                      dense
+                      @keyup.enter="search"
+                    />
+                  </q-td>
+                  <q-td>
+                    <q-input
+                      v-model="searchParams.room"
+                      label="部屋番号"
+                      dense
+                      @keyup.enter="search"
+                    />
+                  </q-td>
+                  <q-td>
+                    <q-select
+                      v-model="searchParams.category"
+                      label="類別"
+                      dense
+                      clearable
+                      emit-value
+                      map-options
+                      :options="usePayment().incomeCategoryOptions"
+                      style="min-width: 100px;"
+                    />
+                  </q-td>
+                  <q-td>
+                    <q-input
+                      v-model="searchParams.targetYear"
+                      label="対象年"
+                      dense
+                      @keyup.enter="search"
+                    />
+                  </q-td>
+                  <q-td>
+                    <q-input
+                      v-model="searchParams.targetMonth"
+                      label="対象月"
+                      dense
+                      @keyup.enter="search"
+                    />
+                  </q-td>
+                  <q-td colspan="2">
+                    <div class="flex justify-between" style="min-width: 200px;">
+                      <q-input
+                        v-model="searchParams.dateFrom"
+                        label="日付(From)"
+                        dense
+                        @keyup.enter="search"
+                        style="width: 85px;"
+                      />
+                      <div style="line-height: 40px;">
+                        <span style="vertical-align: middle">～</span>
+                      </div>
+                      <q-input
+                        v-model="searchParams.dateTo"
+                        label="日付(To)"
+                        dense
+                        @keyup.enter="search"
+                        style="width: 85px;"
+                      />
+                    </div>
+                  </q-td>
+                  <q-td>
+                    <q-select
+                      v-model="searchParams.confirmStatuses"
+                      label="確認状態"
+                      dense
+                      multiple
+                      :options="usePayment().confirmStatusOptions"
+                      use-chips
+                      emit-value
+                      map-options
+                      style="width: 100px;"
+                    >
+                      <template #selected-item="{ index, opt, removeAtIndex }: {
+                        index: number,
+                        opt: { label: string, value: string, color: string },
+                        removeAtIndex: (index: number) => void
+                      }">
+                        <q-chip
+                          :label="opt.label"
+                          :color="opt.color"
+                          removable
+                          dense
+                          @remove="removeAtIndex(index)"
+                        />
+                      </template>
+                    </q-select>
+                  </q-td>
+                  <q-td>
+                    <q-btn
+                      label="検索"
+                      color="primary"
+                      @click="search"
+                    />
+                  </q-td>
+                </q-tr>
               </template>
             </q-table>
             <div class="row justify-center q-my-md">

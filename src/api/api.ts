@@ -1858,12 +1858,6 @@ export interface PaginationResponsePagination {
  */
 export interface PaymentBase {
   /**
-   * 支付标题
-   * @type {string}
-   * @memberof PaymentBase
-   */
-  title?: string;
-  /**
    * 支付类别 - `monthlyRent`: [收入] 月租/月額賃料 - `securityDeposit`: [收入] 押金/敷金 - `keyMoney`: [收入] 礼金/礼金 - `cleaningFee`: [收入/支出] 清洁费/清掃料金 - `ownerBenefits`: [支出] 房东收益/オーナー収益 - `securityDepositRefund`: [支出] 押金退还/敷金返還 - `keyMoneyRefund`: [支出] 礼金退还/礼金返還 - `maintenanceFee`: [收入] 管理共益費/管理共益費 - `parkingFee`: [收入] 停车费/駐車料金 - `renewalFee`: [收入] 续约费/更新料 - `managementFee`: [支出] 管理费/管理費 - `transactionFee`: [支出] 交易费/取引手数料 - `lowVoltageFee`: [支出] 低压电费/低圧電気料金 - `electricityFee`: [支出] 电费/電気料金 - `gasFee`: [支出] 燃气费/ガス料金 - `waterFee`: [支出] 水费/水道料金 - `repairFund`: [支出] 维修基金/修繕積立金 - `other`: [收入/支出] 其他/その他
    * @type {string}
    * @memberof PaymentBase
@@ -4054,13 +4048,18 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
      * @summary 支出列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {number} [year] 年份
-     * @param {number} [month] 月份
-     * @param {string} [query] 查询条件
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [category] 支出类别
+     * @param {number} [targetYear] 对象年份
+     * @param {number} [targetMonth] 对象月份
+     * @param {string} [dateFrom] 支付日起始
+     * @param {string} [dateTo] 支付日截止
+     * @param {Array<string>} [confirmStatuses] 确认状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getExpenses(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options: any = {}): FetchArgs {
+    getExpenses(itemsPerPage?: number, page?: number, building?: string, room?: string, category?: string, targetYear?: number, targetMonth?: number, dateFrom?: string, dateTo?: string, confirmStatuses?: Array<string>, options: any = {}): FetchArgs {
       const localVarPath = `/expenses`;
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
@@ -4086,16 +4085,36 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         localVarQueryParameter['page'] = page;
       }
 
-      if (year !== undefined) {
-        localVarQueryParameter['year'] = year;
+      if (building !== undefined) {
+        localVarQueryParameter['building'] = building;
       }
 
-      if (month !== undefined) {
-        localVarQueryParameter['month'] = month;
+      if (room !== undefined) {
+        localVarQueryParameter['room'] = room;
       }
 
-      if (query !== undefined) {
-        localVarQueryParameter['query'] = query;
+      if (category !== undefined) {
+        localVarQueryParameter['category'] = category;
+      }
+
+      if (targetYear !== undefined) {
+        localVarQueryParameter['targetYear'] = targetYear;
+      }
+
+      if (targetMonth !== undefined) {
+        localVarQueryParameter['targetMonth'] = targetMonth;
+      }
+
+      if (dateFrom !== undefined) {
+        localVarQueryParameter['dateFrom'] = dateFrom;
+      }
+
+      if (dateTo !== undefined) {
+        localVarQueryParameter['dateTo'] = dateTo;
+      }
+
+      if (confirmStatuses) {
+        localVarQueryParameter['confirmStatuses[]'] = confirmStatuses;
       }
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
@@ -4153,14 +4172,18 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
      * @summary 收入列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {number} [year] 年份
-     * @param {number} [month] 月份
-     * @param {boolean} [onlyUnconfirmed] 只显示未确认的收入
-     * @param {string} [query] 查询条件
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [category] 支出类别
+     * @param {number} [targetYear] 对象年份
+     * @param {number} [targetMonth] 对象月份
+     * @param {string} [dateFrom] 支付日起始
+     * @param {string} [dateTo] 支付日截止
+     * @param {Array<string>} [confirmStatuses] 确认状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, onlyUnconfirmed?: boolean, query?: string, options: any = {}): FetchArgs {
+    getIncomes(itemsPerPage?: number, page?: number, building?: string, room?: string, category?: string, targetYear?: number, targetMonth?: number, dateFrom?: string, dateTo?: string, confirmStatuses?: Array<string>, options: any = {}): FetchArgs {
       const localVarPath = `/incomes`;
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
@@ -4186,20 +4209,36 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         localVarQueryParameter['page'] = page;
       }
 
-      if (year !== undefined) {
-        localVarQueryParameter['year'] = year;
+      if (building !== undefined) {
+        localVarQueryParameter['building'] = building;
       }
 
-      if (month !== undefined) {
-        localVarQueryParameter['month'] = month;
+      if (room !== undefined) {
+        localVarQueryParameter['room'] = room;
       }
 
-      if (onlyUnconfirmed !== undefined) {
-        localVarQueryParameter['onlyUnconfirmed'] = onlyUnconfirmed;
+      if (category !== undefined) {
+        localVarQueryParameter['category'] = category;
       }
 
-      if (query !== undefined) {
-        localVarQueryParameter['query'] = query;
+      if (targetYear !== undefined) {
+        localVarQueryParameter['targetYear'] = targetYear;
+      }
+
+      if (targetMonth !== undefined) {
+        localVarQueryParameter['targetMonth'] = targetMonth;
+      }
+
+      if (dateFrom !== undefined) {
+        localVarQueryParameter['dateFrom'] = dateFrom;
+      }
+
+      if (dateTo !== undefined) {
+        localVarQueryParameter['dateTo'] = dateTo;
+      }
+
+      if (confirmStatuses) {
+        localVarQueryParameter['confirmStatuses[]'] = confirmStatuses;
       }
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
@@ -6679,14 +6718,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      * @summary 支出列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {number} [year] 年份
-     * @param {number} [month] 月份
-     * @param {string} [query] 查询条件
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [category] 支出类别
+     * @param {number} [targetYear] 对象年份
+     * @param {number} [targetMonth] 对象月份
+     * @param {string} [dateFrom] 支付日起始
+     * @param {string} [dateTo] 支付日截止
+     * @param {Array<string>} [confirmStatuses] 确认状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getExpenses(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<ExpenseListResponse> {
-      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getExpenses(itemsPerPage, page, year, month, query, options);
+    getExpenses(itemsPerPage?: number, page?: number, building?: string, room?: string, category?: string, targetYear?: number, targetMonth?: number, dateFrom?: string, dateTo?: string, confirmStatuses?: Array<string>, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<ExpenseListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getExpenses(itemsPerPage, page, building, room, category, targetYear, targetMonth, dateFrom, dateTo, confirmStatuses, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -6721,15 +6765,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      * @summary 收入列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {number} [year] 年份
-     * @param {number} [month] 月份
-     * @param {boolean} [onlyUnconfirmed] 只显示未确认的收入
-     * @param {string} [query] 查询条件
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [category] 支出类别
+     * @param {number} [targetYear] 对象年份
+     * @param {number} [targetMonth] 对象月份
+     * @param {string} [dateFrom] 支付日起始
+     * @param {string} [dateTo] 支付日截止
+     * @param {Array<string>} [confirmStatuses] 确认状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, onlyUnconfirmed?: boolean, query?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<IncomeListResponse> {
-      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getIncomes(itemsPerPage, page, year, month, onlyUnconfirmed, query, options);
+    getIncomes(itemsPerPage?: number, page?: number, building?: string, room?: string, category?: string, targetYear?: number, targetMonth?: number, dateFrom?: string, dateTo?: string, confirmStatuses?: Array<string>, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<IncomeListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getIncomes(itemsPerPage, page, building, room, category, targetYear, targetMonth, dateFrom, dateTo, confirmStatuses, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -7905,14 +7953,19 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      * @summary 支出列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {number} [year] 年份
-     * @param {number} [month] 月份
-     * @param {string} [query] 查询条件
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [category] 支出类别
+     * @param {number} [targetYear] 对象年份
+     * @param {number} [targetMonth] 对象月份
+     * @param {string} [dateFrom] 支付日起始
+     * @param {string} [dateTo] 支付日截止
+     * @param {Array<string>} [confirmStatuses] 确认状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getExpenses(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any) {
-      return DefaultApiFp(configuration).getExpenses(itemsPerPage, page, year, month, query, options)(fetch, basePath);
+    getExpenses(itemsPerPage?: number, page?: number, building?: string, room?: string, category?: string, targetYear?: number, targetMonth?: number, dateFrom?: string, dateTo?: string, confirmStatuses?: Array<string>, options?: any) {
+      return DefaultApiFp(configuration).getExpenses(itemsPerPage, page, building, room, category, targetYear, targetMonth, dateFrom, dateTo, confirmStatuses, options)(fetch, basePath);
     },
     /**
      * 根据ID获取收入详情
@@ -7929,15 +7982,19 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      * @summary 收入列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {number} [year] 年份
-     * @param {number} [month] 月份
-     * @param {boolean} [onlyUnconfirmed] 只显示未确认的收入
-     * @param {string} [query] 查询条件
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [category] 支出类别
+     * @param {number} [targetYear] 对象年份
+     * @param {number} [targetMonth] 对象月份
+     * @param {string} [dateFrom] 支付日起始
+     * @param {string} [dateTo] 支付日截止
+     * @param {Array<string>} [confirmStatuses] 确认状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, onlyUnconfirmed?: boolean, query?: string, options?: any) {
-      return DefaultApiFp(configuration).getIncomes(itemsPerPage, page, year, month, onlyUnconfirmed, query, options)(fetch, basePath);
+    getIncomes(itemsPerPage?: number, page?: number, building?: string, room?: string, category?: string, targetYear?: number, targetMonth?: number, dateFrom?: string, dateTo?: string, confirmStatuses?: Array<string>, options?: any) {
+      return DefaultApiFp(configuration).getIncomes(itemsPerPage, page, building, room, category, targetYear, targetMonth, dateFrom, dateTo, confirmStatuses, options)(fetch, basePath);
     },
     /**
      * 获取月度收支报告
@@ -8806,15 +8863,20 @@ export class DefaultApi extends BaseAPI {
    * @summary 支出列表
    * @param {number} [itemsPerPage] 每页条数
    * @param {number} [page] 页码
-   * @param {number} [year] 年份
-   * @param {number} [month] 月份
-   * @param {string} [query] 查询条件
+   * @param {string} [building] 建筑名称
+   * @param {string} [room] 房间号
+   * @param {string} [category] 支出类别
+   * @param {number} [targetYear] 对象年份
+   * @param {number} [targetMonth] 对象月份
+   * @param {string} [dateFrom] 支付日起始
+   * @param {string} [dateTo] 支付日截止
+   * @param {Array<string>} [confirmStatuses] 确认状态
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getExpenses(itemsPerPage?: number, page?: number, year?: number, month?: number, query?: string, options?: any) {
-    return DefaultApiFp(this.configuration).getExpenses(itemsPerPage, page, year, month, query, options)(this.fetch, this.basePath);
+  public getExpenses(itemsPerPage?: number, page?: number, building?: string, room?: string, category?: string, targetYear?: number, targetMonth?: number, dateFrom?: string, dateTo?: string, confirmStatuses?: Array<string>, options?: any) {
+    return DefaultApiFp(this.configuration).getExpenses(itemsPerPage, page, building, room, category, targetYear, targetMonth, dateFrom, dateTo, confirmStatuses, options)(this.fetch, this.basePath);
   }
 
   /**
@@ -8834,16 +8896,20 @@ export class DefaultApi extends BaseAPI {
    * @summary 收入列表
    * @param {number} [itemsPerPage] 每页条数
    * @param {number} [page] 页码
-   * @param {number} [year] 年份
-   * @param {number} [month] 月份
-   * @param {boolean} [onlyUnconfirmed] 只显示未确认的收入
-   * @param {string} [query] 查询条件
+   * @param {string} [building] 建筑名称
+   * @param {string} [room] 房间号
+   * @param {string} [category] 支出类别
+   * @param {number} [targetYear] 对象年份
+   * @param {number} [targetMonth] 对象月份
+   * @param {string} [dateFrom] 支付日起始
+   * @param {string} [dateTo] 支付日截止
+   * @param {Array<string>} [confirmStatuses] 确认状态
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getIncomes(itemsPerPage?: number, page?: number, year?: number, month?: number, onlyUnconfirmed?: boolean, query?: string, options?: any) {
-    return DefaultApiFp(this.configuration).getIncomes(itemsPerPage, page, year, month, onlyUnconfirmed, query, options)(this.fetch, this.basePath);
+  public getIncomes(itemsPerPage?: number, page?: number, building?: string, room?: string, category?: string, targetYear?: number, targetMonth?: number, dateFrom?: string, dateTo?: string, confirmStatuses?: Array<string>, options?: any) {
+    return DefaultApiFp(this.configuration).getIncomes(itemsPerPage, page, building, room, category, targetYear, targetMonth, dateFrom, dateTo, confirmStatuses, options)(this.fetch, this.basePath);
   }
 
   /**

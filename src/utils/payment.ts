@@ -99,6 +99,24 @@ export const usePayment = () => {
     ].includes(option.value);
   });
 
+  const confirmStatusOptions = [
+    {
+      label: '未確認',
+      value: 'unconfirmed',
+      color: 'warning',
+    },
+    {
+      label: '確認済み',
+      value: 'confirmed',
+      color: 'positive',
+    },
+    {
+      label: '却下',
+      value: 'rejected',
+      color: 'negative',
+    },
+  ];
+
   const paymentMethodOptions = [
     {
       label: '現金',
@@ -162,6 +180,7 @@ export const usePayment = () => {
     incomeCategoryOptions,
     expenseCategoryOptions,
     paymentMethodOptions,
+    confirmStatusOptions,
     describeCategory,
     describeIncomeConfirmStatus,
   }

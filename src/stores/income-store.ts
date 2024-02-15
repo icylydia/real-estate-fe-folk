@@ -5,10 +5,14 @@ import { api } from 'boot/api';
 interface GetIncomeListRequest {
   itemsPerPage?: number;
   page?: number;
-  year?: number;
-  month?: number;
-  onlyUnconfirmed?: boolean;
-  query?: string;
+  building?: string;
+  room?: string;
+  category?: string;
+  targetYear?: number;
+  targetMonth?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  confirmStatuses?: string[];
 }
 
 export type IncomeModel = Partial<
@@ -33,18 +37,26 @@ export const useIncomeStore = defineStore('income', {
     async getIncomeList(
       itemsPerPage?: number,
       page?: number,
-      year?: number,
-      month?: number,
-      onlyUnconfirmed?: boolean,
-      query?: string
+      building?: string,
+      room?: string,
+      category?: string,
+      targetYear?: number,
+      targetMonth?: number,
+      dateFrom?: string,
+      dateTo?: string,
+      confirmStatuses?: Array<string>,
     ): Promise<PaginationResponsePagination> {
       const resp = await api.getIncomes(
         itemsPerPage,
         page,
-        year,
-        month,
-        onlyUnconfirmed,
-        query,
+        building,
+        room,
+        category,
+        targetYear,
+        targetMonth,
+        dateFrom,
+        dateTo,
+        confirmStatuses,
       );
       this.list = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;
