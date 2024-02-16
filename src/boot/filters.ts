@@ -28,7 +28,7 @@ const percentage = (value: Optional<number>) => {
   if (value === undefined) {
     return '';
   } else {
-    const num = Number(value) * 100;
+    const num = Number(value);
     return `${num.toFixed(2)}%`;
   }
 };

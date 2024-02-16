@@ -15,6 +15,7 @@ import { Field, useForm, ValidationResult } from 'vee-validate';
 import { useBuilding } from 'src/utils/building';
 import { useAddressStore } from 'stores/address-store';
 import useErrorHandler from 'components/app/useErrorHandler';
+import QInputPercentage from 'components/extension/QInputPercentage.vue';
 
 const props = defineProps({
   readonly: {
@@ -322,7 +323,7 @@ defineExpose({
     <Field name="grossYield" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-percentage
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"
@@ -475,7 +476,7 @@ defineExpose({
     <Field name="buildingCoverageRatio" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-percentage
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"
@@ -489,7 +490,7 @@ defineExpose({
     <Field name="floorAreaRatio" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-percentage
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"
@@ -648,7 +649,7 @@ defineExpose({
         {{ row.months?.join(', ') }}
       </q-td>
     </template>
-    <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: Number }">
+    <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: number }">
       <q-td class="text-right">
         <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRegularExpense(rowIndex)"/>
         <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRegularExpense(rowIndex)"/>

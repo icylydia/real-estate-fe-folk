@@ -8,6 +8,7 @@ import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
 import { useOwnerStore } from 'stores/owner-store';
 import { useEntrustContract } from 'src/utils/entrust-contract';
+import QInputPercentage from 'components/extension/QInputPercentage.vue';
 
 const { benefitTypeOptions, describeStatus } = useEntrustContract();
 const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
@@ -355,7 +356,7 @@ const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
     <Field name="benefitPercentage" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-percentage
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"
