@@ -7,6 +7,7 @@ import { useBuildingStore } from 'stores/building-store';
 import { storeToRefs } from 'pinia';
 import { FormValidationResult } from 'vee-validate';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { Optional } from 'src/utils/framework';
 
 const loading = ref(true);
 const saving = ref(false);
@@ -46,8 +47,8 @@ onMounted(async () => {
 });
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation || !validation.valid) {
     return;
   }
   saving.value = true;
@@ -59,7 +60,7 @@ const save = async () => {
       params: { id: room.id },
     });
   } catch (error) {
-    toastHandler('保存に失敗しました。');
+    await toastHandler('保存に失敗しました。');
   } finally {
     saving.value = false;
   }

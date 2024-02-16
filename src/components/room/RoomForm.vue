@@ -8,6 +8,7 @@ import { useRoomStore } from 'stores/room-store';
 import { toTypedSchema } from '@vee-validate/yup';
 import { object, string } from 'yup';
 import { Field, useForm } from 'vee-validate';
+import { BuildingBase } from 'src/api';
 
 const { roomLayoutUnitOptions } = useRoom();
 const { formModel: room } = storeToRefs(useRoomStore());
@@ -37,6 +38,7 @@ onMounted(() => {
       throw new Error('newRoomBuildingId is required when newRoom is true.');
     }
     room.value.building = props.roomBuilding;
+    setFieldValue('building', props.roomBuilding);
   }
 });
 
@@ -72,7 +74,7 @@ const initialValues: any = computed(() => {
   return room.value;
 });
 
-const { validate } = useForm({
+const { validate, setFieldValue } = useForm({
   validationSchema,
   initialValues,
 });
@@ -92,7 +94,7 @@ defineExpose({
         <q-input v-model="room.id" label="管理番号" readonly />
       </q-item-section>
     </q-item>
-    <Field name="building.id" #="{errorMessage, value, handleChange}">
+    <Field name="building.id" #="{ value, handleChange }">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input
@@ -104,7 +106,7 @@ defineExpose({
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="building.name" #="{errorMessage, value}">
+    <Field name="building.name" #="{ value }">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input
@@ -130,7 +132,7 @@ defineExpose({
       </q-item>
     </Field>
     <Field
-      v-if="room.building?.type != 'building'"
+      v-if="room.building?.type != BuildingBase.TypeEnum.Building"
       name="price"
       #="{errorMessage, value, handleChange}"
     >
@@ -161,7 +163,7 @@ defineExpose({
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="deposit" #="{errorMessage, value, handleChange}">
+    <Field name="deposit" #="{ errorMessage, value, handleChange }">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-currency
@@ -190,7 +192,7 @@ defineExpose({
       </q-item>
     </Field>
     <Field
-      v-if="room.building?.type != 'building'"
+      v-if="room.building?.type != BuildingBase.TypeEnum.Building"
       name="maintenanceFund"
       #="{errorMessage, value, handleChange}"
     >
@@ -208,7 +210,7 @@ defineExpose({
       </q-item>
     </Field>
     <Field
-      v-if="room.building?.type != 'building'"
+      v-if="room.building?.type != BuildingBase.TypeEnum.Building"
       name="managementFee"
       #="{errorMessage, value, handleChange}"
     >
