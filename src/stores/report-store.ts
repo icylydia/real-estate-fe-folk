@@ -31,6 +31,14 @@ export const useReportStore = defineStore('report', {
       this.monthlyIncomeAndExpenseReports = [response]
       return response
     },
+    async commentMonthlyReport(
+      id: number,
+      comment: string
+    ): Promise<MonthlyIncomeAndExpenseReportResponse> {
+      const response = await api.commentMonthlyIncomeAndExpense({ comment }, id.toString());
+      this.monthlyIncomeAndExpenseReports = [response]
+      return response
+    },
     async deleteMonthlyReport(
       id: number
     ): Promise<void> {

@@ -1426,6 +1426,19 @@ export namespace FileBase {
 /**
  *
  * @export
+ * @interface IdCommentBody
+ */
+export interface IdCommentBody {
+  /**
+   * 月度报表备注
+   * @type {string}
+   * @memberof IdCommentBody
+   */
+  comment?: string;
+}
+/**
+ *
+ * @export
  * @interface IncomeBase
  */
 export interface IncomeBase extends PaymentBase {
@@ -1638,6 +1651,12 @@ export interface MonthlyIncomeAndExpenseReportResponse {
    * @memberof MonthlyIncomeAndExpenseReportResponse
    */
   building?: BuildingInResponse;
+  /**
+   * 备注
+   * @type {string}
+   * @memberof MonthlyIncomeAndExpenseReportResponse
+   */
+  note?: string;
   /**
    * 是否禁用
    * @type {boolean}
@@ -2615,6 +2634,55 @@ export interface WorkplaceBase {
  */
 export const DefaultApiFetchParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     * 根据ID给月度报表添加备注
+     * @summary 给月度报表添加备注
+     * @param {IdCommentBody} body
+     * @param {string} id 月度报表ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    commentMonthlyIncomeAndExpense(body: IdCommentBody, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling commentMonthlyIncomeAndExpense.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling commentMonthlyIncomeAndExpense.');
+      }
+      const localVarPath = `/reports/monthly-income-and-expense/{id}/comment`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"IdCommentBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      * 新建建筑
      * @summary 新建建筑
@@ -6053,6 +6121,26 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 export const DefaultApiFp = function(configuration?: Configuration) {
   return {
     /**
+     * 根据ID给月度报表添加备注
+     * @summary 给月度报表添加备注
+     * @param {IdCommentBody} body
+     * @param {string} id 月度报表ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    commentMonthlyIncomeAndExpense(body: IdCommentBody, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).commentMonthlyIncomeAndExpense(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 新建建筑
      * @summary 新建建筑
      * @param {BuildingInRequest} body 建筑信息
@@ -7603,6 +7691,17 @@ export const DefaultApiFp = function(configuration?: Configuration) {
 export const DefaultApiFactory = function (configuration?: Configuration, fetch?: FetchAPI, basePath?: string) {
   return {
     /**
+     * 根据ID给月度报表添加备注
+     * @summary 给月度报表添加备注
+     * @param {IdCommentBody} body
+     * @param {string} id 月度报表ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    commentMonthlyIncomeAndExpense(body: IdCommentBody, id: string, options?: any) {
+      return DefaultApiFp(configuration).commentMonthlyIncomeAndExpense(body, id, options)(fetch, basePath);
+    },
+    /**
      * 新建建筑
      * @summary 新建建筑
      * @param {BuildingInRequest} body 建筑信息
@@ -8442,6 +8541,19 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
+  /**
+   * 根据ID给月度报表添加备注
+   * @summary 给月度报表添加备注
+   * @param {IdCommentBody} body
+   * @param {string} id 月度报表ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public commentMonthlyIncomeAndExpense(body: IdCommentBody, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).commentMonthlyIncomeAndExpense(body, id, options)(this.fetch, this.basePath);
+  }
+
   /**
    * 新建建筑
    * @summary 新建建筑

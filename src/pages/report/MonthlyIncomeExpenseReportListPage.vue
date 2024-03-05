@@ -6,6 +6,7 @@ import { QSelect, QTableProps } from 'quasar';
 import { MonthlyIncomeAndExpenseReportRequest, MonthlyIncomeAndExpenseReportResponse } from 'src/api';
 import { useReportStore } from 'stores/report-store';
 import { storeToRefs } from 'pinia';
+import MonthlyReportCommentDialog from 'components/report/MonthlyReportCommentDialog.vue';
 
 const selectedYear = ref<number>(new Date().getFullYear())
 const yearOptions = ref<Array<{ value: number; label: string }>>([])
@@ -164,6 +165,24 @@ const enableRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
   loading.value = false;
 }
 
+const showDialog = ref(false);
+const commentId = ref<number | null>(null);
+const commentContent = ref<string>('');
+const addCommentRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
+  if (!row.id) return;
+  commentId.value = row.id;
+  commentContent.value = row.note || '';
+  showDialog.value = true;
+}
+
+const submitComment = async (comment: string) => {
+  showDialog.value = false;
+  if (!commentId.value) return;
+  loading.value = true;
+  await useReportStore().commentMonthlyReport(commentId.value, comment);
+  loading.value = false;
+}
+
 const deleteRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
   if (!row.id) return;
   loading.value = true;
@@ -314,6 +333,7 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
               <template v-else>
                 <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility_off" @click="disableRow(row)" />
               </template>
+              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_add_comment" @click="addCommentRow(row)" />
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="deleteRow(row)" />
             </q-td>
           </template>
@@ -321,4 +341,11 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
       </q-card-section>
     </q-card>
   </q-page>
+  <monthly-report-comment-dialog
+    :comment="commentContent"
+    @update:comment="commentContent=$event"
+    :show="showDialog"
+    @update:show="showDialog=$event"
+    @submit="submitComment"
+  />
 </template>
