@@ -307,6 +307,7 @@ const validationSchema = toTypedSchema(object({
     .required()
     .label('対象月'),
   amount: string().required().label('金額'),
+  tax: string().nullable().notRequired().label('税'),
   date: string().date().required().label('日付'),
   paymentMethod: string().required().label('支払方法'),
   otherPaymentDescription: string().nullable().notRequired().label('支払方法'),
@@ -478,7 +479,7 @@ defineExpose({
       </q-item>
     </Field>
     <Field name="amount" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-currency
             :model-value="value"
@@ -486,6 +487,20 @@ defineExpose({
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="金額"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="tax" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input-currency
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="税"
             :readonly="readonly"
           />
         </q-item-section>

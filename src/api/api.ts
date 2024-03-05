@@ -1882,6 +1882,12 @@ export interface PaymentBase {
    */
   amount?: number;
   /**
+   * 税金
+   * @type {number}
+   * @memberof PaymentBase
+   */
+  tax?: number;
+  /**
    * 支付日期
    * @type {string}
    * @memberof PaymentBase
