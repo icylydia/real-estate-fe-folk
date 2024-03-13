@@ -2,7 +2,10 @@
 import { storeToRefs } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 import { useBuilding } from 'src/utils/building';
-import { PropType, ref } from 'vue';
+import { PropType } from 'vue';
+import { usePayment } from 'src/utils/payment';
+import { RegularExpenseBase } from 'src/api';
+import _ from 'lodash';
 
 defineProps({
   show: {
@@ -15,95 +18,160 @@ defineProps({
   },
 });
 
-defineEmits([
+const emit = defineEmits([
   'update:show',
   'submit',
 ]);
 
 const { regularExpenseModel: model } = storeToRefs(useBuildingStore());
-const { regularExpenseOptions: nameOptions } = useBuilding();
+const { regularExpenseOptions: categoryOptions } = useBuilding();
+const { paymentMethodOptions } = usePayment();
 
-const filteredNameOptions = ref<string[]>(nameOptions);
-
-const createNameOption = (name: string, done: (item: string, mode: string) => void) => {
-  if (name.length > 0) {
-    done(name, 'add-unique')
+const dayOptions: Array<{
+  label: string;
+  value: string;
+}> = (() => {
+  const options: Array<{
+    label: string;
+    value: string;
+  }> = [{
+    label: '月初',
+    value: 'firstDay',
+  }];
+  for (let i = 1; i <= 31; i++) {
+    options.push({
+      label: `${i}日`,
+      value: i.toString(),
+    });
   }
-};
+  options.push({
+    label: '月末',
+    value: 'lastDay',
+  });
+  return options;
+})();
 
-const filterNameFn = (val: string, update: (callbackFn: () => void) => void) => {
-  update(() => {
-    if (val === '') {
-      filteredNameOptions.value = nameOptions
-      return
-    }
-    const needle = val.toLowerCase()
-    filteredNameOptions.value = nameOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-  })
-};
+const monthOptions: Array<{
+  label: string;
+  value: number;
+}> = (() => {
+  const options: Array<{
+    label: string;
+    value: number;
+  }> = [];
+  for (let i = 1; i <= 12; i++) {
+    options.push({
+      label: `${i}月`,
+      value: i,
+    });
+  }
+  return options;
+})();
 
-const onMonthChange = (values: number[]) => {
-  let inOrder = true;
-  for (let i = 0; i < values.length - 1; i++) {
-    if (values[i] + 1 !== values[i + 1]) {
-      inOrder = false;
-      break;
-    }
-  }
-  if (!inOrder) {
-    values.sort((a, b) => a - b);
-  }
-};
+const submit = () => {
+  const value = _.cloneDeep(model.value);
+  emit('submit', value);
+  emit('update:show', false);
+}
 </script>
 
 <template>
   <div class="q-pa-md q-gutter-sm">
     <q-dialog
       :model-value="show"
-      @update:model-value="$emit('update:show', $event.target.value)"
+      @update:model-value="$emit('update:show', $event)"
       persistent
     >
       <q-card class="card">
         <q-card-section class="bg-primary">
           <div class="text-h6">経常支出</div>
         </q-card-section>
-
         <q-card-section>
           <q-form>
             <q-list class="row">
               <q-item class="col-12">
                 <q-item-section>
                   <q-select
-                    v-model="model.name"
-                    label="項目"
-                    use-input
-                    input-debounce="0"
-                    :options="filteredNameOptions"
+                    v-model="model.category"
+                    label="カテゴリ"
+                    :options="categoryOptions"
                     clearable
-                    @new-value="createNameOption"
-                    @filter="filterNameFn"
                     emit-value
                     map-options
                   />
                 </q-item-section>
               </q-item>
-              <q-item class="col-12">
+              <q-item class="col-6">
                 <q-item-section>
                   <q-select
-                    v-model="model.months"
+                    v-model="model.paymentMethod"
+                    label="支払方法"
+                    :options="paymentMethodOptions"
+                    clearable
+                    emit-value
+                    map-options
+                    @update:model-value="model.otherPaymentDescription = ''"
+                  />
+                </q-item-section>
+              </q-item>
+              <q-item class="col-6">
+                <q-item-section>
+                  <q-input
+                    v-model="model.otherPaymentDescription"
+                    label="その他支払方法"
+                    clearable
+                    :disable="model.paymentMethod !== RegularExpenseBase.PaymentMethodEnum.Other"
+                  />
+                </q-item-section>
+              </q-item>
+              <q-item class="col-6">
+                <q-item-section>
+                  <q-input
+                    v-model="model.amount"
+                    label="金額(税抜)"
+                    clearable
+                  />
+                </q-item-section>
+              </q-item>
+              <q-item class="col-6">
+                <q-item-section>
+                  <q-input
+                    v-model="model.tax"
+                    label="消費税"
+                    clearable
+                  />
+                </q-item-section>
+              </q-item>
+              <q-item class="col-6">
+                <q-item-section>
+                  <q-select
+                    :model-value="model.targetMonths"
+                    @update:model-value="model.targetMonths = $event.sort((a: number, b: number) => a - b)"
+                    emit-value
                     label="月"
-                    :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
+                    :options="monthOptions"
                     clearable
                     multiple
-                    @update:model-value="onMonthChange"
+                  />
+                </q-item-section>
+              </q-item>
+              <q-item class="col-6">
+                <q-item-section>
+                  <q-select
+                    v-model="model.targetDay"
+                    label="日"
+                    :options="dayOptions"
+                    emit-value
+                    map-options
+                    clearable
                   />
                 </q-item-section>
               </q-item>
               <q-item class="col-12">
                 <q-item-section>
                   <q-input
-                    v-model="model.defaultAmount"
-                    label="金額"
+                    v-model="model.note"
+                    label="備考"
                     clearable
                   />
                 </q-item-section>
@@ -111,10 +179,9 @@ const onMonthChange = (values: number[]) => {
             </q-list>
           </q-form>
         </q-card-section>
-
         <q-card-actions align="right" class="text-primary">
           <q-btn label="取消" color="negative" @click="$emit('update:show', false)" />
-          <q-btn label="確認" color="primary" @click="$emit('submit', model); $emit('update:show', false);" />
+          <q-btn label="確認" color="primary" @click="submit" />
         </q-card-actions>
       </q-card>
     </q-dialog>

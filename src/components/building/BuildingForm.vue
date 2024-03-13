@@ -16,6 +16,7 @@ import { useBuilding } from 'src/utils/building';
 import { useAddressStore } from 'stores/address-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import QInputPercentage from 'components/extension/QInputPercentage.vue';
+import { usePayment } from 'src/utils/payment';
 
 const props = defineProps({
   readonly: {
@@ -49,26 +50,40 @@ const { toastHandler } = useErrorHandler();
 const regularExpenseColumns: QTableProps['columns'] = (() => {
   let columns: QTableProps['columns'] = [
     {
-      name: 'name',
-      label: '項目',
-      field: 'name',
+      name: 'category',
+      label: 'カテゴリ',
+      field: 'category',
       align: 'left',
       sortable: false,
     },
     {
-      name: 'months',
+      name: 'targetMonths',
       label: '月',
-      field: 'months',
+      field: 'targetMonths',
       align: 'right',
       sortable: false,
     },
     {
-      name: 'defaultAmount',
-      label: 'デフォルト金額',
-      field: 'defaultAmount',
+      name: 'targetDay',
+      label: '日',
+      field: 'targetDay',
       align: 'right',
       sortable: false,
-    }
+    },
+    {
+      name: 'amount',
+      label: '金額(税抜)',
+      field: 'amount',
+      align: 'right',
+      sortable: false,
+    },
+    {
+      name: 'tax',
+      label: '消費税',
+      field: 'tax',
+      align: 'right',
+      sortable: false,
+    },
   ];
   if (!props.readonly) {
     columns.push({
@@ -84,6 +99,7 @@ const regularExpenseColumns: QTableProps['columns'] = (() => {
 
 const { regularExpenseModel: regularExpense } = storeToRefs(useBuildingStore());
 const { resetRegularExpenseModel } = useBuildingStore();
+const { describeExpenseCategory } = usePayment();
 const showDialog = ref(false);
 const dialogMode = ref<'add' | 'edit'>('add');
 const editingIndex = ref<number | null>(null);
@@ -144,7 +160,7 @@ const searchAddress = async () => {
       },
     });
   } catch (e) {
-    toastHandler(e);
+    await toastHandler(e);
   }
 };
 
@@ -157,8 +173,8 @@ const onMainPhotoChange = async (file: File) => {
   try {
     const resp = await uploadMainPhoto(mainPhoto.value);
     building.value.image = resp.url;
-  } catch (e) {
-    //
+  } catch (error) {
+    await toastHandler(error);
   } finally {
     uploadingPhoto.value = false;
   }
@@ -251,6 +267,7 @@ defineExpose({
           :loading="uploadingPhoto"
           @update:model-value="onMainPhotoChange"
           :display-value="mainPhotoName"
+          :model-value="[]"
         >
           <template #prepend>
             <q-icon name="sym_r_photo"/>
@@ -627,26 +644,45 @@ defineExpose({
       経常支出{{ readonly ? '（閲覧）' : '（編集）' }}
     </div>
     <q-btn
-        v-if="!readonly"
-        class="q-mt-md"
-        color="primary"
-        label="追加"
-        icon="sym_r_add"
-        @click="showAddingDialog"
+      v-if="!readonly"
+      class="q-mt-md"
+      color="primary"
+      label="追加"
+      icon="sym_r_add"
+      @click="showAddingDialog"
     />
   </div>
   <q-table
-      :rows="building.regularExpenses"
-      :columns="regularExpenseColumns"
-      flat
-      hide-pagination
-      :pagination="{
+    :rows="building.regularExpenses"
+    :columns="regularExpenseColumns"
+    flat
+    hide-pagination
+    :pagination="{
       rowsPerPage: 0,
     }"
   >
-    <template #[`body-cell-months`]="{ row }: { row: RegularExpenseBase }">
-      <q-td class="text-right">
-        {{ row.months?.join(', ') }}
+    <template #[`body-cell-category`]="{ row }: { row: RegularExpenseBase }">
+      <q-td>
+        {{ describeExpenseCategory(row.category) }}
+      </q-td>
+    </template>
+    <template #[`body-cell-targetMonths`]="{ row }: { row: RegularExpenseBase }">
+      <q-td class="text-right" v-if="row.targetMonths?.length == 12">
+        毎月
+      </q-td>
+      <q-td class="text-right" v-else>
+        {{ row.targetMonths?.join(', ') }}
+      </q-td>
+    </template>
+    <template #[`body-cell-targetDay`]="{ row }: { row: RegularExpenseBase }">
+      <q-td class="text-right" v-if="row.targetDay == 'firstDay'">
+        月初
+      </q-td>
+      <q-td class="text-right" v-else-if="row.targetDay == 'lastDay'">
+        月末
+      </q-td>
+      <q-td class="text-right" v-else>
+        {{ row.targetDay }}
       </q-td>
     </template>
     <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: number }">

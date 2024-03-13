@@ -62,7 +62,7 @@ export class BaseAPI {
       this.basePath = configuration.basePath || this.basePath;
     }
   }
-};
+}
 
 /**
  *
@@ -1229,6 +1229,12 @@ export interface EntrustContractListResponse extends PaginationResponse {
  * @interface ExpenseBase
  */
 export interface ExpenseBase extends PaymentBase {
+  /**
+   * 类别 - `propertyManagementFees`: PM管理费/PM費用 - `buildingManagementFees`: BM管理费/BM費用 - `managementRepairFees`: 管理维修费/管理修繕金 - `transferHandlingFees`: 转账手续费/振込手数料 - `lowVoltageElectricityCharges`: 低压电费/低圧電気料金 - `electricityCharges`: 电费/電気料金 - `gasCharges`: 煤气费/ガス代 - `waterCharges`: 水费/水道料金 - `internetExpenses`: 网络费/インターネット費用 - `adjustmentFees`: 精算费/精算金 - `securityDepositRefund`: 押金退还/敷金返還 - `otherExpenses`: 其他/その他
+   * @type {string}
+   * @memberof ExpenseBase
+   */
+  category?: ExpenseBase.CategoryEnum;
 }
 
 /**
@@ -1236,6 +1242,24 @@ export interface ExpenseBase extends PaymentBase {
  * @namespace ExpenseBase
  */
 export namespace ExpenseBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum CategoryEnum {
+    PropertyManagementFees = <any> 'propertyManagementFees',
+    BuildingManagementFees = <any> 'buildingManagementFees',
+    ManagementRepairFees = <any> 'managementRepairFees',
+    TransferHandlingFees = <any> 'transferHandlingFees',
+    LowVoltageElectricityCharges = <any> 'lowVoltageElectricityCharges',
+    ElectricityCharges = <any> 'electricityCharges',
+    GasCharges = <any> 'gasCharges',
+    WaterCharges = <any> 'waterCharges',
+    InternetExpenses = <any> 'internetExpenses',
+    AdjustmentFees = <any> 'adjustmentFees',
+    SecurityDepositRefund = <any> 'securityDepositRefund',
+    OtherExpenses = <any> 'otherExpenses'
+  }
 }
 /**
  *
@@ -1257,6 +1281,13 @@ export namespace ExpenseDetailResponse {
  * @interface ExpenseInRequest
  */
 export interface ExpenseInRequest extends ExpenseBase {
+}
+
+/**
+ * @export
+ * @namespace ExpenseInRequest
+ */
+export namespace ExpenseInRequest {
 }
 /**
  *
@@ -1442,6 +1473,12 @@ export interface IdCommentBody {
  * @interface IncomeBase
  */
 export interface IncomeBase extends PaymentBase {
+  /**
+   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `adjustmentFees`: 精算费/精算金 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `otherIncome`: 其他/その他
+   * @type {string}
+   * @memberof IncomeBase
+   */
+  category?: IncomeBase.CategoryEnum;
 }
 
 /**
@@ -1449,6 +1486,26 @@ export interface IncomeBase extends PaymentBase {
  * @namespace IncomeBase
  */
 export namespace IncomeBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum CategoryEnum {
+    MonthlyRent = <any> 'monthlyRent',
+    ManagementFees = <any> 'managementFees',
+    KeyMoney = <any> 'keyMoney',
+    SecurityDeposit = <any> 'securityDeposit',
+    GuaranteeDeposit = <any> 'guaranteeDeposit',
+    RenewalFees = <any> 'renewalFees',
+    AdjustmentFees = <any> 'adjustmentFees',
+    ParkingFees = <any> 'parkingFees',
+    BicycleParkingFees = <any> 'bicycleParkingFees',
+    CleaningFees = <any> 'cleaningFees',
+    ElectricityCharges = <any> 'electricityCharges',
+    WaterCharges = <any> 'waterCharges',
+    GasCharges = <any> 'gasCharges',
+    OtherIncome = <any> 'otherIncome'
+  }
 }
 /**
  *
@@ -1470,6 +1527,13 @@ export namespace IncomeDetailResponse {
  * @interface IncomeInRequest
  */
 export interface IncomeInRequest extends IncomeBase {
+}
+
+/**
+ * @export
+ * @namespace IncomeInRequest
+ */
+export namespace IncomeInRequest {
 }
 /**
  *
@@ -1877,12 +1941,6 @@ export interface PaginationResponsePagination {
  */
 export interface PaymentBase {
   /**
-   * 支付类别 - `monthlyRent`: [收入] 月租/月額賃料 - `securityDeposit`: [收入] 押金/敷金 - `keyMoney`: [收入] 礼金/礼金 - `cleaningFee`: [收入/支出] 清洁费/清掃料金 - `ownerBenefits`: [支出] 房东收益/オーナー収益 - `securityDepositRefund`: [支出] 押金退还/敷金返還 - `keyMoneyRefund`: [支出] 礼金退还/礼金返還 - `maintenanceFee`: [收入] 管理共益費/管理共益費 - `parkingFee`: [收入] 停车费/駐車料金 - `renewalFee`: [收入] 续约费/更新料 - `managementFee`: [支出] 管理费/管理費 - `transactionFee`: [支出] 交易费/取引手数料 - `lowVoltageFee`: [支出] 低压电费/低圧電気料金 - `electricityFee`: [支出] 电费/電気料金 - `gasFee`: [支出] 燃气费/ガス料金 - `waterFee`: [支出] 水费/水道料金 - `repairFund`: [支出] 维修基金/修繕積立金 - `other`: [收入/支出] 其他/その他
-   * @type {string}
-   * @memberof PaymentBase
-   */
-  category?: PaymentBase.CategoryEnum;
-  /**
    * 支付方式 - `cash`: 现金 - `withDraw`: 自动转账/口座引落 - `transfer`: 银行转账/振込 - `agent`: 代理收费/収納代行 - `convenienceStore`: 便利店缴费/コンビニ - `creditCard`: 信用卡缴费/クレジットカード - `other`: 其他
    * @type {string}
    * @memberof PaymentBase
@@ -1965,30 +2023,6 @@ export namespace PaymentBase {
    * @export
    * @enum {string}
    */
-  export enum CategoryEnum {
-    MonthlyRent = <any> 'monthlyRent',
-    SecurityDeposit = <any> 'securityDeposit',
-    KeyMoney = <any> 'keyMoney',
-    CleaningFee = <any> 'cleaningFee',
-    OwnerBenefits = <any> 'ownerBenefits',
-    SecurityDepositRefund = <any> 'securityDepositRefund',
-    KeyMoneyRefund = <any> 'keyMoneyRefund',
-    MaintenanceFee = <any> 'maintenanceFee',
-    ParkingFee = <any> 'parkingFee',
-    RenewalFee = <any> 'renewalFee',
-    ManagementFee = <any> 'managementFee',
-    TransactionFee = <any> 'transactionFee',
-    LowVoltageFee = <any> 'lowVoltageFee',
-    ElectricityFee = <any> 'electricityFee',
-    GasFee = <any> 'gasFee',
-    WaterFee = <any> 'waterFee',
-    RepairFund = <any> 'repairFund',
-    Other = <any> 'other'
-  }
-  /**
-   * @export
-   * @enum {string}
-   */
   export enum PaymentMethodEnum {
     Cash = <any> 'cash',
     WithDraw = <any> 'withDraw',
@@ -2025,23 +2059,91 @@ export interface Prefecture {
  */
 export interface RegularExpenseBase {
   /**
-   * 項目
+   * 类别 - `propertyManagementFees`: PM管理费/PM費用 - `buildingManagementFees`: BM管理费/BM費用 - `managementRepairFees`: 管理维修费/管理修繕金 - `transferHandlingFees`: 转账手续费/振込手数料 - `lowVoltageElectricityCharges`: 低压电费/低圧電気料金 - `electricityCharges`: 电费/電気料金 - `gasCharges`: 煤气费/ガス代 - `waterCharges`: 水费/水道料金 - `internetExpenses`: 网络费/インターネット費用 - `adjustmentFees`: 精算费/精算金 - `securityDepositRefund`: 押金退还/敷金返還 - `otherExpenses`: 其他/その他
    * @type {string}
    * @memberof RegularExpenseBase
    */
-  name?: string;
+  category?: RegularExpenseBase.CategoryEnum;
   /**
-   *
+   * 支付方式 - `cash`: 现金 - `withDraw`: 自动转账/口座引落 - `transfer`: 银行转账/振込 - `agent`: 代理收费/収納代行 - `convenienceStore`: 便利店缴费/コンビニ - `creditCard`: 信用卡缴费/クレジットカード - `other`: 其他
+   * @type {string}
+   * @memberof RegularExpenseBase
+   */
+  paymentMethod?: RegularExpenseBase.PaymentMethodEnum;
+  /**
+   * 其他支付方式描述
+   * @type {string}
+   * @memberof RegularExpenseBase
+   */
+  otherPaymentDescription?: string;
+  /**
+   * 生成月份
    * @type {Array<number>}
    * @memberof RegularExpenseBase
    */
-  months?: Array<number>;
+  targetMonths?: Array<number>;
   /**
-   * 默认金额
+   * 生成日期,可以是日期，也可以是firstDay或者lastDay
+   * @type {string}
+   * @memberof RegularExpenseBase
+   */
+  targetDay?: string;
+  /**
+   * 金额(不含税)
    * @type {number}
    * @memberof RegularExpenseBase
    */
-  defaultAmount?: number;
+  amount?: number;
+  /**
+   * 税金
+   * @type {number}
+   * @memberof RegularExpenseBase
+   */
+  tax?: number;
+  /**
+   * 备注
+   * @type {string}
+   * @memberof RegularExpenseBase
+   */
+  note?: string;
+}
+
+/**
+ * @export
+ * @namespace RegularExpenseBase
+ */
+export namespace RegularExpenseBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum CategoryEnum {
+    PropertyManagementFees = <any> 'propertyManagementFees',
+    BuildingManagementFees = <any> 'buildingManagementFees',
+    ManagementRepairFees = <any> 'managementRepairFees',
+    TransferHandlingFees = <any> 'transferHandlingFees',
+    LowVoltageElectricityCharges = <any> 'lowVoltageElectricityCharges',
+    ElectricityCharges = <any> 'electricityCharges',
+    GasCharges = <any> 'gasCharges',
+    WaterCharges = <any> 'waterCharges',
+    InternetExpenses = <any> 'internetExpenses',
+    AdjustmentFees = <any> 'adjustmentFees',
+    SecurityDepositRefund = <any> 'securityDepositRefund',
+    OtherExpenses = <any> 'otherExpenses'
+  }
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum PaymentMethodEnum {
+    Cash = <any> 'cash',
+    WithDraw = <any> 'withDraw',
+    Transfer = <any> 'transfer',
+    Agent = <any> 'agent',
+    ConvenienceStore = <any> 'convenienceStore',
+    CreditCard = <any> 'creditCard',
+    Other = <any> 'other'
+  }
 }
 /**
  *
@@ -2085,6 +2187,12 @@ export interface RentalContractBase extends ContractBase {
    * @memberof RentalContractBase
    */
   promptRemindStatus?: RentalContractBase.PromptRemindStatusEnum;
+  /**
+   * 合同的固定收入
+   * @type {Array<RentalContractRegularIncome>}
+   * @memberof RentalContractBase
+   */
+  regularIncomes?: Array<RentalContractRegularIncome>;
 }
 
 /**
@@ -2148,6 +2256,113 @@ export interface RentalContractListResponse extends PaginationResponse {
    * @memberof RentalContractListResponse
    */
   items?: Array<RentalContractInResponse>;
+}
+/**
+ * 租赁合同关联的日常收入
+ * @export
+ * @interface RentalContractRegularIncome
+ */
+export interface RentalContractRegularIncome {
+  /**
+   * 日常收入ID
+   * @type {number}
+   * @memberof RentalContractRegularIncome
+   */
+  id?: number;
+  /**
+   * 租赁合同ID
+   * @type {number}
+   * @memberof RentalContractRegularIncome
+   */
+  rentalContractId?: number;
+  /**
+   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `adjustmentFees`: 精算费/精算金 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `otherIncome`: 其他/その他
+   * @type {string}
+   * @memberof RentalContractRegularIncome
+   */
+  category?: RentalContractRegularIncome.CategoryEnum;
+  /**
+   * 支付方式 - `cash`: 现金 - `withDraw`: 自动转账/口座引落 - `transfer`: 银行转账/振込 - `agent`: 代理收费/収納代行 - `convenienceStore`: 便利店缴费/コンビニ - `creditCard`: 信用卡缴费/クレジットカード - `other`: 其他
+   * @type {string}
+   * @memberof RentalContractRegularIncome
+   */
+  paymentMethod?: RentalContractRegularIncome.PaymentMethodEnum;
+  /**
+   * 其他支付方式描述
+   * @type {string}
+   * @memberof RentalContractRegularIncome
+   */
+  otherPaymentDescription?: string;
+  /**
+   * 支付金额
+   * @type {number}
+   * @memberof RentalContractRegularIncome
+   */
+  amount?: number;
+  /**
+   * 税金
+   * @type {number}
+   * @memberof RentalContractRegularIncome
+   */
+  tax?: number;
+  /**
+   * 备注
+   * @type {string}
+   * @memberof RentalContractRegularIncome
+   */
+  note?: string;
+  /**
+   * 生成月份
+   * @type {Array<number>}
+   * @memberof RentalContractRegularIncome
+   */
+  targetMonths?: Array<number>;
+  /**
+   * 生成日期,可以是日期，也可以是firstDay或者lastDay
+   * @type {string}
+   * @memberof RentalContractRegularIncome
+   */
+  targetDay?: string;
+}
+
+/**
+ * @export
+ * @namespace RentalContractRegularIncome
+ */
+export namespace RentalContractRegularIncome {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum CategoryEnum {
+    MonthlyRent = <any> 'monthlyRent',
+    ManagementFees = <any> 'managementFees',
+    KeyMoney = <any> 'keyMoney',
+    SecurityDeposit = <any> 'securityDeposit',
+    GuaranteeDeposit = <any> 'guaranteeDeposit',
+    RenewalFees = <any> 'renewalFees',
+    AdjustmentFees = <any> 'adjustmentFees',
+    ParkingFees = <any> 'parkingFees',
+    BicycleParkingFees = <any> 'bicycleParkingFees',
+    CleaningFees = <any> 'cleaningFees',
+    ElectricityCharges = <any> 'electricityCharges',
+    WaterCharges = <any> 'waterCharges',
+    GasCharges = <any> 'gasCharges',
+    OtherIncome = <any> 'otherIncome'
+  }
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum PaymentMethodEnum {
+    Cash = <any> 'cash',
+    WithDraw = <any> 'withDraw',
+    Transfer = <any> 'transfer',
+    Agent = <any> 'agent',
+    ConvenienceStore = <any> 'convenienceStore',
+    CreditCard = <any> 'creditCard',
+    Other = <any> 'other'
+  }
 }
 /**
  *
@@ -2673,7 +2888,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"IdCommentBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -2716,7 +2931,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"BuildingInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -2759,7 +2974,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"DepartmentInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -2802,7 +3017,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"EmployeeInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -2845,7 +3060,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"EntrustContractInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -2888,7 +3103,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"ExpenseInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -2931,7 +3146,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"IncomeInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -2974,7 +3189,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"OwnerInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -3017,7 +3232,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"RentalContractInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -3060,7 +3275,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"RoomInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -3103,7 +3318,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"TenantInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -3145,7 +3360,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3185,7 +3400,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3225,7 +3440,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3265,7 +3480,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3305,7 +3520,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3345,7 +3560,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3385,7 +3600,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3425,7 +3640,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3465,7 +3680,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3505,7 +3720,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3545,7 +3760,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3585,7 +3800,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3625,7 +3840,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3665,7 +3880,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3705,7 +3920,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3739,7 +3954,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3793,7 +4008,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3827,7 +4042,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3867,7 +4082,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3901,7 +4116,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3941,7 +4156,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -3975,7 +4190,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4015,7 +4230,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4069,7 +4284,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4109,7 +4324,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4193,7 +4408,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4233,7 +4448,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4317,7 +4532,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4358,7 +4573,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"MonthlyIncomeAndExpenseReportRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -4400,7 +4615,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4434,7 +4649,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4498,7 +4713,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4532,7 +4747,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4572,7 +4787,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4631,7 +4846,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4671,7 +4886,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4711,7 +4926,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4751,7 +4966,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4791,7 +5006,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4825,7 +5040,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4889,7 +5104,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4929,7 +5144,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4963,7 +5178,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -4993,7 +5208,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"AuthLoginBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5035,7 +5250,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -5075,7 +5290,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -5122,7 +5337,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"BuildingInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5171,7 +5386,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"DepartmentInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5220,7 +5435,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"EmployeeInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5269,7 +5484,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"EntrustContractInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5311,7 +5526,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -5351,7 +5566,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -5398,7 +5613,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"ExpenseInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5441,7 +5656,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"ExpensesConfirmBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5484,7 +5699,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"ExpensesRejectBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5527,7 +5742,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"ExpensesUnconfirmBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5576,7 +5791,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"IncomeInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5619,7 +5834,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"IncomesConfirmBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5662,7 +5877,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"IncomesRejectBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5705,7 +5920,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"IncomesUnconfirmBody" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5754,7 +5969,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"OwnerInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5803,7 +6018,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"RentalContractInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -5845,7 +6060,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -5885,7 +6100,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -5925,7 +6140,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -5965,7 +6180,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -6005,7 +6220,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
 
       return {
@@ -6052,7 +6267,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"RoomInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
@@ -6101,7 +6316,7 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
+      localVarUrlObj.search = null;
       localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
       const needsSerialization = (<any>"TenantInRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
       localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");

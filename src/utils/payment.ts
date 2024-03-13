@@ -150,7 +150,45 @@ export const usePayment = () => {
   const describeCategory = (value?: any): string => {
     const target = categoryOptions.find(option => option.value === value);
     return target ? target.label : '未知';
-  }
+  };
+  const describeIncomeCategory = (value?: any): string => {
+    if (!value) return '未知';
+    const dictionary: Map<string, string> = new Map([
+      ['monthlyRent', '月額賃料'],
+      ['managementFees', '管理共益費'],
+      ['keyMoney', '礼金'],
+      ['securityDeposit', '敷金'],
+      ['guaranteeDeposit', '保証金'],
+      ['renewalFees', '更新料'],
+      ['adjustmentFees', '精算金'],
+      ['parkingFees', '駐車料'],
+      ['bicycleParkingFees', '駐輪料金'],
+      ['cleaningFees', '清掃料金'],
+      ['electricityCharges', '電気料金'],
+      ['waterCharges', '水道料金'],
+      ['gasCharges', 'ガス代'],
+      ['other', 'その他'],
+    ]);
+    return dictionary.get(value) || '未知';
+  };
+  const describeExpenseCategory = (value?: any): string => {
+    if (!value) return '未知';
+    const dictionary: Map<string, string> = new Map([
+      ['propertyManagementFees', 'PM費用'],
+      ['buildingManagementFees', 'BM費用'],
+      ['managementRepairFees', '管理修繕金'],
+      ['transferHandlingFees', '振込手数料'],
+      ['lowVoltageElectricityCharges', '低圧電気料金'],
+      ['electricityCharges', '電気料金'],
+      ['gasCharges', 'ガス代'],
+      ['waterCharges', '水道料金'],
+      ['internetExpenses', 'インターネット費用'],
+      ['adjustmentFees', '精算金'],
+      ['securityDepositRefund', '敷金返還'],
+      ['other', 'その他'],
+    ]);
+    return dictionary.get(value) || '未知';
+  };
   const describeIncomeConfirmStatus = (value?: any): { description: string, color: string} => {
     switch (value) {
       case 'unconfirmed':
@@ -182,6 +220,8 @@ export const usePayment = () => {
     paymentMethodOptions,
     confirmStatusOptions,
     describeCategory,
+    describeIncomeCategory,
+    describeExpenseCategory,
     describeIncomeConfirmStatus,
   }
 }

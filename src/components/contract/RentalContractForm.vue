@@ -8,11 +8,17 @@ import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
 import { useTenantStore } from 'stores/tenant-store';
 import { useRentalContract } from 'src/utils/rental-contract';
+import _ from 'lodash';
+import { QTableProps } from 'quasar';
+import RegularIncomeDialog from 'components/contract/RegularIncomeDialog.vue';
+import { RegularExpenseBase, RentalContractRegularIncome } from 'src/api';
+import { usePayment } from 'src/utils/payment';
 
 const { rentalContractFormModel: contract } = storeToRefs(useContractStore());
 const { describeStatus } = useRentalContract();
+const { describeIncomeCategory } = usePayment();
 
-defineProps({
+const props = defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -48,7 +54,7 @@ enum BuildingLoadingStatus {
 }
 
 const buildingsStatus = ref<BuildingLoadingStatus>(BuildingLoadingStatus.BeforeLoad);
-const buildingFilterFn = (val: string, update: () => void) => {
+const onFilterBuilding = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   if (
     buildingsStatus.value === BuildingLoadingStatus.BeforeLoad
     || buildingsStatus.value === BuildingLoadingStatus.Aborted
@@ -59,20 +65,24 @@ const buildingFilterFn = (val: string, update: () => void) => {
       .then(() => {
         buildingsStatus.value = BuildingLoadingStatus.Loaded;
         buildingOptions.value = getAllBuildingOptions();
-        update();
+        doneFn(() => {});
       })
       .catch(() => {
         buildingsStatus.value = BuildingLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    buildingOptions.value = getAllBuildingOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      buildingOptions.value = getAllBuildingOptions();
+    });
   } else {
-    buildingOptions.value = getAllBuildingOptions().filter((v) => {
-      return v.name && v.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      buildingOptions.value = getAllBuildingOptions().filter((v) => {
+        return v.name && v.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
 };
 
 /**********************
@@ -100,11 +110,11 @@ enum RoomLoadingStatus {
 }
 
 const roomsStatus = ref<RoomLoadingStatus>(RoomLoadingStatus.BeforeLoad);
-const roomFilterFn = (val: string, update: () => void) => {
+const onFilterRoom = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   const buildingId = values.building?.id;
   if (!buildingId) {
     useBuildingStore().resetRoomOptions();
-    update();
+    doneFn(() => {});
     return;
   }
 
@@ -116,32 +126,37 @@ const roomFilterFn = (val: string, update: () => void) => {
     useBuildingStore()
       .getRoomOptions(buildingId)
       .then(() => {
-        roomsStatus.value = RoomLoadingStatus.Loaded;
         roomOptions.value = getAllRoomOptions();
-        update();
+        roomsStatus.value = RoomLoadingStatus.Loaded;
+        doneFn(() => {});
       })
       .catch(() => {
         roomsStatus.value = RoomLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    roomOptions.value = getAllRoomOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      roomOptions.value = getAllRoomOptions();
+    });
   } else {
-    roomOptions.value = getAllRoomOptions().filter((v) => {
-      return v.name && v.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      roomOptions.value = getAllRoomOptions().filter((v) => {
+        return v.name && v.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
 };
 
 /**********************
  * Renter select
  **********************/
-const renterOptions = ref<Array<{
+type RenterOption = {
   lastName: string | undefined;
   firstName: string | undefined;
   id: string | number | undefined;
-}> | undefined>(undefined);
+};
+const renterOptions = ref<Array<RenterOption> | undefined>(undefined);
 
 const getAllRenterOptions = () => {
   return useTenantStore().renterOptions.map((v) => {
@@ -161,8 +176,7 @@ enum RenterLoadingStatus {
 }
 
 const rentersStatus = ref<RenterLoadingStatus>(RenterLoadingStatus.BeforeLoad);
-
-const renterFilterFn = (val: string, update: () => void) => {
+const onFilterRenter = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   if (
     rentersStatus.value === RenterLoadingStatus.BeforeLoad
     || rentersStatus.value === RenterLoadingStatus.Aborted
@@ -171,25 +185,29 @@ const renterFilterFn = (val: string, update: () => void) => {
     useTenantStore()
       .getRenterOptions()
       .then(() => {
-        rentersStatus.value = RenterLoadingStatus.Loaded;
         renterOptions.value = getAllRenterOptions();
-        update();
+        rentersStatus.value = RenterLoadingStatus.Loaded;
+        doneFn(() => {});
       })
       .catch(() => {
         rentersStatus.value = RenterLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    renterOptions.value = getAllRenterOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      renterOptions.value = getAllRenterOptions();
+    });
   } else {
-    renterOptions.value = getAllRenterOptions().filter((v) => {
-      return v.lastName && v.lastName.toLowerCase().indexOf(val.toLowerCase()) > -1
-        || v.firstName && v.firstName.toLowerCase().indexOf(val.toLowerCase()) > -1
-        || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      renterOptions.value = getAllRenterOptions().filter((v) => {
+        return v.lastName && v.lastName.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+          || v.firstName && v.firstName.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+          || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
-};
+}
 
 /**********************
  * Form validation
@@ -239,6 +257,87 @@ const handleBuildingChange = (e: any, callback: (e: any) => void) => {
   roomsStatus.value = RoomLoadingStatus.BeforeLoad
   callback(e);
 };
+
+const { regularIncomeModel: regularIncome } = storeToRefs(useContractStore());
+const { resetRegularIncomeModel } = useContractStore();
+const showDialog = ref(false);
+const dialogMode = ref<'add' | 'edit'>('add');
+const editingIndex = ref<number | null>(null);
+const showAddingDialog = () => {
+  resetRegularIncomeModel();
+  dialogMode.value = 'add';
+  showDialog.value = true;
+}
+
+const editRegularIncome = (index: number) => {
+  const model = contract.value.regularIncomes?.[index];
+  if (!model) {
+    return;
+  }
+  editingIndex.value = index;
+  regularIncome.value = _.cloneDeep(model);
+  dialogMode.value = 'edit';
+  showDialog.value = true;
+}
+
+const removeRegularIncome = (index: number) => {
+  contract.value.regularIncomes?.splice(index, 1);
+}
+
+const handleDialogSubmit = (regularIncome: RentalContractRegularIncome) => {
+  if (dialogMode.value === 'add') {
+    contract.value.regularIncomes?.push(regularIncome);
+  } else {
+    const index = editingIndex.value;
+    if (index === null) {
+      return;
+    }
+    contract.value.regularIncomes?.splice(index, 1, regularIncome);
+  }
+}
+
+const regularIncomeColumns: QTableProps['columns'] = (() => {
+  let columns: QTableProps['columns'] = [
+    {
+      name: 'category',
+      label: 'カテゴリ',
+      field: 'category',
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'targetMonths',
+      label: '月',
+      field: 'targetMonths',
+      align: 'right',
+      sortable: false,
+    },
+    {
+      name: 'targetDay',
+      label: '日',
+      field: 'targetDay',
+      align: 'right',
+      sortable: false,
+    },
+    {
+      name: 'amount',
+      label: '金額',
+      field: 'amount',
+      align: 'right',
+      sortable: false,
+    },
+  ];
+  if (!props.readonly) {
+    columns.push({
+      name: 'actions',
+      label: '操作',
+      field: 'actions',
+      align: 'right',
+      sortable: false,
+    });
+  }
+  return columns;
+})();
 
 defineExpose({
   validate,
@@ -304,7 +403,7 @@ defineExpose({
             :options="buildingOptions"
             option-label="name"
             option-value="id"
-            @filter="buildingFilterFn"
+            @filter="onFilterBuilding"
             :readonly="readonly"
             use-input
           >
@@ -324,7 +423,7 @@ defineExpose({
             :options="roomOptions"
             option-label="name"
             option-value="id"
-            @filter="roomFilterFn"
+            @filter="onFilterRoom"
             :readonly="readonly"
             use-input
           >
@@ -342,9 +441,9 @@ defineExpose({
             :error="!!errorMessage"
             label="入居者"
             :options="renterOptions"
-            :option-label="item => item.lastName + ' ' + item.firstName"
+            :option-label="(item: RenterOption) => item.lastName + ' ' + item.firstName"
             option-value="id"
-            @filter="renterFilterFn"
+            @filter="onFilterRenter"
             :readonly="readonly"
             use-input
           >
@@ -411,4 +510,65 @@ defineExpose({
       </q-item>
     </Field>
   </q-list>
+  <q-separator class="q-mt-md"/>
+  <div class="fit row wrap justify-between items-start content-start">
+    <div class="q-mt-md text-h6">
+      経常収入{{ readonly ? '（閲覧）' : '（編集）' }}
+    </div>
+    <q-btn
+      v-if="!readonly"
+      class="q-mt-md"
+      color="primary"
+      label="追加"
+      icon="sym_r_add"
+      @click="showAddingDialog"
+    />
+  </div>
+  <q-table
+    :rows="contract.regularIncomes"
+    :columns="regularIncomeColumns"
+    flat
+    hide-pagination
+    :pagination="{
+      rowsPerPage: 0,
+    }"
+  >
+    <template #[`body-cell-category`]="{ row }: { row: RentalContractRegularIncome }">
+      <q-td>
+        {{ describeIncomeCategory(row.category) }}
+      </q-td>
+    </template>
+    <template #[`body-cell-targetMonths`]="{ row }: { row: RegularExpenseBase }">
+      <q-td class="text-right" v-if="row.targetMonths?.length == 12">
+        毎月
+      </q-td>
+      <q-td class="text-right" v-else>
+        {{ row.targetMonths?.join(', ') }}
+      </q-td>
+    </template>
+    <template #[`body-cell-targetDay`]="{ row }: { row: RegularExpenseBase }">
+      <q-td class="text-right" v-if="row.targetDay == 'firstDay'">
+        月初
+      </q-td>
+      <q-td class="text-right" v-else-if="row.targetDay == 'lastDay'">
+        月末
+      </q-td>
+      <q-td class="text-right" v-else>
+        {{ row.targetDay }}
+      </q-td>
+    </template>
+    <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: number }">
+      <q-td class="text-right">
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRegularIncome(rowIndex)"/>
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRegularIncome(rowIndex)"/>
+      </q-td>
+    </template>
+  </q-table>
+  <regular-income-dialog
+    ref="regularIncomeDialog"
+    :show="showDialog"
+    :mode="dialogMode"
+    @update:show="showDialog = $event"
+    @submit="handleDialogSubmit"
+  />
 </template>

@@ -91,19 +91,57 @@ export const useBuilding = () => {
       value: 'industrial',
     },
   ];
-  const regularExpenseOptions: Array<string> = [
-    '修繕積立金',
-    '管理費',
-    '固定資産税',
-    '都市計画税',
-    'PM(賃貸管理)費用',
-    'BM(建物管理)費用',
-    '水道代',
-    '電気代',
-    'ガス代',
-    'インターネット費用',
+  const regularExpenseOptions: { label: string, value: string }[] = [
+    {
+      label: 'PM費用',
+      value: 'propertyManagementFees',
+    },
+    {
+      label: 'BM費用',
+      value: 'buildingManagementFees',
+    },
+    {
+      label: '管理修繕金',
+      value: 'managementRepairFees',
+    },
+    {
+      label: '振込手数料',
+      value: 'transferHandlingFees',
+    },
+    {
+      label: '低圧電気料金',
+      value: 'lowVoltageElectricityCharges',
+    },
+    {
+      label: '電気料金',
+      value: 'electricityCharges',
+    },
+    {
+      label: 'ガス代',
+      value: 'gasCharges',
+    },
+    {
+      label: '水道料金',
+      value: 'waterCharges',
+    },
+    {
+      label: 'インターネット費用',
+      value: 'internetExpenses',
+    },
+    {
+      label: '精算金',
+      value: 'adjustmentFees',
+    },
+    {
+      label: '敷金返還',
+      value: 'securityDepositRefund',
+    },
+    {
+      label: 'その他',
+      value: 'other',
+    }
   ];
-  const fileCategoryOptions:  { label: string, value: string }[] = [
+  const fileCategoryOptions: { label: string, value: string }[] = [
     {
       label: '売買契約',
       value: 'contract',

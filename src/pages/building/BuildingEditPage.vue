@@ -6,6 +6,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useBuildingStore } from 'stores/building-store';
 import { FormValidationResult } from 'vee-validate';
 import _ from 'lodash';
+import { Optional } from 'src/utils/framework';
 
 const loading = ref(false);
 const saving = ref(false);
@@ -29,15 +30,15 @@ onMounted(async () => {
     useBuildingStore().resetFormModel();
     await useBuildingStore().getBuilding(buildingId.value);
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   } finally {
     loading.value = false;
   }
 });
 
 const onSave = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation?.valid) {
     return;
   }
   try {
@@ -54,7 +55,7 @@ const onSave = async () => {
       params: { id: buildingId.value },
     });
   } catch (e) {
-    toastHandler(e);
+    await toastHandler(e);
   } finally {
     saving.value = false;
   }
@@ -79,12 +80,14 @@ const onCancel = () => {
           color="negative"
           label="取消"
           @click="onCancel"
+          :disable="loading || saving"
         />
         <q-btn
           style="width: 100px"
           color="primary"
           label="保存"
           @click="onSave"
+          :disable="loading || saving"
         />
       </q-card-actions>
     </q-card>

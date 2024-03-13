@@ -6,6 +6,7 @@ import { useBuildingStore } from 'stores/building-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { FormValidationResult } from 'vee-validate';
 import _ from 'lodash';
+import { Optional } from 'src/utils/framework';
 
 const loading = ref(false);
 const saving = ref(false);
@@ -23,8 +24,8 @@ onMounted(async () => {
 });
 
 const onSave = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation?.valid) {
     return;
   }
   try {
@@ -41,7 +42,7 @@ const onSave = async () => {
       params: { id: building.id },
     })
   } catch (e) {
-    toastHandler('保存に失敗しました。');
+    await toastHandler('保存に失敗しました。');
   } finally {
     saving.value = false;
   }
@@ -67,12 +68,14 @@ const onSave = async () => {
             color="negative"
             label="取消"
             @click="$router.back()"
+            :disable="loading || saving"
           ></q-btn>
           <q-btn
             style="width: 100px"
             color="primary"
             label="保存"
             @click="onSave"
+            :disable="loading || saving"
           ></q-btn>
         </q-card-actions>
       </q-form>

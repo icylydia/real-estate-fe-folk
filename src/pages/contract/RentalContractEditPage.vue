@@ -5,13 +5,15 @@ import TenantForm from 'components/tenant/TenantForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { RentalContractFormModel, useContractStore } from 'stores/contract-store';
 import { FormValidationResult } from 'vee-validate';
-import { storeToRefs } from 'pinia';
+import { Optional } from 'src/utils/framework';
+import _ from 'lodash';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
+const saving = ref(false);
 const form = ref<InstanceType<typeof TenantForm>>();
-
+const { toastHandler } = useErrorHandler();
 const router = useRouter();
-const { rentalContractFormModel: contract } = storeToRefs(useContractStore());
 
 const contractId = computed(() => {
   const id = useRoute().params.id;
@@ -26,25 +28,26 @@ onMounted(async () => {
   try {
     useContractStore().resetRentalContractFormModel();
     await useContractStore().getRentalContract(contractId.value);
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
     await nextTick(() => {
       loading.value = false;
     });
-  } catch (error) {
-    console.error(error);
-    loading.value = false;
   }
 });
 const onSave = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation?.valid) {
     return;
   }
-  loading.value = true;
+  saving.value = true;
   try {
     const data = validation.values;
+    const necessaryData = _.omit(data, ['regularIncomes']);
     const newContract: RentalContractFormModel = {
-      ...contract.value,
-      ...data,
+      ...useContractStore().rentalContractFormModel,
+      ...necessaryData,
     };
     await useContractStore().updateRentalContract(contractId.value, newContract);
     await router.push({
@@ -52,9 +55,9 @@ const onSave = async () => {
       params: { id: contractId.value }
     });
   } catch (error) {
-    console.error(error);
+    await toastHandler(error);
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 };
 
@@ -69,7 +72,7 @@ const onCancel = () => {
 <template>
   <q-page padding>
     <q-card bordered>
-      <q-linear-progress indeterminate v-if="loading" />
+      <q-linear-progress indeterminate v-if="saving" />
       <q-card-section>
         <rental-contract-form ref="form" v-if="!loading" />
       </q-card-section>
@@ -80,14 +83,14 @@ const onCancel = () => {
           color="negative"
           label="取消"
           @click="onCancel"
-          :disable="loading"
+          :disable="loading || saving"
         />
         <q-btn
           style="width: 100px"
           color="primary"
           label="保存"
           @click="onSave"
-          :disable="loading"
+          :disable="loading || saving"
         />
       </q-card-actions>
     </q-card>

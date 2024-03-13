@@ -6,7 +6,7 @@ import {
   EntrustContractInResponse, PaginationResponsePagination,
   RentalContractBase,
   RentalContractInRequest,
-  RentalContractInResponse
+  RentalContractInResponse, RentalContractRegularIncome
 } from 'src/api';
 
 export type RentalContractFormModel = Partial<
@@ -22,6 +22,7 @@ const defaultRentalContractFormModel: RentalContractFormModel = {
   room: undefined,
   tenant: undefined,
   promptRemind: true,
+  regularIncomes: [],
 }
 
 const defaultEntrustContractFormModel: EntrustContractFormModel = {
@@ -38,6 +39,7 @@ export const useContractStore = defineStore('contract', {
     entrustContractList: [] as EntrustContractInResponse[],
     rentalContractFormModel: defaultRentalContractFormModel,
     entrustContractFormModel: defaultEntrustContractFormModel,
+    regularIncomeModel: {} as RentalContractRegularIncome,
   }),
   actions: {
     async getRentalContractList(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string) {
@@ -180,6 +182,9 @@ export const useContractStore = defineStore('contract', {
         default:
           return null;
       }
+    },
+    resetRegularIncomeModel() {
+      this.regularIncomeModel = {} as RentalContractRegularIncome;
     },
   }
 });
