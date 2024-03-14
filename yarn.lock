@@ -692,10 +692,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@vee-validate/i18n@^4.12.5":
-  version "4.12.5"
-  resolved "https://registry.yarnpkg.com/@vee-validate/i18n/-/i18n-4.12.5.tgz#1ead23dc5b63f081219d851aa8d39636d0c1e425"
-  integrity sha512-cY3AHrtnM65fw70Hhdi3VdQdF8WyrrK5OfF3pWH8T3eDA/q1LxBJostFOlHSpglRkXyVVfQdpq8eW0UktlMpDA==
+"@vee-validate/i18n@^4.12.6":
+  version "4.12.6"
+  resolved "https://registry.yarnpkg.com/@vee-validate/i18n/-/i18n-4.12.6.tgz#fa2fa9b42e35d194fb2887f04127d93af74cf955"
+  integrity sha512-K3xbjLIQQwDrllS18Ka5nyQDIF/1FuHnedXTr6bfmTm44/7C4MyMGo9KDahnrMWTcFkYIKR7XMshM3R6o54MFg==
 
 "@vee-validate/yup@^4.12.5":
   version "4.12.5"
