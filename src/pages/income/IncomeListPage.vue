@@ -11,7 +11,7 @@ import useErrorHandler from 'components/app/useErrorHandler';
 const loading = ref(false);
 const $q = useQuasar();
 const {
-  describeCategory: describeIncomeCategory,
+  describeIncomeCategory,
   describeIncomeConfirmStatus: describeConfirmStatus,
 } = usePayment();
 const selectedRows = ref<IncomeInResponse[]>([]);
@@ -315,7 +315,7 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(row)" />
                 </q-td>
               </template>
-              <template #bottom-row>
+              <template #top-row>
                 <q-tr>
                   <q-td>
                   </q-td>

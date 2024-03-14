@@ -13,7 +13,7 @@ const $q = useQuasar();
 const { list: rows, searchParams } = storeToRefs(useExpenseStore());
 const router = useRouter();
 const {
-  describeCategory: describeExpenseCategory,
+  describeExpenseCategory,
   describeIncomeConfirmStatus: describeConfirmStatus,
 } = usePayment();
 const selectedRows = ref<ExpenseInResponse[]>([]);
@@ -313,7 +313,7 @@ const rejectAll = (expenses: ExpenseInResponse[]) => {
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="remove(row)" />
                 </q-td>
               </template>
-              <template #bottom-row>
+              <template #top-row>
                 <q-tr>
                   <q-td>
                   </q-td>

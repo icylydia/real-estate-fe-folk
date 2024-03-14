@@ -1,103 +1,119 @@
-import _ from 'lodash';
-
 export const usePayment = () => {
-  const categoryOptions = [
+  const incomeCategoryOptions: Array<{
+    label: string,
+    value: string,
+  }> = [
     {
       label: '月額賃料',
       value: 'monthlyRent',
     },
     {
-      label: '敷金',
-      value: 'securityDeposit',
+      label: '管理共益費',
+      value: 'managementFees',
     },
     {
       label: '礼金',
       value: 'keyMoney',
     },
     {
-      label: '清掃料金',
-      value: 'cleaningFee',
+      label: '敷金',
+      value: 'securityDeposit',
     },
     {
-      label: 'オーナー収益',
-      value: 'ownerBenefits',
+      label: '保証金',
+      value: 'guaranteeDeposit',
+    },
+    {
+      label: '更新料',
+      value: 'renewalFees',
+    },
+    {
+      label: '精算金',
+      value: 'adjustmentFees',
+    },
+    {
+      label: '駐車料',
+      value: 'parkingFees',
+    },
+    {
+      label: '駐輪料金',
+      value: 'bicycleParkingFees',
+    },
+    {
+      label: '清掃料金',
+      value: 'cleaningFees',
+    },
+    {
+      label: '電気料金',
+      value: 'electricityCharges',
+    },
+    {
+      label: '水道料金',
+      value: 'waterCharges',
+    },
+    {
+      label: 'ガス代',
+      value: 'gasCharges',
+    },
+    {
+      label: 'その他',
+      value: 'otherIncome',
+    },
+  ];
+
+  const expenseCategoryOptions: Array<{
+    label: string,
+    value: string,
+  }> = [
+    {
+      label: 'PM費用',
+      value: 'propertyManagementFees',
+    },
+    {
+      label: 'BM費用',
+      value: 'buildingManagementFees',
+    },
+    {
+      label: '管理修繕金',
+      value: 'managementRepairFees',
+    },
+    {
+      label: '振込手数料',
+      value: 'transferHandlingFees',
+    },
+    {
+      label: '低圧電気料金',
+      value: 'lowVoltageElectricityCharges',
+    },
+    {
+      label: '電気料金',
+      value: 'electricityCharges',
+    },
+    {
+      label: 'ガス代',
+      value: 'gasCharges',
+    },
+    {
+      label: '水道料金',
+      value: 'waterCharges',
+    },
+    {
+      label: 'インターネット費用',
+      value: 'internetExpenses',
+    },
+    {
+      label: '精算金',
+      value: 'adjustmentFees',
     },
     {
       label: '敷金返還',
       value: 'securityDepositRefund',
     },
     {
-      label: '管理共益費',
-      value: 'maintenanceFee',
-    },
-    {
-      label: '駐車料金',
-      value: 'parkingFee',
-    },
-    {
-      label: '更新料',
-      value: 'renewalFee',
-    },
-    {
-      label: '管理料',
-      value: 'managementFee',
-    },
-    {
-      label: '振込手数料',
-      value: 'transactionFee',
-    },
-    {
-      label: '低圧電気料金',
-      value: 'lowVoltageFee',
-    },
-    {
-      label: '電気料金',
-      value: 'electricityFee',
-    },
-    {
-      label: 'ガス代',
-      value: 'gasFee',
-    },
-    {
-      label: '水道料金',
-      value: 'waterFee',
-    },
-    {
-      label: '管理修繕金',
-      value: 'repairFund',
-    },
-    {
       label: 'その他',
-      value: 'other',
+      value: 'otherExpenses',
     },
   ];
-  const incomeCategoryOptions = _.filter(categoryOptions, (option) => {
-    return [
-      'monthlyRent',
-      'securityDeposit',
-      'keyMoney',
-      'cleaningFee',
-      'maintenanceFee',
-      'parkingFee',
-      'renewalFee',
-      'other',
-    ].includes(option.value);
-  });
-  const expenseCategoryOptions = _.filter(categoryOptions, (option) => {
-    return [
-      'cleaningFee',
-      'ownerBenefits',
-      'securityDepositRefund',
-      'managementFee',
-      'transactionFee',
-      'lowVoltageFee',
-      'electricityFee',
-      'gasFee',
-      'waterFee',
-      'repairFund',
-      'other'
-    ].includes(option.value);
-  });
 
   const confirmStatusOptions = [
     {
@@ -147,10 +163,7 @@ export const usePayment = () => {
       value: 'other',
     },
   ];
-  const describeCategory = (value?: any): string => {
-    const target = categoryOptions.find(option => option.value === value);
-    return target ? target.label : '未知';
-  };
+
   const describeIncomeCategory = (value?: any): string => {
     if (!value) return '未知';
     const dictionary: Map<string, string> = new Map([
@@ -167,7 +180,7 @@ export const usePayment = () => {
       ['electricityCharges', '電気料金'],
       ['waterCharges', '水道料金'],
       ['gasCharges', 'ガス代'],
-      ['other', 'その他'],
+      ['otherIncome', 'その他'],
     ]);
     return dictionary.get(value) || '未知';
   };
@@ -185,7 +198,7 @@ export const usePayment = () => {
       ['internetExpenses', 'インターネット費用'],
       ['adjustmentFees', '精算金'],
       ['securityDepositRefund', '敷金返還'],
-      ['other', 'その他'],
+      ['otherExpenses', 'その他'],
     ]);
     return dictionary.get(value) || '未知';
   };
@@ -214,12 +227,10 @@ export const usePayment = () => {
     }
   }
   return {
-    categoryOptions,
     incomeCategoryOptions,
     expenseCategoryOptions,
     paymentMethodOptions,
     confirmStatusOptions,
-    describeCategory,
     describeIncomeCategory,
     describeExpenseCategory,
     describeIncomeConfirmStatus,
