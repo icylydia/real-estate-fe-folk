@@ -411,7 +411,7 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
                       </template>
                     </q-select>
                   </q-td>
-                  <q-td>
+                  <q-td class="text-right">
                     <q-btn
                       label="検索"
                       color="primary"
