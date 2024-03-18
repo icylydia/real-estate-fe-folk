@@ -50,7 +50,7 @@ const validationSchema = toTypedSchema(object({
     id: string().required().label('物件番号'),
     name: string().required().label('物件名'),
   }).required(),
-  name: string().required().label('部屋名'),
+  name: string().required().label('区画番号'),
   price: string().nullable().label('価格'),
   monthlyRent: string().nullable().label('賃料'),
   deposit: string().nullable().label('敷金'),
@@ -86,7 +86,7 @@ defineExpose({
 
 <template>
   <div class="q-mt-md text-h6">
-    部屋基本情報{{readonly ? '（閲覧）' : '（編集）'}}
+    区画基本情報{{readonly ? '（閲覧）' : '（編集）'}}
   </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newRoom">
@@ -125,7 +125,7 @@ defineExpose({
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="部屋名"
+            label="区画番号"
             :readonly="readonly"
           />
         </q-item-section>

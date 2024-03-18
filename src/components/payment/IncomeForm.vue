@@ -288,9 +288,9 @@ const validationSchema = toTypedSchema(object({
     name: string().nullable().notRequired().label('物件名'),
   }).nullable().notRequired().label('物件'),
   room: object({
-    id: string().nullable().notRequired().label('部屋ID'),
-    name: string().nullable().notRequired().label('部屋名'),
-  }).nullable().notRequired().label('部屋'),
+    id: string().nullable().notRequired().label('区画ID'),
+    name: string().nullable().notRequired().label('区画名'),
+  }).nullable().notRequired().label('区画'),
   tenant: object({
     id: string().nullable().notRequired().label('入居者ID'),
     name: string().nullable().notRequired().label('入居者名'),
@@ -371,7 +371,7 @@ defineExpose({
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="部屋"
+            label="区画"
             :options="roomOptions"
             option-label="name"
             option-value="id"

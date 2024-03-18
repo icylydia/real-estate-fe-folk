@@ -28,7 +28,7 @@ const columns: QTableProps['columns'] = [
     align: 'left',
   },
   {
-    label: '部屋番号',
+    label: '区画番号',
     field: (row: ExpenseInResponse) => row.room?.name ?? '',
     name: 'roomName',
     sortable: false,
@@ -328,7 +328,7 @@ const rejectAll = (expenses: ExpenseInResponse[]) => {
                   <q-td>
                     <q-input
                       v-model="searchParams.room"
-                      label="部屋番号"
+                      label="区画番号"
                       dense
                       @keyup.enter="search"
                     />

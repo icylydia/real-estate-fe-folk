@@ -18,7 +18,7 @@ const contracts = computed(() => building.value.activeContracts);
 
 const columns: QTableProps['columns'] = [
   {
-    label: '部屋番号',
+    label: '区画番号',
     field: row => row.room.name,
     name: 'roomName',
     sortable: false,

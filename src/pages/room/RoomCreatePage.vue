@@ -71,7 +71,7 @@ const save = async () => {
     <q-card bordered>
       <q-form>
         <q-card-section>
-          <div class="text-h5">新規部屋</div>
+          <div class="text-h5">新規区画</div>
         </q-card-section>
         <q-separator></q-separator>
         <q-linear-progress indeterminate v-if="loading || saving" />
