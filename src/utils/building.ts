@@ -5,7 +5,7 @@ export const useBuilding = () => {
       value: 'detachedHouse',
     },
     {
-      label: '一棟もの',
+      label: '一棟',
       value: 'building',
     },
     {

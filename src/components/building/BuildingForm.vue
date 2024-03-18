@@ -73,14 +73,14 @@ const regularExpenseColumns: QTableProps['columns'] = (() => {
     {
       name: 'amount',
       label: '金額(税抜)',
-      field: 'amount',
+      field: (row: RegularExpenseBase) => row.amount?.toLocaleString(),
       align: 'right',
       sortable: false,
     },
     {
       name: 'tax',
       label: '消費税',
-      field: 'tax',
+      field: (row: RegularExpenseBase) => row.tax?.toLocaleString(),
       align: 'right',
       sortable: false,
     },
