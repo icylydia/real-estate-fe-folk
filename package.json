@@ -27,7 +27,9 @@
     "vee-validate": "^4.12.6",
     "vue": "^3.4.21",
     "vue-i18n": "^9.10.2",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "yup": "^1.3.2",
+    "yup-locale-ja": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

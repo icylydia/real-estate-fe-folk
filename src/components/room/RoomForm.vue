@@ -6,7 +6,7 @@ import { computed, onMounted, PropType } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoomStore } from 'stores/room-store';
 import { toTypedSchema } from '@vee-validate/yup';
-import { object, string } from 'yup';
+import { number, object, string } from 'yup';
 import { Field, useForm } from 'vee-validate';
 import { BuildingBase } from 'src/api';
 
@@ -51,13 +51,19 @@ const validationSchema = toTypedSchema(object({
     name: string().required().label('物件名'),
   }).required(),
   name: string().required().label('区画番号'),
-  price: string().nullable().label('価格'),
+  price: string()
+    .nullable()
+    .label('価格'),
   monthlyRent: string().nullable().label('賃料'),
   deposit: string().nullable().label('敷金'),
   keyMoney: string().nullable().label('礼金'),
   maintenanceFund: string().nullable().label('修繕積立金'),
   managementFee: string().nullable().label('管理費'),
-  roomLayoutNumber: string().nullable().label('間取り'),
+  roomLayoutNumber: number()
+    .nullable()
+    .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
+    .moreThan(0)
+    .label('間取り'),
   roomLayoutUnit: string()
     .when('roomLayoutNumber', {
       is: (val: string) => !!val,

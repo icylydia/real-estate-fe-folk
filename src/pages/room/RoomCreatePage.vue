@@ -40,8 +40,8 @@ onMounted(async () => {
     await nextTick(() => {
       loading.value = false;
     });
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    await toastHandler(error);
     loading.value = false;
   }
 });

@@ -10,7 +10,7 @@ import _ from 'lodash';
 import { useFileStore } from 'stores/file-store';
 import { useBuildingStore } from 'stores/building-store';
 import { toTypedSchema } from '@vee-validate/yup';
-import { object, string } from 'yup';
+import { object, string, number } from 'yup';
 import { Field, useForm, ValidationResult } from 'vee-validate';
 import { useBuilding } from 'src/utils/building';
 import { useAddressStore } from 'stores/address-store';
@@ -193,15 +193,30 @@ const validationSchema = toTypedSchema(object({
   grossArea: string().notRequired().nullable().label('建物面積'),
   landArea: string().notRequired().nullable().label('土地面積'),
   buildingStructure: string().notRequired().nullable().label('建物構造'),
-  floorsAboveGround: string().notRequired().nullable().label('地上階数'),
-  floorsUnderGround: string().notRequired().nullable().label('地下階数'),
+  floorsAboveGround: number()
+    .notRequired()
+    .nullable()
+    .integer()
+    .min(0)
+    .label('地上階数'),
+  floorsUnderGround: number()
+    .notRequired()
+    .nullable()
+    .integer()
+    .min(0)
+    .label('地下階数'),
   completionDate: string()
     .date()
     .transform((value) => value === '' ? null : value)
     .notRequired()
     .nullable()
     .label('新築年月日'),
-  totalUnits: string().notRequired().nullable().label('総戸数'),
+  totalUnits: number()
+    .notRequired()
+    .nullable()
+    .integer()
+    .min(0)
+    .label('総戸数'),
   landRights: string().notRequired().nullable().label('土地权利'),
   landUseZone: string().notRequired().nullable().label('用途地域'),
   buildingCoverageRatio: string().notRequired().nullable().label('建ぺい率'),
