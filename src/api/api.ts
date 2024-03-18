@@ -980,24 +980,6 @@ export interface EntrustContractBase extends ContractBase {
    */
   owner?: TenantInResponse;
   /**
-   * 收益类型 - `fixed`: 固定金额/定額 - `percentage`: 百分比/割合
-   * @type {string}
-   * @memberof EntrustContractBase
-   */
-  benefitType?: EntrustContractBase.BenefitTypeEnum;
-  /**
-   * 收益金额
-   * @type {number}
-   * @memberof EntrustContractBase
-   */
-  benefitAmount?: number;
-  /**
-   * 收益百分比
-   * @type {number}
-   * @memberof EntrustContractBase
-   */
-  benefitPercentage?: number;
-  /**
    * 汇款类型 - `japan`: 日本国内/日本国内 - `overseas`: 海外/海外
    * @type {string}
    * @memberof EntrustContractBase
@@ -1022,14 +1004,6 @@ export interface EntrustContractBase extends ContractBase {
  * @namespace EntrustContractBase
  */
 export namespace EntrustContractBase {
-  /**
-   * @export
-   * @enum {string}
-   */
-  export enum BenefitTypeEnum {
-    Fixed = <any> 'fixed',
-    Percentage = <any> 'percentage'
-  }
   /**
    * @export
    * @enum {string}
@@ -1169,6 +1143,12 @@ export interface EntrustContractBaseOverseasBank {
    * @memberof EntrustContractBaseOverseasBank
    */
   email?: string;
+  /**
+   *
+   * @type {Array<EntrustContractManagementFeeBase>}
+   * @memberof EntrustContractBaseOverseasBank
+   */
+  managementFees?: Array<EntrustContractManagementFeeBase>;
 }
 /**
  *
@@ -1222,6 +1202,84 @@ export interface EntrustContractListResponse extends PaginationResponse {
    * @memberof EntrustContractListResponse
    */
   items?: Array<EntrustContractInResponse>;
+}
+/**
+ * 委托合同管理费
+ * @export
+ * @interface EntrustContractManagementFeeBase
+ */
+export interface EntrustContractManagementFeeBase {
+  /**
+   * 委托合同管理费ID
+   * @type {number}
+   * @memberof EntrustContractManagementFeeBase
+   */
+  id?: number;
+  /**
+   * 委托合同ID
+   * @type {number}
+   * @memberof EntrustContractManagementFeeBase
+   */
+  entrustContractId?: number;
+  /**
+   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `adjustmentFees`: 精算费/精算金 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `otherIncome`: 其他/その他
+   * @type {string}
+   * @memberof EntrustContractManagementFeeBase
+   */
+  incomeCategory?: EntrustContractManagementFeeBase.IncomeCategoryEnum;
+  /**
+   * 收益类型 - `fixed`: 固定金额/定額 - `percentage`: 百分比/割合
+   * @type {string}
+   * @memberof EntrustContractManagementFeeBase
+   */
+  benefitType?: EntrustContractManagementFeeBase.BenefitTypeEnum;
+  /**
+   * 固定金额
+   * @type {number}
+   * @memberof EntrustContractManagementFeeBase
+   */
+  amount?: number;
+  /**
+   * 百分比
+   * @type {number}
+   * @memberof EntrustContractManagementFeeBase
+   */
+  percentage?: number;
+}
+
+/**
+ * @export
+ * @namespace EntrustContractManagementFeeBase
+ */
+export namespace EntrustContractManagementFeeBase {
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum IncomeCategoryEnum {
+    MonthlyRent = <any> 'monthlyRent',
+    ManagementFees = <any> 'managementFees',
+    KeyMoney = <any> 'keyMoney',
+    SecurityDeposit = <any> 'securityDeposit',
+    GuaranteeDeposit = <any> 'guaranteeDeposit',
+    RenewalFees = <any> 'renewalFees',
+    AdjustmentFees = <any> 'adjustmentFees',
+    ParkingFees = <any> 'parkingFees',
+    BicycleParkingFees = <any> 'bicycleParkingFees',
+    CleaningFees = <any> 'cleaningFees',
+    ElectricityCharges = <any> 'electricityCharges',
+    WaterCharges = <any> 'waterCharges',
+    GasCharges = <any> 'gasCharges',
+    OtherIncome = <any> 'otherIncome'
+  }
+  /**
+   * @export
+   * @enum {string}
+   */
+  export enum BenefitTypeEnum {
+    Fixed = <any> 'fixed',
+    Percentage = <any> 'percentage'
+  }
 }
 /**
  *
@@ -2058,6 +2116,18 @@ export interface Prefecture {
  * @interface RegularExpenseBase
  */
 export interface RegularExpenseBase {
+  /**
+   * 日常费用ID
+   * @type {number}
+   * @memberof RegularExpenseBase
+   */
+  id?: number;
+  /**
+   * 楼宇ID
+   * @type {number}
+   * @memberof RegularExpenseBase
+   */
+  buildingId?: number;
   /**
    * 类别 - `propertyManagementFees`: PM管理费/PM費用 - `buildingManagementFees`: BM管理费/BM費用 - `managementRepairFees`: 管理维修费/管理修繕金 - `transferHandlingFees`: 转账手续费/振込手数料 - `lowVoltageElectricityCharges`: 低压电费/低圧電気料金 - `electricityCharges`: 电费/電気料金 - `gasCharges`: 煤气费/ガス代 - `waterCharges`: 水费/水道料金 - `internetExpenses`: 网络费/インターネット費用 - `adjustmentFees`: 精算费/精算金 - `securityDepositRefund`: 押金退还/敷金返還 - `otherExpenses`: 其他/その他
    * @type {string}
