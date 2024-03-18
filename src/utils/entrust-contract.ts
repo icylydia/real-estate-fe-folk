@@ -1,4 +1,4 @@
-import { ContractBase } from 'src/api';
+import { ContractBase, EntrustContractManagementFeeBase } from 'src/api';
 
 const benefitTypeOptions: Array<{ label: string, value: string }> = [
   {
@@ -10,6 +10,26 @@ const benefitTypeOptions: Array<{ label: string, value: string }> = [
     value: 'percentage',
   },
 ];
+
+const benefitTypeToChipProps = (type?: EntrustContractManagementFeeBase.BenefitTypeEnum) => {
+  if (!type) {
+    return null;
+  }
+  switch (type) {
+    case EntrustContractManagementFeeBase.BenefitTypeEnum.Fixed:
+      return {
+        label: '定額',
+        color: 'pink',
+      }
+    case EntrustContractManagementFeeBase.BenefitTypeEnum.Percentage:
+      return {
+        label: '割合',
+        color: 'light-blue',
+      }
+    default:
+      return null;
+  }
+};
 
 const describeStatus = (status?: ContractBase.StatusEnum ): { description: string, color: string } => {
   switch (status) {
@@ -39,6 +59,7 @@ const describeStatus = (status?: ContractBase.StatusEnum ): { description: strin
 export const useEntrustContract = () => {
   return {
     benefitTypeOptions,
+    benefitTypeToChipProps,
     describeStatus,
   };
 }

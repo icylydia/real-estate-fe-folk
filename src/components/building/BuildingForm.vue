@@ -693,7 +693,6 @@ defineExpose({
     </template>
   </q-table>
   <regular-expense-dialog
-      ref="regularExpenseDialog"
       :show="showDialog"
       :mode="dialogMode"
       @update:show="showDialog = $event"

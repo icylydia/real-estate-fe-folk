@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useContractStore } from 'stores/contract-store';
 import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
-import { EntrustContractBase, EntrustContractInResponse } from 'src/api';
+import { EntrustContractInResponse } from 'src/api';
 import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
@@ -13,7 +13,6 @@ const { toastHandler } = useErrorHandler();
 const { entrustContractList: contracts } = storeToRefs(useContractStore());
 const {
   statusToChipProps,
-  benefitTypeToChipProps,
 } = useContractStore();
 
 const columns: QTableProps['columns'] = [
@@ -30,20 +29,6 @@ const columns: QTableProps['columns'] = [
     name: 'owner',
     sortable: false,
     align: 'left',
-  },
-  {
-    label: '報酬の種類',
-    field: 'benefitType',
-    name: 'benefitType',
-    sortable: false,
-    align: 'left',
-  },
-  {
-    label: '報酬の金額',
-    field: 'benefit',
-    name: 'benefit',
-    sortable: false,
-    align: 'right',
   },
   {
     label: '契約状況',
@@ -250,23 +235,6 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
                 {{ row.owner.lastName }} {{ row.owner.firstName }}
               </a>
               <template v-else>-</template>
-            </q-td>
-          </template>
-          <template #[`body-cell-benefitType`]="{ row }: { row: EntrustContractInResponse }">
-            <q-td>
-              <q-chip
-                v-bind="benefitTypeToChipProps(row.benefitType)"
-              />
-            </q-td>
-          </template>
-          <template #[`body-cell-benefit`]="{ row }: { row: EntrustContractInResponse }">
-            <q-td class="text-right">
-              <template v-if="row.benefitType == EntrustContractBase.BenefitTypeEnum.Fixed">
-                {{ $filters.jpyCurrency(row.benefitAmount) }}
-              </template>
-              <template v-else-if="row.benefitType == EntrustContractBase.BenefitTypeEnum.Percentage">
-                {{ $filters.percentage(row.benefitPercentage) }}
-              </template>
             </q-td>
           </template>
           <template #[`body-cell-status`]="{ row }: { row: EntrustContractInResponse }">

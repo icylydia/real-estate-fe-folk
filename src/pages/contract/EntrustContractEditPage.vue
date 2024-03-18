@@ -5,13 +5,15 @@ import TenantForm from 'components/tenant/TenantForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { EntrustContractFormModel, useContractStore } from 'stores/contract-store';
 import { FormValidationResult } from 'vee-validate';
-import { storeToRefs } from 'pinia';
+import useErrorHandler from 'components/app/useErrorHandler';
+import { Optional } from 'src/utils/framework';
+import _ from 'lodash';
 
+const router = useRouter();
 const loading = ref(false);
 const saving = ref(false);
 const form = ref<InstanceType<typeof TenantForm>>();
-const router = useRouter();
-const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
+const { toastHandler } = useErrorHandler();
 
 const contractId = computed(() => {
   const id = useRoute().params.id;
@@ -24,25 +26,27 @@ const contractId = computed(() => {
 onMounted(async () => {
   loading.value = true;
   try {
+    useContractStore().resetEntrustContractFormModel();
     await useContractStore().getEntrustContract(contractId.value);
   } catch (error) {
-    console.error(error);
+    await toastHandler(error);
   } finally {
     loading.value = false;
   }
 });
 
 const onSave = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation?.valid) {
     return;
   }
-  saving.value = true;
   try {
+    saving.value = true;
     const data = validation.values;
+    const necessaryData = _.omit(data, ['managementFees']);
     const newContract: EntrustContractFormModel = {
-      ...contract.value,
-      ...data,
+      ...useContractStore().entrustContractFormModel,
+      ...necessaryData,
     };
     await useContractStore().updateEntrustContract(contractId.value, newContract);
     await router.push({
@@ -50,7 +54,7 @@ const onSave = async () => {
       params: { id: contractId.value }
     });
   } catch (error) {
-    console.error(error);
+    await toastHandler(error);
   } finally {
     saving.value = false;
   }

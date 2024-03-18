@@ -1,37 +1,51 @@
 <script setup lang="ts">
 import EntrustContractForm from 'components/contract/EntrustContractForm.vue';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useContractStore } from 'stores/contract-store';
 import { FormValidationResult } from 'vee-validate';
+import { Optional } from 'src/utils/framework';
+import useErrorHandler from 'components/app/useErrorHandler';
+import _ from 'lodash';
 
 
 const loading = ref(false);
+const saving = ref(false);
 const form = ref<InstanceType<typeof EntrustContractForm>>();
 const router = useRouter();
+const { toastHandler } = useErrorHandler();
 
 const onSave = async () => {
   try {
-    const validation: FormValidationResult<any> = await form.value?.validate();
-    if (!validation.valid) {
+    const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+    if (!validation?.valid) {
       return;
     }
-    loading.value = true;
+    saving.value = true;
     const data = validation.values;
-    const newContract = await useContractStore().createEntrustContract(data);
+    const necessaryData = _.omit(data, ['managementFees']);
+    const newContract = {
+      ...useContractStore().entrustContractFormModel,
+      ...necessaryData,
+    };
+    await useContractStore().createEntrustContract(newContract);
     await router.push({
       name: 'entrust-contract-detail',
       params: { id: newContract.id }
     });
   } catch (error) {
-    console.error(error);
+    await toastHandler(error);
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  loading.value = true;
   useContractStore().resetEntrustContractFormModel();
+  await nextTick(() => {
+    loading.value = false;
+  });
 });
 </script>
 
@@ -42,9 +56,9 @@ onMounted(() => {
         <div class="text-h5">新規管理委託契約</div>
       </q-card-section>
       <q-separator></q-separator>
-      <q-linear-progress indeterminate v-if="loading" />
+      <q-linear-progress indeterminate v-if="saving" />
       <q-card-section>
-        <entrust-contract-form new-contract ref="form" />
+        <entrust-contract-form new-contract ref="form" v-if="!loading" />
       </q-card-section>
       <q-separator></q-separator>
       <q-card-actions align="right">
@@ -53,12 +67,14 @@ onMounted(() => {
           color="negative"
           label="取消"
           @click="$router.back()"
+          :disable="loading || saving"
         ></q-btn>
         <q-btn
           style="width: 100px"
           color="primary"
           label="保存"
           @click="onSave"
+          :disable="loading || saving"
         ></q-btn>
       </q-card-actions>
     </q-card>

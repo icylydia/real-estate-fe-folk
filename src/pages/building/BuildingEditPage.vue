@@ -11,7 +11,6 @@ import { Optional } from 'src/utils/framework';
 const loading = ref(false);
 const saving = ref(false);
 const form = ref<InstanceType<typeof BuildingForm>>();
-
 const router = useRouter();
 const route = useRoute();
 const { toastHandler } = useErrorHandler();
@@ -54,8 +53,8 @@ const onSave = async () => {
       name: 'building-detail',
       params: { id: buildingId.value },
     });
-  } catch (e) {
-    await toastHandler(e);
+  } catch (error) {
+    await toastHandler(error);
   } finally {
     saving.value = false;
   }

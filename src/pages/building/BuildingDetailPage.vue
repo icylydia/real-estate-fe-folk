@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useBuildingStore } from 'stores/building-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import RentalContractList from 'components/building/RentalContractList.vue';
+import EntrustContractList from 'components/building/EntrustContractList.vue';
 
 const loading = ref(false);
 const router = useRouter();
@@ -25,7 +26,7 @@ onMounted(async () => {
   try {
     await useBuildingStore().getBuilding(buildingId.value);
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   } finally {
     loading.value = false;
   }
@@ -38,7 +39,7 @@ const toEdit = async () => {
       params: { id: buildingId.value },
     });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 }
 </script>
@@ -68,6 +69,11 @@ const toEdit = async () => {
     <q-card bordered class="q-mt-md">
       <q-card-section>
         <rental-contract-list />
+      </q-card-section>
+    </q-card>
+    <q-card bordered class="q-mt-md">
+      <q-card-section>
+        <entrust-contract-list />
       </q-card-section>
     </q-card>
     <q-card bordered class="q-mt-md">

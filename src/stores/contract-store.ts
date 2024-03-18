@@ -3,7 +3,7 @@ import { api } from 'boot/api';
 import {
   ContractBase,
   EntrustContractBase, EntrustContractInRequest,
-  EntrustContractInResponse, PaginationResponsePagination,
+  EntrustContractInResponse, EntrustContractManagementFeeBase, PaginationResponsePagination,
   RentalContractBase,
   RentalContractInRequest,
   RentalContractInResponse, RentalContractRegularIncome
@@ -31,6 +31,7 @@ const defaultEntrustContractFormModel: EntrustContractFormModel = {
   remittanceType: EntrustContractBase.RemittanceTypeEnum.Overseas,
   japanBank: undefined,
   overseasBank: undefined,
+  managementFees: [],
 }
 
 export const useContractStore = defineStore('contract', {
@@ -40,6 +41,7 @@ export const useContractStore = defineStore('contract', {
     rentalContractFormModel: defaultRentalContractFormModel,
     entrustContractFormModel: defaultEntrustContractFormModel,
     regularIncomeModel: {} as RentalContractRegularIncome,
+    managementFeeModel: {} as EntrustContractManagementFeeBase,
   }),
   actions: {
     async getRentalContractList(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string) {
@@ -164,27 +166,11 @@ export const useContractStore = defineStore('contract', {
           return null;
       }
     },
-    benefitTypeToChipProps(type?: EntrustContractBase.BenefitTypeEnum) {
-      if (!type) {
-        return null;
-      }
-      switch (type) {
-        case EntrustContractBase.BenefitTypeEnum.Fixed:
-          return {
-            label: '定額',
-            color: 'pink',
-          }
-        case EntrustContractBase.BenefitTypeEnum.Percentage:
-          return {
-            label: '割合',
-            color: 'light-blue',
-          }
-        default:
-          return null;
-      }
-    },
     resetRegularIncomeModel() {
       this.regularIncomeModel = {} as RentalContractRegularIncome;
+    },
+    resetManagementFeeModel() {
+      this.managementFeeModel = {} as EntrustContractManagementFeeBase;
     },
   }
 });
