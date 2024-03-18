@@ -347,7 +347,7 @@ defineExpose({
 <template>
   <div class="row justify-between">
     <div class="text-h6" v-if="!newContract">
-      賃貸契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+      賃貸借契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
     </div>
     <q-badge
       v-if="!newContract"
