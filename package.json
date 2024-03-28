@@ -11,7 +11,8 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "dev-wt": "VITE_APP_API_URL=https://real-estate-wt-be.alpha-technology.com/api quasar dev",
-    "build-wt": "VITE_APP_API_URL=https://real-estate-wt-be.alpha-technology.com/api quasar build"
+    "build-wt": "VITE_APP_API_URL=https://real-estate-wt-be.alpha-technology.com/api quasar build",
+    "build-chuwa": "VITE_APP_API_URL=https://chuwa-api.alphatechs.co.jp/api quasar build"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.9",
