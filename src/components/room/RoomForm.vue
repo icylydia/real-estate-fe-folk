@@ -6,7 +6,7 @@ import { computed, onMounted, PropType } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoomStore } from 'stores/room-store';
 import { toTypedSchema } from '@vee-validate/yup';
-import { object, string } from 'yup';
+import { number, object, string } from 'yup';
 import { Field, useForm } from 'vee-validate';
 import { BuildingBase } from 'src/api';
 
@@ -50,14 +50,20 @@ const validationSchema = toTypedSchema(object({
     id: string().required().label('物件番号'),
     name: string().required().label('物件名'),
   }).required(),
-  name: string().required().label('部屋名'),
-  price: string().nullable().label('価格'),
+  name: string().required().label('区画番号'),
+  price: string()
+    .nullable()
+    .label('価格'),
   monthlyRent: string().nullable().label('賃料'),
   deposit: string().nullable().label('敷金'),
   keyMoney: string().nullable().label('礼金'),
   maintenanceFund: string().nullable().label('修繕積立金'),
   managementFee: string().nullable().label('管理費'),
-  roomLayoutNumber: string().nullable().label('間取り'),
+  roomLayoutNumber: number()
+    .nullable()
+    .transform((value, originalValue) => String(originalValue).trim() === '' ? null : value)
+    .moreThan(0)
+    .label('間取り'),
   roomLayoutUnit: string()
     .when('roomLayoutNumber', {
       is: (val: string) => !!val,
@@ -86,7 +92,7 @@ defineExpose({
 
 <template>
   <div class="q-mt-md text-h6">
-    部屋基本情報{{readonly ? '（閲覧）' : '（編集）'}}
+    区画基本情報{{readonly ? '（閲覧）' : '（編集）'}}
   </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newRoom">
@@ -125,7 +131,7 @@ defineExpose({
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="部屋名"
+            label="区画番号"
             :readonly="readonly"
           />
         </q-item-section>

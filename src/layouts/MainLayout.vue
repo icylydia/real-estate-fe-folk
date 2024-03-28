@@ -101,24 +101,14 @@ export default defineComponent({
           icon: 'sym_r_edit_document',
           subMenu: [
             {
-              title: '賃貸借契約',
-              icon: 'sym_r_event',
-              subMenu: [
-                {
-                  title: '契約一覧',
-                  link: this.$router.resolve({ name: 'rental-contract-list' }).href,
-                },
-              ],
+              title: '賃貸借契約一覧',
+              icon: 'sym_r_contract',
+              link: this.$router.resolve({ name: 'rental-contract-list' }).href,
             },
             {
-              title: '管理委託契約',
-              icon: 'sym_r_event',
-              subMenu: [
-                {
-                  title: '契約一覧',
-                  link: this.$router.resolve({ name: 'entrust-contract-list' }).href,
-                },
-              ],
+              title: '管理委託契約一覧',
+              icon: 'sym_r_real_estate_agent',
+              link: this.$router.resolve({ name: 'entrust-contract-list' }).href,
             },
           ],
         },

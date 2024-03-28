@@ -997,6 +997,12 @@ export interface EntrustContractBase extends ContractBase {
    * @memberof EntrustContractBase
    */
   overseasBank?: EntrustContractBaseOverseasBank;
+  /**
+   *
+   * @type {Array<EntrustContractManagementFeeBase>}
+   * @memberof EntrustContractBase
+   */
+  managementFees?: Array<EntrustContractManagementFeeBase>;
 }
 
 /**

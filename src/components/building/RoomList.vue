@@ -16,7 +16,7 @@ const { toastHandler } = useErrorHandler();
 
 const columns: QTableProps['columns'] = [
   {
-    label: '部屋名',
+    label: '区画番号',
     field: 'name',
     name: 'name',
     sortable: false,
@@ -62,10 +62,10 @@ const editRoom = (key: number) => {
   router.push({ name: 'room-edit', params: { id: key } });
 }
 
-const removeRoom = (room: RoomInResponse) => {
+const removeRoom = async (room: RoomInResponse) => {
   $q.dialog({
-    title: '部屋削除',
-    message: `部屋「${room.name}」を削除しますか？`,
+    title: '区画削除',
+    message: `区画「${room.name}」を削除しますか？`,
     ok: { label: '確認', color: 'negative'},
     cancel: { label: 'キャンセル', color: 'grey-8'},
     persistent: true,
@@ -75,7 +75,7 @@ const removeRoom = (room: RoomInResponse) => {
       await useRoomStore().deleteRoom(room.id);
       useBuildingStore().removeRoom(room.id);
     } catch (e) {
-      toastHandler('ファイルの削除に失敗しました');
+      await toastHandler('ファイルの削除に失敗しました');
     }
   });
 }
@@ -97,7 +97,7 @@ const createRoom = () => {
     }"
   >
     <template #top-left>
-      <div class="text-h6">部屋一覧</div>
+      <div class="text-h6">区画一覧</div>
     </template>
     <template #top-right>
       <q-btn label="追加" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="createRoom()" />

@@ -224,7 +224,7 @@ const onPageChange = async () => {
               <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeOwner(row)" />
             </q-td>
           </template>
-          <template #bottom-row>
+          <template #top-row>
             <q-td>
               <q-input
                 square
@@ -269,6 +269,13 @@ const onPageChange = async () => {
                 class="q-mr-sm"
                 v-model="searchPhone"
                 @keyup.enter="search"
+              />
+            </q-td>
+            <q-td class="text-right">
+              <q-btn
+                label="検索"
+                color="primary"
+                @click="search"
               />
             </q-td>
           </template>

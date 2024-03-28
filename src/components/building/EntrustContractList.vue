@@ -3,13 +3,13 @@ import { storeToRefs } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 import { computed } from 'vue';
 import { QTableProps } from 'quasar';
-import { EntrustContractBase, EntrustContractInResponse } from 'src/api';
+import { EntrustContractInResponse } from 'src/api';
 import { useContractStore } from 'stores/contract-store';
 
 const { formModel: building } = storeToRefs(useBuildingStore());
 const contracts = computed(() => building.value.activeEntrustContracts);
 const {
-  benefitTypeToChipProps,
+  statusToChipProps,
 } = useContractStore();
 
 const columns: QTableProps['columns'] = [
@@ -21,18 +21,18 @@ const columns: QTableProps['columns'] = [
     align: 'left',
   },
   {
-    label: '報酬の種類',
-    field: 'benefitType',
-    name: 'benefitType',
+    label: 'オーナー',
+    field: 'owner',
+    name: 'owner',
     sortable: false,
     align: 'left',
   },
   {
-    label: '報酬の金額',
-    field: 'benefit',
-    name: 'benefit',
+    label: '契約状況',
+    field: 'status',
+    name: 'status',
     sortable: false,
-    align: 'right',
+    align: 'left',
   },
 ];
 </script>
@@ -52,21 +52,25 @@ const columns: QTableProps['columns'] = [
     <template #top-left>
       <div class="text-h6">管理委託契約</div>
     </template>
-    <template #[`body-cell-benefitType`]="{ row }: { row: EntrustContractInResponse }">
+    <template #[`body-cell-owner`]="{ row }: { row: EntrustContractInResponse }">
       <q-td>
-        <q-chip
-          v-bind="benefitTypeToChipProps(row.benefitType)"
-        />
+        <a
+          v-if="row.owner"
+          :href="$router.resolve({
+                  name: 'owner-detail',
+                  params: { id: row.owner!.id },
+                }).href"
+        >
+          {{ row.owner.lastName }} {{ row.owner.firstName }}
+        </a>
+        <template v-else>-</template>
       </q-td>
     </template>
-    <template #[`body-cell-benefit`]="{ row }: { row: EntrustContractInResponse }">
-      <q-td class="text-right">
-        <template v-if="row.benefitType == EntrustContractBase.BenefitTypeEnum.Fixed">
-          {{ $filters.jpyCurrency(row.benefitAmount) }}
-        </template>
-        <template v-else-if="row.benefitType == EntrustContractBase.BenefitTypeEnum.Percentage">
-          {{ $filters.percentage(row.benefitPercentage) }}
-        </template>
+    <template #[`body-cell-status`]="{ row }: { row: EntrustContractInResponse }">
+      <q-td>
+        <q-chip
+          v-bind="statusToChipProps(row.status)"
+        />
       </q-td>
     </template>
   </q-table>

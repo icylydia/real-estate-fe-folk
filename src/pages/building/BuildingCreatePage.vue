@@ -41,8 +41,8 @@ const onSave = async () => {
       name: 'building-detail',
       params: { id: building.id },
     })
-  } catch (e) {
-    await toastHandler('保存に失敗しました。');
+  } catch (error) {
+    await toastHandler(error);
   } finally {
     saving.value = false;
   }

@@ -79,8 +79,8 @@ import { AuthLoginBody } from 'src/api';
 const {appName, appVersion} = useApp();
 
 const validationSchema = toTypedSchema(object({
-  email: string().email().required().label('メールアドレス').default('nyamagishi@example.org'),
-  password: string().required().min(6).label('パスワード').default('c]X>7qaRMc$@lDR'),
+  email: string().email().required().label('メールアドレス'),
+  password: string().required().min(6).label('パスワード'),
 }));
 
 const { handleSubmit, isSubmitting } = useForm({

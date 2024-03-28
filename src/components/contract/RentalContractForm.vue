@@ -219,8 +219,8 @@ const validationSchema = toTypedSchema(object({
     id: string().required().label('物件'),
   }).required().label('物件'),
   room: object({
-    id: string().required().label('部屋'),
-  }).required().label('部屋'),
+    id: string().required().label('区画'),
+  }).required().label('区画'),
   tenant: object({
     id: string().required().label('入居者'),
   }).required().label('入居者'),
@@ -347,7 +347,7 @@ defineExpose({
 <template>
   <div class="row justify-between">
     <div class="text-h6" v-if="!newContract">
-      賃貸契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
+      賃貸借契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
     </div>
     <q-badge
       v-if="!newContract"
@@ -419,7 +419,7 @@ defineExpose({
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="部屋"
+            label="区画"
             :options="roomOptions"
             option-label="name"
             option-value="id"

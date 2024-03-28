@@ -1,18 +1,19 @@
 import { boot } from 'quasar/wrappers'
 import { setLocale } from 'yup'
+import { suggestive } from 'yup-locale-ja'
+import _ from 'lodash';
 
 // "async" is optional;
 // more info on params: https://v2.quasar.dev/quasar-cli/boot-files
 // noinspection JSUnusedGlobalSymbols
 export default boot(async (/* { app, router, ... } */) => {
-  setLocale({
+  let locale = {
+    ...suggestive,
+  }
+  locale = _.merge(locale, {
     mixed: {
-      required: '${path} は必須項目です',
+      notType: ({ label }: { label: any }) => (label ? label + 'には' : '') + '正しい値を入力してください',
     },
-    string: {
-      min: '${path} は ${min} 文字以上でなければなりません',
-      max: '${path} は ${max} 文字以内にしてください',
-      email: '${path} は有効なメールアドレスではありません',
-    }
   })
+  setLocale( locale);
 })

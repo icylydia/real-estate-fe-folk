@@ -8,12 +8,16 @@ import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
 import { useOwnerStore } from 'stores/owner-store';
 import { useEntrustContract } from 'src/utils/entrust-contract';
-import QInputPercentage from 'components/extension/QInputPercentage.vue';
+import { QTableProps } from 'quasar';
+import ManagementFeeDialog from 'components/contract/ManagementFeeDialog.vue';
+import { EntrustContractManagementFeeBase, RegularExpenseBase } from 'src/api';
+import _ from 'lodash';
+import { usePayment } from 'src/utils/payment';
 
-const { benefitTypeOptions, describeStatus } = useEntrustContract();
+const { describeStatus } = useEntrustContract();
 const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
 
-defineProps({
+const props = defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -49,7 +53,7 @@ enum BuildingLoadingStatus {
 }
 
 const buildingsStatus = ref<BuildingLoadingStatus>(BuildingLoadingStatus.BeforeLoad);
-const buildingFilterFn = (val: string, update: () => void) => {
+const onFilterBuilding = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   if (
     buildingsStatus.value === BuildingLoadingStatus.BeforeLoad
     || buildingsStatus.value === BuildingLoadingStatus.Aborted
@@ -60,30 +64,35 @@ const buildingFilterFn = (val: string, update: () => void) => {
       .then(() => {
         buildingsStatus.value = BuildingLoadingStatus.Loaded;
         buildingOptions.value = getAllBuildingOptions();
-        update();
+        doneFn(() => {});
       })
       .catch(() => {
         buildingsStatus.value = BuildingLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    buildingOptions.value = getAllBuildingOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      buildingOptions.value = getAllBuildingOptions();
+    });
   } else {
-    buildingOptions.value = getAllBuildingOptions().filter((v) => {
-      return v.name && v.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      buildingOptions.value = getAllBuildingOptions().filter((v) => {
+        return v.name && v.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
 };
 
 /**********************
  * Owner select
  **********************/
-const ownerOptions = ref<Array<{
+type OwnerOption = {
+  id: number | string | undefined;
   lastName: string | undefined;
   firstName: string | undefined;
-  id: string | number | undefined;
-}> | undefined>(undefined);
+}
+const ownerOptions = ref<Array<OwnerOption> | undefined>(undefined);
 
 const getAllOwnerOptions = () => {
   return useOwnerStore().ownerOptions.map((v) => {
@@ -104,7 +113,7 @@ enum OwnerLoadingStatus {
 
 const ownersStatus = ref<OwnerLoadingStatus>(OwnerLoadingStatus.BeforeLoad);
 
-const ownerFilterFn = (val: string, update: () => void) => {
+const onFilterOwner = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
   if (
     ownersStatus.value === OwnerLoadingStatus.BeforeLoad
     || ownersStatus.value === OwnerLoadingStatus.Aborted
@@ -113,24 +122,28 @@ const ownerFilterFn = (val: string, update: () => void) => {
     useOwnerStore()
       .getOwnerOptions()
       .then(() => {
-        ownersStatus.value = OwnerLoadingStatus.Loaded;
         ownerOptions.value = getAllOwnerOptions();
-        update();
+        ownersStatus.value = OwnerLoadingStatus.Loaded;
+        doneFn(() => {});
       })
       .catch(() => {
         ownersStatus.value = OwnerLoadingStatus.Aborted;
+        doneFn(() => {});
       });
   }
-  if (val === '') {
-    ownerOptions.value = getAllOwnerOptions();
+  if (inputValue === '') {
+    doneFn(() => {
+      ownerOptions.value = getAllOwnerOptions();
+    });
   } else {
-    ownerOptions.value = getAllOwnerOptions().filter((v) => {
-      return v.lastName && v.lastName.toLowerCase().indexOf(val.toLowerCase()) > -1
-        || v.firstName && v.firstName.toLowerCase().indexOf(val.toLowerCase()) > -1
-        || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(val.toLowerCase()) > -1;
+    doneFn(() => {
+      ownerOptions.value = getAllOwnerOptions().filter((v) => {
+        return v.lastName && v.lastName.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+          || v.firstName && v.firstName.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+          || v.lastName && v.firstName && (v.lastName + v.firstName).toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+      });
     });
   }
-  update();
 };
 
 /**********************
@@ -156,9 +169,6 @@ const validationSchema = toTypedSchema(object({
     .transform((value) => value ?? null)
     .required()
     .label('契約終了日'),
-  benefitType: string().required().label('利益区分'),
-  benefitAmount: string().nullable().notRequired().label('利益金額'),
-  benefitPercentage: string().nullable().notRequired().label('利益率'),
   remittanceType: string().required().label('振込区分'),
   japanBank: object({
     bankName: string().nullable().notRequired().label('銀行名'),
@@ -187,20 +197,95 @@ const initialValues: any = computed( () => {
   return contract.value;
 });
 
-const { validate, values, setFieldValue } = useForm({
+const { validate, values } = useForm({
   validationSchema,
   initialValues,
 });
 
 defineExpose({
   validate,
-})
+});
 
-const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
-  setFieldValue('benefitAmount', undefined, false);
-  setFieldValue('benefitRate', undefined, false);
-  callback(event);
+/**********************
+ * Management fee dialog
+ **********************/
+const { managementFeeModel } = storeToRefs(useContractStore());
+const { resetManagementFeeModel } = useContractStore();
+const { benefitTypeToChipProps } = useEntrustContract();
+const { describeIncomeCategory } = usePayment();
+const showDialog = ref(false);
+const dialogMode = ref<'add' | 'edit'>('add');
+const editingIndex = ref<number | null>(null);
+
+const showAddingDialog = () => {
+  resetManagementFeeModel();
+  dialogMode.value = 'add';
+  showDialog.value = true;
+};
+
+const handleDialogSubmit = (regularExpense: RegularExpenseBase) => {
+  if (dialogMode.value === 'add') {
+    contract.value.managementFees?.push(regularExpense);
+  } else {
+    const index = editingIndex.value;
+    if (index === null) {
+      return;
+    }
+    contract.value.managementFees?.splice(index, 1, regularExpense);
+  }
 }
+
+const removeManagementFee = (index: number) => {
+  contract.value.managementFees?.splice(index, 1);
+}
+
+const editManagementFee = (index: number) => {
+  const model = contract.value.managementFees?.[index];
+  if (!model) {
+    return;
+  }
+  editingIndex.value = index;
+  managementFeeModel.value = _.cloneDeep(model);
+  dialogMode.value = 'edit';
+  showDialog.value = true;
+}
+
+
+const managementFeeColumns: QTableProps['columns'] = (() => {
+  let columns: QTableProps['columns'] = [
+    {
+      name: 'incomeCategory',
+      label: 'カテゴリ',
+      field: 'incomeCategory',
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'benefitType',
+      label: '種別',
+      field: 'benefitType',
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'benefit',
+      label: '利益',
+      field: 'benefit',
+      align: 'right',
+      sortable: false,
+    },
+  ];
+  if (!props.readonly) {
+    columns.push({
+      name: 'actions',
+      label: '操作',
+      field: 'actions',
+      align: 'right',
+      sortable: false,
+    });
+  }
+  return columns;
+})();
 </script>
 
 <template>
@@ -262,7 +347,7 @@ const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
             :options="buildingOptions"
             option-label="name"
             option-value="id"
-            @filter="buildingFilterFn"
+            @filter="onFilterBuilding"
             :readonly="readonly"
             use-input
           >
@@ -280,9 +365,9 @@ const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
             :error="!!errorMessage"
             label="オーナー"
             :options="ownerOptions"
-            :option-label="item => item.lastName + ' ' + item.firstName"
+            :option-label="(item: OwnerOption) => item.lastName + ' ' + item.firstName"
             option-value="id"
-            @filter="ownerFilterFn"
+            @filter="onFilterOwner"
             :readonly="readonly"
             use-input
           >
@@ -316,54 +401,6 @@ const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
             label="契約終了日"
             :readonly="readonly"
             hint="フォーマット: 2021-01-01"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="benefitType" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-select
-            :model-value="value"
-            @update:model-value="event => onBenefitTypeChange(event, handleChange)"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            emit-value
-            map-options
-            label="利益区分"
-            :options="benefitTypeOptions"
-            clearable
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="benefitAmount" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="利益金額"
-            :readonly="readonly"
-            :disable="values.benefitType !== 'fixed'"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="benefitPercentage" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-        <q-item-section>
-          <q-input-percentage
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="利益割合"
-            :readonly="readonly"
-            :disable="values.benefitType !== 'percentage'"
           />
         </q-item-section>
       </q-item>
@@ -651,4 +688,62 @@ const onBenefitTypeChange = (event: any, callback: (event: any) => void) => {
       </Field>
     </template>
   </q-list>
+  <q-separator class="q-mt-md"/>
+  <div class="fit row wrap justify-between items-start content-start">
+    <div class="q-mt-md text-h6">
+      管理費用{{ readonly ? '（閲覧）' : '（編集）' }}
+    </div>
+    <q-btn
+      v-if="!readonly"
+      class="q-mt-md"
+      color="primary"
+      label="追加"
+      icon="sym_r_add"
+      @click="showAddingDialog"
+    />
+  </div>
+  <q-table
+    :rows="contract.managementFees"
+    :columns="managementFeeColumns"
+    flat
+    hide-pagination
+    :pagination="{
+      rowsPerPage: 0,
+    }"
+  >
+    <template #[`body-cell-incomeCategory`]="{ row }: { row: EntrustContractManagementFeeBase }">
+      <q-td>
+        {{ describeIncomeCategory(row.incomeCategory) }}
+      </q-td>
+    </template>
+    <template #[`body-cell-benefitType`]="{ row }: { row: EntrustContractManagementFeeBase }">
+      <q-td>
+        <q-chip
+          v-bind="benefitTypeToChipProps(row.benefitType)"
+        />
+      </q-td>
+    </template>
+    <template #[`body-cell-benefit`]="{ row }: { row: EntrustContractManagementFeeBase }">
+      <q-td class="text-right">
+        <template v-if="row.benefitType == EntrustContractManagementFeeBase.BenefitTypeEnum.Fixed">
+          {{ $filters.jpyCurrency(row.amount) }}
+        </template>
+        <template v-else-if="row.benefitType == EntrustContractManagementFeeBase.BenefitTypeEnum.Percentage">
+          {{ $filters.percentage(row.percentage) }}
+        </template>
+      </q-td>
+    </template>
+    <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: number }">
+      <q-td class="text-right">
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editManagementFee(rowIndex)"/>
+        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeManagementFee(rowIndex)"/>
+      </q-td>
+    </template>
+  </q-table>
+  <management-fee-dialog
+    :show="showDialog"
+    :mode="dialogMode"
+    @update:show="showDialog = $event"
+    @submit="handleDialogSubmit"
+  />
 </template>
