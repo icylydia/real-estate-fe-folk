@@ -1,41 +1,39 @@
-# Quasar App (quasar-project)
+# 不动产管理系统前端
 
-A Quasar Project
+基于[Quasar](https://quasar.dev/)搭建。使用Vue3和Vite。
 
-## Install the dependencies
+## 开发环境
+
+### 系统要求
+
+- Node.js 20.x
+- Yarn 1.22.x
+- nvm 0.39.x (可选，推荐使用nvm管理Node.js版本)
+
+### 安装依赖
+
 ```bash
-yarn
-# or
-npm install
+nvm use # 如果使用nvm
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+corepack enable # 首次使用需要启用corepack
+yarn set version 1.22.1 # 指定使用yarn 1.22.1，Quasar暂时不支持yarn 2及以上版本
 ```
 
-
-### Lint the files
 ```bash
-yarn lint
-# or
-npm run lint
+yarn install # 安装依赖
 ```
 
+### 启动开发服务器
 
-### Format the files
 ```bash
-yarn format
-# or
-npm run format
+yarn dev
 ```
 
+### 打包代码
 
-
-### Build the app for production
 ```bash
-quasar build
+yarn build-wt # 打包wt测试版本
+yarn build-chuwa # 打包仲和生产版本
 ```
-
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
