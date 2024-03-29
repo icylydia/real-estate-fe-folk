@@ -24,14 +24,14 @@ const onSave = async () => {
     saving.value = true;
     const data = validation.values;
     const necessaryData = _.omit(data, ['managementFees']);
-    const newContract = {
+    const payload = {
       ...useContractStore().entrustContractFormModel,
       ...necessaryData,
     };
-    await useContractStore().createEntrustContract(newContract);
+    const created = await useContractStore().createEntrustContract(payload);
     await router.push({
       name: 'entrust-contract-detail',
-      params: { id: newContract.id }
+      params: { id: created.id }
     });
   } catch (error) {
     await toastHandler(error);
