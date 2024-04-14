@@ -39,7 +39,7 @@
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.12.5",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
