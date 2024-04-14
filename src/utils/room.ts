@@ -18,6 +18,14 @@ export const useRoom = () => {
       label: 'LDK',
       value: 'LDK',
     },
+    {
+      label: '店舗',
+      value: 'SHOP',
+    },
+    {
+      label: '事務所',
+      value: 'OFFICE',
+    },
   ];
   const fileCategoryOptions:  { label: string, value: string }[] = [
     {
@@ -71,10 +79,23 @@ export const useRoom = () => {
           color: 'grey',
         }
     }
-  }
+  };
+  const describeRoomLayoutUnit = (unit: any): string => {
+    if (!unit) return '';
+    const dictionary: Map<string, string> = new Map([
+      ['R', 'R'],
+      ['K', 'K'],
+      ['DK', 'DK'],
+      ['LDK', 'LDK'],
+      ['SHOP', '店舗'],
+      ['OFFICE', '事務所'],
+    ]);
+    return dictionary.get(unit) || '未知';
+  };
   return {
     roomLayoutUnitOptions,
     fileCategoryOptions,
     contractStatusToChipProps,
+    describeRoomLayoutUnit,
   }
 }

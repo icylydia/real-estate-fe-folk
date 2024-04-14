@@ -9,7 +9,10 @@ import { useBuildingStore } from 'stores/building-store';
 import { useRoomStore } from 'stores/room-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 
-const { contractStatusToChipProps } = useRoom();
+const {
+  contractStatusToChipProps,
+  describeRoomLayoutUnit,
+} = useRoom();
 const router = useRouter();
 const $q = useQuasar();
 const { toastHandler } = useErrorHandler();
@@ -111,12 +114,12 @@ const createRoom = () => {
     </template>
     <template #[`body-cell-layout`]="{ row }: { row: RoomInResponse }">
       <q-td>
-        {{ row.roomLayoutNumber }}{{ row.roomLayoutUnit }}
+        {{ row.roomLayoutNumber }}{{ describeRoomLayoutUnit(row.roomLayoutUnit) }}
       </q-td>
     </template>
     <template #[`body-cell-area`]="{ row }: { row: RoomInResponse }">
       <q-td class="text-right">
-        {{ row.exclusiveArea }} m<sup>2</sup>
+        {{ row.exclusiveArea }} <template v-if="row.exclusiveArea != undefined">m<sup>2</sup></template>
       </q-td>
     </template>
     <template #[`body-cell-actions`]="{ key, row }: { key: number, row: RoomInResponse}">

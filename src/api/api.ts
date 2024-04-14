@@ -2495,7 +2495,7 @@ export interface RoomBase {
    */
   roomLayoutNumber?: number;
   /**
-   * 房间布局单位/間取り(単位) - `R`: R - `K`: K - `DK`: DK - `LDK`: LDK
+   * 房间布局单位/間取り(単位) - `R`: R - `K`: K - `DK`: DK - `LDK`: LDK - `SHOP`: 店舗 - `OFFICE`: 事務所
    * @type {string}
    * @memberof RoomBase
    */
@@ -2539,7 +2539,9 @@ export namespace RoomBase {
     R = <any> 'R',
     K = <any> 'K',
     DK = <any> 'DK',
-    LDK = <any> 'LDK'
+    LDK = <any> 'LDK',
+    SHOP = <any> 'SHOP',
+    OFFICE = <any> 'OFFICE'
   }
 }
 /**
