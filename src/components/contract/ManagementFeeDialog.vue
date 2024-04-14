@@ -46,7 +46,7 @@ const submit = () => {
     >
       <q-card class="card">
         <q-card-section class="bg-primary">
-          <div class="text-h6">経常支出</div>
+          <div class="text-h6">管理費用</div>
         </q-card-section>
         <q-card-section>
           <q-form>
