@@ -207,7 +207,7 @@ const onFilterRenter = (inputValue: string, doneFn: (callbackFn: () => void) => 
  * Form validation
  **********************/
 const validationSchema = toTypedSchema(object({
-  title: string().required().label('タイトル'),
+  title: string().nullable().notRequired().label('タイトル'),
   description: string().notRequired().nullable().label('説明'),
   building: object({
     id: string().required().label('物件'),

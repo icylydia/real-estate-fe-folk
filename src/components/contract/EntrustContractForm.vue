@@ -151,7 +151,7 @@ const onFilterOwner = (inputValue: string, doneFn: (callbackFn: () => void) => v
  **********************/
 const validationSchema = toTypedSchema(object({
   id: string().nullable().notRequired().label('管理番号'),
-  title: string().required().label('タイトル'),
+  title: string().nullable().notRequired().label('タイトル'),
   description: string().nullable().notRequired().label('説明'),
   building: object({
     id: string().required().label('物件ID'),
