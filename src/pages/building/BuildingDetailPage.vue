@@ -8,6 +8,7 @@ import { useBuildingStore } from 'stores/building-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import RentalContractList from 'components/building/RentalContractList.vue';
 import EntrustContractList from 'components/building/EntrustContractList.vue';
+import RegularExpenseList from 'components/building/RegularExpenseList.vue';
 
 const loading = ref(false);
 const router = useRouter();
@@ -64,6 +65,11 @@ const toEdit = async () => {
     <q-card bordered class="q-mt-md">
       <q-card-section>
         <room-list />
+      </q-card-section>
+    </q-card>
+    <q-card bordered class="q-mt-md">
+      <q-card-section>
+        <regular-expense-list />
       </q-card-section>
     </q-card>
     <q-card bordered class="q-mt-md">

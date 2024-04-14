@@ -1149,12 +1149,6 @@ export interface EntrustContractBaseOverseasBank {
    * @memberof EntrustContractBaseOverseasBank
    */
   email?: string;
-  /**
-   *
-   * @type {Array<EntrustContractManagementFeeBase>}
-   * @memberof EntrustContractBaseOverseasBank
-   */
-  managementFees?: Array<EntrustContractManagementFeeBase>;
 }
 /**
  *
@@ -3276,6 +3270,49 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 新建常规支出
+     * @summary 新建常规支出
+     * @param {RegularExpenseBase} body 常规支出信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createRegularExpense(body: RegularExpenseBase, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling createRegularExpense.');
+      }
+      const localVarPath = `/regular-expense`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      localVarUrlObj.search = null;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"RegularExpenseBase" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 新建租赁合同
      * @summary 新建租赁合同
      * @param {RentalContractInRequest} body 租赁合同信息
@@ -3697,6 +3734,46 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         throw new RequiredError('id','Required parameter id was null or undefined when calling deleteOwner.');
       }
       const localVarPath = `/owner/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      localVarUrlObj.search = null;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据ID删除常规支出
+     * @summary 删除常规支出
+     * @param {string} id 常规支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRegularExpense(id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling deleteRegularExpense.');
+      }
+      const localVarPath = `/regular-expense/{id}`
         .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'DELETE' }, options);
@@ -6056,6 +6133,55 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID更新常规支出
+     * @summary 更新常规支出
+     * @param {RegularExpenseBase} body 常规支出信息
+     * @param {string} id 常规支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRegularExpense(body: RegularExpenseBase, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling updateRegularExpense.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling updateRegularExpense.');
+      }
+      const localVarPath = `/regular-expense/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      localVarUrlObj.search = null;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"RegularExpenseBase" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID更新租赁合同
      * @summary 更新租赁合同
      * @param {RentalContractInRequest} body 租赁合同信息
@@ -6565,6 +6691,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 新建常规支出
+     * @summary 新建常规支出
+     * @param {RegularExpenseBase} body 常规支出信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createRegularExpense(body: RegularExpenseBase, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RegularExpenseBase> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).createRegularExpense(body, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 新建租赁合同
      * @summary 新建租赁合同
      * @param {RentalContractInRequest} body 租赁合同信息
@@ -6763,6 +6908,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      */
     deleteOwner(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
       const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).deleteOwner(id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据ID删除常规支出
+     * @summary 删除常规支出
+     * @param {string} id 常规支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRegularExpense(id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).deleteRegularExpense(id, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -7818,6 +7982,26 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID更新常规支出
+     * @summary 更新常规支出
+     * @param {RegularExpenseBase} body 常规支出信息
+     * @param {string} id 常规支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRegularExpense(body: RegularExpenseBase, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RegularExpenseBase> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).updateRegularExpense(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID更新租赁合同
      * @summary 更新租赁合同
      * @param {RentalContractInRequest} body 租赁合同信息
@@ -8063,6 +8247,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).createOwner(body, options)(fetch, basePath);
     },
     /**
+     * 新建常规支出
+     * @summary 新建常规支出
+     * @param {RegularExpenseBase} body 常规支出信息
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createRegularExpense(body: RegularExpenseBase, options?: any) {
+      return DefaultApiFp(configuration).createRegularExpense(body, options)(fetch, basePath);
+    },
+    /**
      * 新建租赁合同
      * @summary 新建租赁合同
      * @param {RentalContractInRequest} body 租赁合同信息
@@ -8171,6 +8365,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      */
     deleteOwner(id: string, options?: any) {
       return DefaultApiFp(configuration).deleteOwner(id, options)(fetch, basePath);
+    },
+    /**
+     * 根据ID删除常规支出
+     * @summary 删除常规支出
+     * @param {string} id 常规支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRegularExpense(id: string, options?: any) {
+      return DefaultApiFp(configuration).deleteRegularExpense(id, options)(fetch, basePath);
     },
     /**
      * 根据ID删除租赁合同
@@ -8740,6 +8944,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).updateOwner(body, id, options)(fetch, basePath);
     },
     /**
+     * 根据ID更新常规支出
+     * @summary 更新常规支出
+     * @param {RegularExpenseBase} body 常规支出信息
+     * @param {string} id 常规支出ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateRegularExpense(body: RegularExpenseBase, id: string, options?: any) {
+      return DefaultApiFp(configuration).updateRegularExpense(body, id, options)(fetch, basePath);
+    },
+    /**
      * 根据ID更新租赁合同
      * @summary 更新租赁合同
      * @param {RentalContractInRequest} body 租赁合同信息
@@ -8930,6 +9145,18 @@ export class DefaultApi extends BaseAPI {
   }
 
   /**
+   * 新建常规支出
+   * @summary 新建常规支出
+   * @param {RegularExpenseBase} body 常规支出信息
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createRegularExpense(body: RegularExpenseBase, options?: any) {
+    return DefaultApiFp(this.configuration).createRegularExpense(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
    * 新建租赁合同
    * @summary 新建租赁合同
    * @param {RentalContractInRequest} body 租赁合同信息
@@ -9059,6 +9286,18 @@ export class DefaultApi extends BaseAPI {
    */
   public deleteOwner(id: string, options?: any) {
     return DefaultApiFp(this.configuration).deleteOwner(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID删除常规支出
+   * @summary 删除常规支出
+   * @param {string} id 常规支出ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteRegularExpense(id: string, options?: any) {
+    return DefaultApiFp(this.configuration).deleteRegularExpense(id, options)(this.fetch, this.basePath);
   }
 
   /**
@@ -9732,6 +9971,19 @@ export class DefaultApi extends BaseAPI {
    */
   public updateOwner(body: OwnerInRequest, id: string, options?: any) {
     return DefaultApiFp(this.configuration).updateOwner(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID更新常规支出
+   * @summary 更新常规支出
+   * @param {RegularExpenseBase} body 常规支出信息
+   * @param {string} id 常规支出ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateRegularExpense(body: RegularExpenseBase, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).updateRegularExpense(body, id, options)(this.fetch, this.basePath);
   }
 
   /**

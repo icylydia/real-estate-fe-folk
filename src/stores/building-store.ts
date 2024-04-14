@@ -5,8 +5,8 @@ import {
   BuildingDetailResponse,
   BuildingInRequest,
   BuildingListResponseItems, BuildingOptionsResponse, FileBase,
-  PaginationResponsePagination,
-  RegularExpenseBase, RoomOptionsResponse
+  PaginationResponsePagination, RegularExpenseBase,
+  RoomOptionsResponse
 } from 'src/api';
 
 export type BuildingFormModel = Partial<
@@ -31,7 +31,6 @@ export const useBuildingStore = defineStore('building', {
     searchParams: {} as GetBuildingListRequest,
     list: [] as BuildingListResponseItems[],
     formModel: defaultFormModel,
-    regularExpenseModel: {} as RegularExpenseBase,
     fileModel: {} as FileBase,
     buildingOptions: [] as BuildingOptionsResponse[],
     roomOptions: [] as RoomOptionsResponse[],
@@ -39,10 +38,6 @@ export const useBuildingStore = defineStore('building', {
   actions: {
     resetFormModel() {
       this.formModel = Object.assign({}, defaultFormModel);
-    },
-
-    resetRegularExpenseModel() {
-      this.regularExpenseModel = {} as RegularExpenseBase;
     },
 
     resetFileModel() {
@@ -97,6 +92,29 @@ export const useBuildingStore = defineStore('building', {
     async getRoomOptions(buildingId: string) {
       const resp = await api.getRoomOptions(buildingId);
       this.roomOptions = resp ?? [];
+    },
+
+    appendRegularExpense(regularExpense: RegularExpenseBase) {
+      if (this.formModel.regularExpenses) {
+        this.formModel.regularExpenses.push(regularExpense)
+      } else {
+        this.formModel.regularExpenses = [regularExpense]
+      }
+    },
+
+    replaceRegularExpense(regularExpense: RegularExpenseBase) {
+      if (this.formModel.regularExpenses) {
+        const index = this.formModel.regularExpenses.findIndex(re => re.id === regularExpense.id)
+        if (index !== -1) {
+          this.formModel.regularExpenses[index] = regularExpense
+        }
+      }
+    },
+
+    removeRegularExpense(id: number) {
+      if (this.formModel.regularExpenses) {
+        this.formModel.regularExpenses = this.formModel.regularExpenses.filter(regularExpense => regularExpense.id !== id)
+      }
     },
 
     appendFile(file: FileBase) {

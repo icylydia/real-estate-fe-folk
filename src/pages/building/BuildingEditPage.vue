@@ -43,7 +43,7 @@ const onSave = async () => {
   try {
     saving.value = true;
     const data = validation.values;
-    const necessaryData = _.omit(data, ['image', 'regularExpenses']);
+    const necessaryData = _.omit(data, ['image']);
     const newBuilding = {
       ...useBuildingStore().formModel,
       ...necessaryData,

@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
 import QInputArea from 'components/extension/QInputArea.vue';
-import RegularExpenseDialog from 'components/building/RegularExpenseDialog.vue';
-import { QTableProps } from 'quasar';
-import { RegularExpenseBase } from 'src/api';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import _ from 'lodash';
@@ -16,9 +13,8 @@ import { useBuilding } from 'src/utils/building';
 import { useAddressStore } from 'stores/address-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import QInputPercentage from 'components/extension/QInputPercentage.vue';
-import { usePayment } from 'src/utils/payment';
 
-const props = defineProps({
+defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -46,96 +42,6 @@ const {
 } = useBuilding();
 
 const { toastHandler } = useErrorHandler();
-
-const regularExpenseColumns: QTableProps['columns'] = (() => {
-  let columns: QTableProps['columns'] = [
-    {
-      name: 'category',
-      label: 'カテゴリ',
-      field: 'category',
-      align: 'left',
-      sortable: false,
-    },
-    {
-      name: 'targetMonths',
-      label: '月',
-      field: 'targetMonths',
-      align: 'right',
-      sortable: false,
-    },
-    {
-      name: 'targetDay',
-      label: '日',
-      field: 'targetDay',
-      align: 'right',
-      sortable: false,
-    },
-    {
-      name: 'amount',
-      label: '金額(税抜)',
-      field: (row: RegularExpenseBase) => row.amount?.toLocaleString(),
-      align: 'right',
-      sortable: false,
-    },
-    {
-      name: 'tax',
-      label: '消費税',
-      field: (row: RegularExpenseBase) => row.tax?.toLocaleString(),
-      align: 'right',
-      sortable: false,
-    },
-  ];
-  if (!props.readonly) {
-    columns.push({
-      name: 'actions',
-      label: '操作',
-      field: 'actions',
-      align: 'right',
-      sortable: false,
-    });
-  }
-  return columns;
-})()
-
-const { regularExpenseModel: regularExpense } = storeToRefs(useBuildingStore());
-const { resetRegularExpenseModel } = useBuildingStore();
-const { describeExpenseCategory } = usePayment();
-const showDialog = ref(false);
-const dialogMode = ref<'add' | 'edit'>('add');
-const editingIndex = ref<number | null>(null);
-
-const showAddingDialog = () => {
-  resetRegularExpenseModel();
-  dialogMode.value = 'add';
-  showDialog.value = true;
-}
-
-const handleDialogSubmit = (regularExpense: RegularExpenseBase) => {
-  if (dialogMode.value === 'add') {
-    building.value.regularExpenses?.push(regularExpense);
-  } else {
-    const index = editingIndex.value;
-    if (index === null) {
-      return;
-    }
-    building.value.regularExpenses?.splice(index, 1, regularExpense);
-  }
-}
-
-const removeRegularExpense = (index: number) => {
-  building.value.regularExpenses?.splice(index, 1);
-}
-
-const editRegularExpense = (index: number) => {
-  const model = building.value.regularExpenses?.[index];
-  if (!model) {
-    return;
-  }
-  editingIndex.value = index;
-  regularExpense.value = _.cloneDeep(model);
-  dialogMode.value = 'edit';
-  showDialog.value = true;
-}
 
 const {
   defaultMainPhotoUrl,
@@ -653,64 +559,4 @@ defineExpose({
       </q-item>
     </Field>
   </q-list>
-  <q-separator class="q-mt-md"/>
-  <div class="fit row wrap justify-between items-start content-start">
-    <div class="q-mt-md text-h6">
-      経常支出{{ readonly ? '（閲覧）' : '（編集）' }}
-    </div>
-    <q-btn
-      v-if="!readonly"
-      class="q-mt-md"
-      color="primary"
-      label="追加"
-      icon="sym_r_add"
-      @click="showAddingDialog"
-    />
-  </div>
-  <q-table
-    :rows="building.regularExpenses"
-    :columns="regularExpenseColumns"
-    flat
-    hide-pagination
-    :pagination="{
-      rowsPerPage: 0,
-    }"
-  >
-    <template #[`body-cell-category`]="{ row }: { row: RegularExpenseBase }">
-      <q-td>
-        {{ describeExpenseCategory(row.category) }}
-      </q-td>
-    </template>
-    <template #[`body-cell-targetMonths`]="{ row }: { row: RegularExpenseBase }">
-      <q-td class="text-right" v-if="row.targetMonths?.length == 12">
-        毎月
-      </q-td>
-      <q-td class="text-right" v-else>
-        {{ row.targetMonths?.join(', ') }}
-      </q-td>
-    </template>
-    <template #[`body-cell-targetDay`]="{ row }: { row: RegularExpenseBase }">
-      <q-td class="text-right" v-if="row.targetDay == 'firstDay'">
-        月初
-      </q-td>
-      <q-td class="text-right" v-else-if="row.targetDay == 'lastDay'">
-        月末
-      </q-td>
-      <q-td class="text-right" v-else>
-        {{ row.targetDay }}
-      </q-td>
-    </template>
-    <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: number }">
-      <q-td class="text-right">
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRegularExpense(rowIndex)"/>
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRegularExpense(rowIndex)"/>
-      </q-td>
-    </template>
-  </q-table>
-  <regular-expense-dialog
-      :show="showDialog"
-      :mode="dialogMode"
-      @update:show="showDialog = $event"
-      @submit="handleDialogSubmit"
-  />
 </template>

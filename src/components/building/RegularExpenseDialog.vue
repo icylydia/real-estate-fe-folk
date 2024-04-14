@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useBuildingStore } from 'stores/building-store';
 import { useBuilding } from 'src/utils/building';
 import { PropType } from 'vue';
 import { usePayment } from 'src/utils/payment';
 import { RegularExpenseBase } from 'src/api';
 import _ from 'lodash';
+import { useRegularExpenseStore } from 'stores/regular-expense-store';
 
 defineProps({
   show: {
@@ -18,12 +18,12 @@ defineProps({
   },
 });
 
-const emit = defineEmits([
-  'update:show',
-  'submit',
-]);
+const emit = defineEmits<{
+  'update:show': [value: boolean]
+  submit: [value: RegularExpenseBase]
+}>();
 
-const { regularExpenseModel: model } = storeToRefs(useBuildingStore());
+const { model } = storeToRefs(useRegularExpenseStore());
 const { regularExpenseOptions: categoryOptions } = useBuilding();
 const { paymentMethodOptions } = usePayment();
 
