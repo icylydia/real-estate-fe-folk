@@ -27,12 +27,12 @@ const handleDialogSubmit = async (data: FileBase, file: File) => {
       useRoomStore().appendFile(resp);
     }
   } catch (e) {
-    toastHandler('ファイルのアップロードに失敗しました');
+    await toastHandler('ファイルのアップロードに失敗しました');
   }
 }
 
 const { formModel: room } = storeToRefs(useRoomStore());
-const files = computed(() => room.value.files);
+const files = computed(() => room.value.files ?? []);
 
 const { describeCategory } = useFile();
 
@@ -56,7 +56,7 @@ const deleteFile = async (file: FileBase) => {
       await useFileStore().deleteFile(file.id);
       useBuildingStore().removeFile(file.id);
     } catch (e) {
-      toastHandler('ファイルの削除に失敗しました');
+      await toastHandler('ファイルの削除に失敗しました');
     }
   });
 }

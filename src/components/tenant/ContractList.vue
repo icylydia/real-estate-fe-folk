@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 
 const tenantStore = useTenantStore();
 const { statusToChipProps, promptRemindStatusToChipProps } = useContractStore();
-const contracts = computed(() => tenantStore.formModel.contracts);
+const contracts = computed(() => tenantStore.formModel.contracts ?? []);
 
 const columns: QTableProps['columns'] = [
   {
@@ -123,7 +123,7 @@ const promptToUpdateContract = async (id?: string) => {
                   params: { id: row.building!.id },
                 }).href"
         >
-          {{ row.building.name }}
+          {{ row.building!.name }}
         </a>
       </q-td>
     </template>
@@ -135,7 +135,7 @@ const promptToUpdateContract = async (id?: string) => {
                   params: { id: row.room!.id },
                 }).href"
         >
-          {{ row.room.name }}
+          {{ row.room!.name }}
         </a>
       </q-td>
     </template>

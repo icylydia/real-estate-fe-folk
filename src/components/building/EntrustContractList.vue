@@ -7,7 +7,7 @@ import { EntrustContractInResponse } from 'src/api';
 import { useContractStore } from 'stores/contract-store';
 
 const { formModel: building } = storeToRefs(useBuildingStore());
-const contracts = computed(() => building.value.activeEntrustContracts);
+const contracts = computed(() => building.value.activeEntrustContracts ?? []);
 const {
   statusToChipProps,
 } = useContractStore();

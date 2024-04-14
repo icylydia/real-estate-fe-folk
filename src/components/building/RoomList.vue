@@ -52,7 +52,7 @@ const columns: QTableProps['columns'] = [
   },
 ]
 
-const rooms = computed(() => storeToRefs(useBuildingStore()).formModel.value.rooms);
+const rooms = computed(() => storeToRefs(useBuildingStore()).formModel.value.rooms ?? []);
 const buildingId = computed(() => storeToRefs(useBuildingStore()).formModel.value.id);
 
 const roomDetail = (key: number) => {

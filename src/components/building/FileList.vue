@@ -26,12 +26,12 @@ const handleDialogSubmit = async (data: FileBase, file: File) => {
       useBuildingStore().appendFile(resp);
     }
   } catch (e) {
-    toastHandler('ファイルのアップロードに失敗しました');
+    await toastHandler('ファイルのアップロードに失敗しました');
   }
 }
 
 const { formModel: building } = storeToRefs(useBuildingStore());
-const files = computed(() => building.value.files);
+const files = computed(() => building.value.files ?? []);
 
 const { describeCategory } = useFile();
 
@@ -55,7 +55,7 @@ const deleteFile = async (file: FileBase) => {
       await useFileStore().deleteFile(file.id);
       useBuildingStore().removeFile(file.id);
     } catch (e) {
-      toastHandler('ファイルの削除に失敗しました');
+      await toastHandler('ファイルの削除に失敗しました');
     }
   });
 }

@@ -63,7 +63,7 @@ const editEmployee = async (key: number) => {
 <template>
   <q-table
     flat
-    :rows="department.employees"
+    :rows="department.employees ?? []"
     :columns="columns"
     row-key="id"
     hide-bottom

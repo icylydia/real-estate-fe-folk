@@ -14,7 +14,7 @@ const {
   promptRemindStatusToChipProps,
 } = useContractStore();
 
-const contracts = computed(() => building.value.activeContracts);
+const contracts = computed(() => building.value.activeContracts ?? []);
 
 const columns: QTableProps['columns'] = [
   {

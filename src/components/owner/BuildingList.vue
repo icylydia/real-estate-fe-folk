@@ -5,7 +5,7 @@ import { useOwnerStore } from 'stores/owner-store';
 import { computed } from 'vue';
 
 const ownerStore = useOwnerStore();
-const buildings = computed(() => ownerStore.formModel.buildings);
+const buildings = computed(() => ownerStore.formModel.buildings ?? []);
 
 const columns: QTableProps['columns'] = [
   {
@@ -66,7 +66,10 @@ const columns: QTableProps['columns'] = [
     </template>
     <template #[`body-cell-address`]="{ row }: { row: BuildingInResponse }">
       <q-td>
-        {{ row.address.prefectureName }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
+        <template v-if="row.address">
+          {{ row.address.prefectureName }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
+        </template>
+        <template v-else>-</template>
       </q-td>
     </template>
   </q-table>
