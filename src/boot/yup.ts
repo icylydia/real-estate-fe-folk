@@ -31,3 +31,11 @@ yup.addMethod(yup.string, 'date', function () {
       '日付の形式が正しくありません。',
       );
 });
+
+yup.addMethod(yup.string, 'yearMonth', function () {
+  return this
+    .matches(
+      /^\d{4}[-/.]\d{1,2}$/,
+      '年月の形式が正しくありません。',
+      );
+});

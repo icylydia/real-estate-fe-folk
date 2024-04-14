@@ -14,5 +14,6 @@ declare module 'yup' {
     birthday(): StringSchema;
     postalCode(): StringSchema;
     date(): StringSchema;
+    yearMonth(): StringSchema;
   }
 }

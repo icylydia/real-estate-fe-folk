@@ -112,11 +112,11 @@ const validationSchema = toTypedSchema(object({
     .min(0)
     .label('地下階数'),
   completionDate: string()
-    .date()
+    .yearMonth()
     .transform((value) => value === '' ? null : value)
     .notRequired()
     .nullable()
-    .label('新築年月日'),
+    .label('新築年月'),
   totalUnits: number()
     .notRequired()
     .nullable()
@@ -354,9 +354,9 @@ defineExpose({
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="新築年月日"
+            label="新築年月"
             :readonly="readonly"
-            hint="フォーマット: 2021-01-01"
+            hint="フォーマット: 2021-01"
           />
         </q-item-section>
       </q-item>
