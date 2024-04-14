@@ -44,7 +44,7 @@ const onSave = async () => {
   saving.value = true;
   try {
     const data = validation.values;
-    const necessaryData = _.omit(data, ['regularIncomes']);
+    const necessaryData = _.omit(data, []);
     const newContract: RentalContractFormModel = {
       ...useContractStore().rentalContractFormModel,
       ...necessaryData,

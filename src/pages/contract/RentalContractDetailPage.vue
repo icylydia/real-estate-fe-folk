@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useContractStore } from 'stores/contract-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { storeToRefs } from 'pinia';
+import RegularIncomeList from 'components/contract/RegularIncomeList.vue';
 
 const loading = ref(false);
 const router = useRouter()
@@ -23,7 +24,7 @@ const toEdit = async () => {
   try {
     await router.push({ name: 'rental-contract-edit', params: { id: contractId.value } });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -36,7 +37,7 @@ onMounted(async () => {
       loading.value = false;
     });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
     loading.value = false;
   }
 });
@@ -45,7 +46,7 @@ const statusToActive = async () => {
   try {
     await useContractStore().activeRentalContract(contractId.value);
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -53,7 +54,7 @@ const statusToPreRenewal = async () => {
   try {
     await useContractStore().preRenewRentalContract(contractId.value);
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -61,7 +62,7 @@ const statusToPreTerminated = async () => {
   try {
     await useContractStore().preTerminateRentalContract(contractId.value);
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -69,7 +70,7 @@ const statusToTerminated = async () => {
   try {
     await useContractStore().terminateRentalContract(contractId.value);
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 </script>
@@ -144,6 +145,11 @@ const statusToTerminated = async () => {
           v-if="!loading"
         />
       </q-card-actions>
+    </q-card>
+    <q-card bordered class="q-mt-md">
+      <q-card-section>
+        <regular-income-list />
+      </q-card-section>
     </q-card>
   </q-page>
 </template>

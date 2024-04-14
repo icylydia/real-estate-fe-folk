@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 import _ from 'lodash';
-import { useContractStore } from 'stores/contract-store';
 import { storeToRefs } from 'pinia';
 import { RentalContractRegularIncome } from 'src/api';
 import { useRentalContract } from 'src/utils/rental-contract';
 import { usePayment } from 'src/utils/payment';
+import { useRegularIncomeStore } from 'stores/regular-income-store';
 
 defineProps({
   show: {
@@ -18,12 +18,12 @@ defineProps({
   },
 });
 
-const emit = defineEmits([
-  'update:show',
-  'submit',
-]);
+const emit = defineEmits<{
+  'update:show': [value: boolean]
+  submit: [value: RentalContractRegularIncome]
+}>();
 
-const { regularIncomeModel: model } = storeToRefs(useContractStore());
+const { model } = storeToRefs(useRegularIncomeStore());
 const { regularIncomeCategoryOptions: categoryOptions } = useRentalContract();
 const { paymentMethodOptions } = usePayment();
 

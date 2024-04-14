@@ -8,17 +8,11 @@ import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
 import { useTenantStore } from 'stores/tenant-store';
 import { useRentalContract } from 'src/utils/rental-contract';
-import _ from 'lodash';
-import { QTableProps } from 'quasar';
-import RegularIncomeDialog from 'components/contract/RegularIncomeDialog.vue';
-import { RegularExpenseBase, RentalContractRegularIncome } from 'src/api';
-import { usePayment } from 'src/utils/payment';
 
 const { rentalContractFormModel: contract } = storeToRefs(useContractStore());
 const { describeStatus } = useRentalContract();
-const { describeIncomeCategory } = usePayment();
 
-const props = defineProps({
+defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -258,87 +252,6 @@ const handleBuildingChange = (e: any, callback: (e: any) => void) => {
   callback(e);
 };
 
-const { regularIncomeModel: regularIncome } = storeToRefs(useContractStore());
-const { resetRegularIncomeModel } = useContractStore();
-const showDialog = ref(false);
-const dialogMode = ref<'add' | 'edit'>('add');
-const editingIndex = ref<number | null>(null);
-const showAddingDialog = () => {
-  resetRegularIncomeModel();
-  dialogMode.value = 'add';
-  showDialog.value = true;
-}
-
-const editRegularIncome = (index: number) => {
-  const model = contract.value.regularIncomes?.[index];
-  if (!model) {
-    return;
-  }
-  editingIndex.value = index;
-  regularIncome.value = _.cloneDeep(model);
-  dialogMode.value = 'edit';
-  showDialog.value = true;
-}
-
-const removeRegularIncome = (index: number) => {
-  contract.value.regularIncomes?.splice(index, 1);
-}
-
-const handleDialogSubmit = (regularIncome: RentalContractRegularIncome) => {
-  if (dialogMode.value === 'add') {
-    contract.value.regularIncomes?.push(regularIncome);
-  } else {
-    const index = editingIndex.value;
-    if (index === null) {
-      return;
-    }
-    contract.value.regularIncomes?.splice(index, 1, regularIncome);
-  }
-}
-
-const regularIncomeColumns: QTableProps['columns'] = (() => {
-  let columns: QTableProps['columns'] = [
-    {
-      name: 'category',
-      label: 'カテゴリ',
-      field: 'category',
-      align: 'left',
-      sortable: false,
-    },
-    {
-      name: 'targetMonths',
-      label: '月',
-      field: 'targetMonths',
-      align: 'right',
-      sortable: false,
-    },
-    {
-      name: 'targetDay',
-      label: '日',
-      field: 'targetDay',
-      align: 'right',
-      sortable: false,
-    },
-    {
-      name: 'amount',
-      label: '金額',
-      field: 'amount',
-      align: 'right',
-      sortable: false,
-    },
-  ];
-  if (!props.readonly) {
-    columns.push({
-      name: 'actions',
-      label: '操作',
-      field: 'actions',
-      align: 'right',
-      sortable: false,
-    });
-  }
-  return columns;
-})();
-
 defineExpose({
   validate,
 })
@@ -510,65 +423,4 @@ defineExpose({
       </q-item>
     </Field>
   </q-list>
-  <q-separator class="q-mt-md"/>
-  <div class="fit row wrap justify-between items-start content-start">
-    <div class="q-mt-md text-h6">
-      経常収入{{ readonly ? '（閲覧）' : '（編集）' }}
-    </div>
-    <q-btn
-      v-if="!readonly"
-      class="q-mt-md"
-      color="primary"
-      label="追加"
-      icon="sym_r_add"
-      @click="showAddingDialog"
-    />
-  </div>
-  <q-table
-    :rows="contract.regularIncomes"
-    :columns="regularIncomeColumns"
-    flat
-    hide-pagination
-    :pagination="{
-      rowsPerPage: 0,
-    }"
-  >
-    <template #[`body-cell-category`]="{ row }: { row: RentalContractRegularIncome }">
-      <q-td>
-        {{ describeIncomeCategory(row.category) }}
-      </q-td>
-    </template>
-    <template #[`body-cell-targetMonths`]="{ row }: { row: RegularExpenseBase }">
-      <q-td class="text-right" v-if="row.targetMonths?.length == 12">
-        毎月
-      </q-td>
-      <q-td class="text-right" v-else>
-        {{ row.targetMonths?.join(', ') }}
-      </q-td>
-    </template>
-    <template #[`body-cell-targetDay`]="{ row }: { row: RegularExpenseBase }">
-      <q-td class="text-right" v-if="row.targetDay == 'firstDay'">
-        月初
-      </q-td>
-      <q-td class="text-right" v-else-if="row.targetDay == 'lastDay'">
-        月末
-      </q-td>
-      <q-td class="text-right" v-else>
-        {{ row.targetDay }}
-      </q-td>
-    </template>
-    <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: number }">
-      <q-td class="text-right">
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editRegularIncome(rowIndex)"/>
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeRegularIncome(rowIndex)"/>
-      </q-td>
-    </template>
-  </q-table>
-  <regular-income-dialog
-    ref="regularIncomeDialog"
-    :show="showDialog"
-    :mode="dialogMode"
-    @update:show="showDialog = $event"
-    @submit="handleDialogSubmit"
-  />
 </template>

@@ -40,7 +40,6 @@ export const useContractStore = defineStore('contract', {
     entrustContractList: [] as EntrustContractInResponse[],
     rentalContractFormModel: defaultRentalContractFormModel,
     entrustContractFormModel: defaultEntrustContractFormModel,
-    regularIncomeModel: {} as RentalContractRegularIncome,
     managementFeeModel: {} as EntrustContractManagementFeeBase,
   }),
   actions: {
@@ -166,11 +165,31 @@ export const useContractStore = defineStore('contract', {
           return null;
       }
     },
-    resetRegularIncomeModel() {
-      this.regularIncomeModel = {} as RentalContractRegularIncome;
-    },
     resetManagementFeeModel() {
       this.managementFeeModel = {} as EntrustContractManagementFeeBase;
+    },
+
+    appendRegularIncome(income: RentalContractRegularIncome) {
+      if (this.rentalContractFormModel.regularIncomes) {
+        this.rentalContractFormModel.regularIncomes.push(income)
+      } else {
+        this.rentalContractFormModel.regularIncomes = [income]
+      }
+    },
+
+    replaceRegularIncome(income: RentalContractRegularIncome) {
+      if (this.rentalContractFormModel.regularIncomes) {
+        const index = this.rentalContractFormModel.regularIncomes.findIndex(re => re.id === income.id)
+        if (index !== -1) {
+          this.rentalContractFormModel.regularIncomes[index] = income
+        }
+      }
+    },
+
+    removeRegularIncome(id: number) {
+      if (this.rentalContractFormModel.regularIncomes) {
+        this.rentalContractFormModel.regularIncomes = this.rentalContractFormModel.regularIncomes.filter(income => income.id !== id)
+      }
     },
   }
 });

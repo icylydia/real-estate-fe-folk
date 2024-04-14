@@ -22,7 +22,7 @@ const save = async () => {
     }
     saving.value = true;
     const data = validation.values;
-    const necessaryData = _.omit(data, ['regularIncomes']);
+    const necessaryData = _.omit(data, []);
     const payload = {
       ...useContractStore().rentalContractFormModel,
       ...necessaryData
