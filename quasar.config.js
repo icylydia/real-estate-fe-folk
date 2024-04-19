@@ -12,6 +12,13 @@
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 
+// load environment variables
+const env = process.env.ENV;
+if (env !== undefined) {
+  const configPath = `.env.${env}`;
+  require('dotenv').config({ path: configPath });
+}
+
 module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
@@ -30,6 +37,7 @@ module.exports = configure(function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
+      'theme',
       'i18n',
       'api',
       'vee-validate',
@@ -115,7 +123,7 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
       config: {
-        dark: true // or Boolean true/false
+        dark: true, // or Boolean true/false
       },
 
       // iconSet: 'material-icons', // Quasar icon set

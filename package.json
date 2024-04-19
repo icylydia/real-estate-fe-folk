@@ -11,7 +11,7 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "dev-wt": "VITE_APP_API_URL=https://real-estate-wt-be.alpha-technology.com/api quasar dev",
-    "build-wt": "VITE_APP_API_URL=https://real-estate-wt-be.alpha-technology.com/api quasar build",
+    "build-wt": "ENV=wt quasar build",
     "build-chuwa": "VITE_APP_API_URL=https://chuwa-api.alphatechs.co.jp/api quasar build"
   },
   "dependencies": {
@@ -42,6 +42,7 @@
     "@typescript-eslint/eslint-plugin": "^7.7.0",
     "@typescript-eslint/parser": "^7.7.0",
     "autoprefixer": "^10.4.19",
+    "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.25.0",
