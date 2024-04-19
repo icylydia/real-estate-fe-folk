@@ -39,8 +39,8 @@ const buildingOptions = ref<Array<{
 const getAllBuildingOptions = () => {
   return useBuildingStore().buildingOptions.map((v) => {
     return {
-      name: v.name || '',
-      id: v.id || '',
+      name: v.name ?? '',
+      id: v.id ?? '',
     };
   });
 };
@@ -97,9 +97,9 @@ const ownerOptions = ref<Array<OwnerOption> | undefined>(undefined);
 const getAllOwnerOptions = () => {
   return useOwnerStore().ownerOptions.map((v) => {
     return {
-      id: v.id || '',
-      lastName: v.lastName || '',
-      firstName: v.firstName || '',
+      id: v.id ??'',
+      lastName: v.lastName ?? '',
+      firstName: v.firstName ?? '',
     };
   });
 };
@@ -151,8 +151,6 @@ const onFilterOwner = (inputValue: string, doneFn: (callbackFn: () => void) => v
  **********************/
 const validationSchema = toTypedSchema(object({
   id: string().nullable().notRequired().label('管理番号'),
-  title: string().nullable().notRequired().label('タイトル'),
-  description: string().nullable().notRequired().label('説明'),
   building: object({
     id: string().required().label('物件ID'),
   }).required().label('物件'),
@@ -191,6 +189,7 @@ const validationSchema = toTypedSchema(object({
     telephone: string().nullable().notRequired().label('電話番号'),
     email: string().nullable().notRequired().label('メールアドレス'),
   }).nullable().notRequired().label('海外銀行'),
+  description: string().nullable().notRequired().label('備考'),
 }));
 
 const initialValues: any = computed( () => {
@@ -305,36 +304,6 @@ const managementFeeColumns: QTableProps['columns'] = (() => {
         <q-input v-model="contract.id" label="管理番号" readonly />
       </q-item-section>
     </q-item>
-    <Field name="title" #="{errorMessage, value, handleChange}">
-      <q-item class="col-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="タイトル"
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="description" #="{errorMessage, value, handleChange}">
-      <q-item class="col-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="説明"
-            autogrow
-            clearable
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
     <Field name="building" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
@@ -405,27 +374,43 @@ const managementFeeColumns: QTableProps['columns'] = (() => {
         </q-item-section>
       </q-item>
     </Field>
+    <Field name="description" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="備考"
+            autogrow
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
     <Field name="remittanceType" #="{errorMessage, value, handleChange}">
       <q-item class="col-12">
         <q-item-section>
           <div class="q-gutter-sm">
             <q-radio
               :model-value="value"
-              @update:model-value="handleChange"
+              @update:model-value="v => handleChange(v)"
               :error-message="errorMessage"
               :error="!!errorMessage"
               label="日本銀行"
               val="japan"
-              :readonly="readonly"
+              :disable="readonly"
             />
             <q-radio
               :model-value="value"
-              @update:model-value="handleChange"
+              @update:model-value="v => handleChange(v)"
               :error-message="errorMessage"
               :error="!!errorMessage"
               label="海外銀行"
               val="overseas"
-              :readonly="readonly"
+              :disable="readonly"
             />
           </div>
         </q-item-section>
@@ -466,21 +451,21 @@ const managementFeeColumns: QTableProps['columns'] = (() => {
             <div class="q-gutter-sm">
               <q-radio
                 :model-value="value"
-                @update:model-value="handleChange"
+                @update:model-value="v => handleChange(v)"
                 :error-message="errorMessage"
                 :error="!!errorMessage"
                 label="普通"
                 val="savings"
-                :readonly="readonly"
+                :disable="readonly"
               />
               <q-radio
                 :model-value="value"
-                @update:model-value="handleChange"
+                @update:model-value="v => handleChange(v)"
                 :error-message="errorMessage"
                 :error="!!errorMessage"
                 label="当座"
                 val="current"
-                :readonly="readonly"
+                :disable="readonly"
               />
             </div>
           </q-item-section>
@@ -703,7 +688,7 @@ const managementFeeColumns: QTableProps['columns'] = (() => {
     />
   </div>
   <q-table
-    :rows="contract.managementFees"
+    :rows="contract.managementFees ?? []"
     :columns="managementFeeColumns"
     flat
     hide-pagination

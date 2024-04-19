@@ -207,8 +207,6 @@ const onFilterRenter = (inputValue: string, doneFn: (callbackFn: () => void) => 
  * Form validation
  **********************/
 const validationSchema = toTypedSchema(object({
-  title: string().nullable().notRequired().label('タイトル'),
-  description: string().notRequired().nullable().label('説明'),
   building: object({
     id: string().required().label('物件'),
   }).required().label('物件'),
@@ -233,7 +231,8 @@ const validationSchema = toTypedSchema(object({
       is: true,
       then: (schema) => schema.required().label('契約終了日の何ヶ月前に通知するか'),
       otherwise: (schema) => schema.notRequired().nullable(),
-    })
+    }),
+  description: string().notRequired().nullable().label('備考'),
 }));
 
 const initialValues: any = computed( () => {
@@ -274,36 +273,6 @@ defineExpose({
         <q-input v-model="contract.id" label="管理番号" readonly />
       </q-item-section>
     </q-item>
-    <Field name="title" #="{errorMessage, value, field}">
-      <q-item class="col-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            v-bind="field"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="タイトル"
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
-    <Field name="description" #="{errorMessage, value, field}">
-      <q-item class="col-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            v-bind="field"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="説明"
-            autogrow
-            clearable
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
     <Field name="building" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
@@ -417,6 +386,22 @@ defineExpose({
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="契約終了日の何ヶ月前に通知するか"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="description" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="備考"
+            autogrow
+            clearable
             :readonly="readonly"
           />
         </q-item-section>

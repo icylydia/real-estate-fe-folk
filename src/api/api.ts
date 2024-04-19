@@ -639,12 +639,6 @@ export interface BuildingOptionsResponse {
  */
 export interface ContractBase {
   /**
-   * 合同标题
-   * @type {string}
-   * @memberof ContractBase
-   */
-  title?: string;
-  /**
    * 合同描述
    * @type {string}
    * @memberof ContractBase
