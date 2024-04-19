@@ -1287,6 +1287,12 @@ export interface ExpenseBase extends PaymentBase {
    * @memberof ExpenseBase
    */
   category?: ExpenseBase.CategoryEnum;
+  /**
+   * 摘要
+   * @type {string}
+   * @memberof ExpenseBase
+   */
+  summary?: string;
 }
 
 /**

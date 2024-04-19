@@ -312,6 +312,7 @@ const validationSchema = toTypedSchema(object({
   paymentMethod: string().required().label('支払方法'),
   otherPaymentDescription: string().nullable().notRequired().label('支払方法'),
   note: string().nullable().notRequired().label('備考'),
+  summary: string().nullable().notRequired().label('摘要'),
 }));
 
 const initialValues: any = computed( () => {
@@ -566,6 +567,22 @@ defineExpose({
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="備考"
+            autogrow
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="summary" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="摘要"
             autogrow
             clearable
             :readonly="readonly"
