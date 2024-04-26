@@ -18,7 +18,7 @@ nvm use # 如果使用nvm
 
 ```bash
 corepack enable # 首次使用需要启用corepack
-yarn set version 1.22.1 # 指定使用yarn 1.22.1，Quasar暂时不支持yarn 2及以上版本
+yarn set version 1.22.19 # 指定使用yarn 1.22.19，Quasar暂时不支持yarn 2及以上版本
 ```
 
 ```bash
