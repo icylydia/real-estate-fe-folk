@@ -1,4 +1,4 @@
-name: Build WT Version on Ubuntu
+name: Build WT
 on:
   push:
     branches:
