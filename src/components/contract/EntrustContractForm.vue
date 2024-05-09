@@ -171,6 +171,7 @@ const validationSchema = toTypedSchema(object({
   japanBank: object({
     bankName: string().nullable().notRequired().label('銀行名'),
     branchName: string().nullable().notRequired().label('支店名'),
+    postBankBranchCode: string().nullable().notRequired().label('記号'),
     accountType: string().nullable().notRequired().label('口座種別'),
     accountNumber: string().nullable().notRequired().label('口座番号'),
     accountHolder: string().nullable().notRequired().label('口座名義'),
@@ -432,12 +433,26 @@ const managementFeeColumns: QTableProps['columns'] = (() => {
         </q-item>
       </Field>
       <Field name="japanBank.branchName" #="{errorMessage, value, handleChange}">
-        <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
           <q-item-section>
             <q-input
               :model-value="value"
               @update:model-value="handleChange"
               label="支店名"
+              :error-message="errorMessage"
+              :error="!!errorMessage"
+              :readonly="readonly"
+            />
+          </q-item-section>
+        </q-item>
+      </Field>
+      <Field name="japanBank.postBankBranchCode" #="{errorMessage, value, handleChange}">
+        <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+          <q-item-section>
+            <q-input
+              :model-value="value"
+              @update:model-value="handleChange"
+              label="記号"
               :error-message="errorMessage"
               :error="!!errorMessage"
               :readonly="readonly"

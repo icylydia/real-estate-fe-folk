@@ -1032,6 +1032,12 @@ export interface EntrustContractBaseJapanBank {
    */
   branchName?: string;
   /**
+   * 記号(郵貯専用)
+   * @type {string}
+   * @memberof EntrustContractBaseJapanBank
+   */
+  postBankBranchCode?: string;
+  /**
    * 預金種別 - `savings`: 普通預金/普通預金 - `current`: 当座預金/当座預金
    * @type {string}
    * @memberof EntrustContractBaseJapanBank
