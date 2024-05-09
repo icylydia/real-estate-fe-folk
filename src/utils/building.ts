@@ -138,7 +138,7 @@ export const useBuilding = () => {
     },
     {
       label: 'その他',
-      value: 'other',
+      value: 'otherExpenses',
     }
   ];
   const fileCategoryOptions: { label: string, value: string }[] = [
