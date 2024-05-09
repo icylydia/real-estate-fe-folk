@@ -299,7 +299,7 @@ const validationSchema = toTypedSchema(object({
     id: string().nullable().notRequired().label('大家さんID'),
     name: string().nullable().notRequired().label('大家さん名'),
   }).nullable().notRequired().label('大家さん'),
-  category: string().required().label('種類'),
+  category: string().required().label('カテゴリ'),
   targetYear: string()
     .required()
     .matches(/^[0-9]{4}$/, '対象年は4桁の数字で入力してください。')
@@ -431,7 +431,7 @@ defineExpose({
             @update:model-value="handleChange"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="種類"
+            label="カテゴリ"
             :readonly="readonly"
             emit-value
             map-options
