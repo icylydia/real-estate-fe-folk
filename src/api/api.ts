@@ -1222,7 +1222,7 @@ export interface EntrustContractManagementFeeBase {
    */
   entrustContractId?: number;
   /**
-   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `adjustmentFees`: 精算费/精算金 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `otherIncome`: 其他/その他
+   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `utilityCharges`: 水道光热费/水道光熱費 - `otherIncome`: 其他/その他
    * @type {string}
    * @memberof EntrustContractManagementFeeBase
    */
@@ -1263,13 +1263,13 @@ export namespace EntrustContractManagementFeeBase {
     SecurityDeposit = <any> 'securityDeposit',
     GuaranteeDeposit = <any> 'guaranteeDeposit',
     RenewalFees = <any> 'renewalFees',
-    AdjustmentFees = <any> 'adjustmentFees',
     ParkingFees = <any> 'parkingFees',
     BicycleParkingFees = <any> 'bicycleParkingFees',
     CleaningFees = <any> 'cleaningFees',
     ElectricityCharges = <any> 'electricityCharges',
     WaterCharges = <any> 'waterCharges',
     GasCharges = <any> 'gasCharges',
+    UtilityCharges = <any> 'utilityCharges',
     OtherIncome = <any> 'otherIncome'
   }
   /**
@@ -1538,7 +1538,7 @@ export interface IdCommentBody {
  */
 export interface IncomeBase extends PaymentBase {
   /**
-   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `adjustmentFees`: 精算费/精算金 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `otherIncome`: 其他/その他
+   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `utilityCharges`: 水道光热费/水道光熱費 - `otherIncome`: 其他/その他
    * @type {string}
    * @memberof IncomeBase
    */
@@ -1561,13 +1561,13 @@ export namespace IncomeBase {
     SecurityDeposit = <any> 'securityDeposit',
     GuaranteeDeposit = <any> 'guaranteeDeposit',
     RenewalFees = <any> 'renewalFees',
-    AdjustmentFees = <any> 'adjustmentFees',
     ParkingFees = <any> 'parkingFees',
     BicycleParkingFees = <any> 'bicycleParkingFees',
     CleaningFees = <any> 'cleaningFees',
     ElectricityCharges = <any> 'electricityCharges',
     WaterCharges = <any> 'waterCharges',
     GasCharges = <any> 'gasCharges',
+    UtilityCharges = <any> 'utilityCharges',
     OtherIncome = <any> 'otherIncome'
   }
 }
@@ -2352,7 +2352,7 @@ export interface RentalContractRegularIncome {
    */
   rentalContractId?: number;
   /**
-   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `adjustmentFees`: 精算费/精算金 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `otherIncome`: 其他/その他
+   * 类别 - `monthlyRent`: 月租/月額賃料 - `managementFees`: 管理费/管理共益費 - `keyMoney`: 礼金/礼金 - `securityDeposit`: 押金/敷金 - `guaranteeDeposit`: 保证金/保証金 - `renewalFees`: 续约费/更新料 - `parkingFees`: 停车费/駐車料 - `bicycleParkingFees`: 自行车停车费/駐輪料金 - `cleaningFees`: 清洁费/清掃料金 - `electricityCharges`: 电费/電気料金 - `waterCharges`: 水费/水道料金 - `gasCharges`: 煤气费/ガス代 - `utilityCharges`: 水道光热费/水道光熱費 - `otherIncome`: 其他/その他
    * @type {string}
    * @memberof RentalContractRegularIncome
    */
@@ -2417,13 +2417,13 @@ export namespace RentalContractRegularIncome {
     SecurityDeposit = <any> 'securityDeposit',
     GuaranteeDeposit = <any> 'guaranteeDeposit',
     RenewalFees = <any> 'renewalFees',
-    AdjustmentFees = <any> 'adjustmentFees',
     ParkingFees = <any> 'parkingFees',
     BicycleParkingFees = <any> 'bicycleParkingFees',
     CleaningFees = <any> 'cleaningFees',
     ElectricityCharges = <any> 'electricityCharges',
     WaterCharges = <any> 'waterCharges',
     GasCharges = <any> 'gasCharges',
+    UtilityCharges = <any> 'utilityCharges',
     OtherIncome = <any> 'otherIncome'
   }
   /**

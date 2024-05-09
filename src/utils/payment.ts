@@ -28,10 +28,6 @@ export const usePayment = () => {
       value: 'renewalFees',
     },
     {
-      label: '精算金',
-      value: 'adjustmentFees',
-    },
-    {
       label: '駐車料',
       value: 'parkingFees',
     },
@@ -54,6 +50,10 @@ export const usePayment = () => {
     {
       label: 'ガス代',
       value: 'gasCharges',
+    },
+    {
+      label: '水道光熱費',
+      value: 'utilityCharges',
     },
     {
       label: 'その他',
@@ -173,13 +173,13 @@ export const usePayment = () => {
       ['securityDeposit', '敷金'],
       ['guaranteeDeposit', '保証金'],
       ['renewalFees', '更新料'],
-      ['adjustmentFees', '精算金'],
       ['parkingFees', '駐車料'],
       ['bicycleParkingFees', '駐輪料金'],
       ['cleaningFees', '清掃料金'],
       ['electricityCharges', '電気料金'],
       ['waterCharges', '水道料金'],
       ['gasCharges', 'ガス代'],
+      ['utilityCharges', '水道光熱費'],
       ['otherIncome', 'その他'],
     ]);
     return dictionary.get(value) || '未知';

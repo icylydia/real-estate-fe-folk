@@ -61,10 +61,6 @@ const regularIncomeCategoryOptions: { label: string, value: string }[] = [
     value: 'renewalFees',
   },
   {
-    label: '精算金',
-    value: 'adjustmentFees',
-  },
-  {
     label: '駐車料',
     value: 'parkingFees',
   },
@@ -87,6 +83,10 @@ const regularIncomeCategoryOptions: { label: string, value: string }[] = [
   {
     label: 'ガス代',
     value: 'gasCharges',
+  },
+  {
+    label: '水道光熱費',
+    value: 'utilityCharges',
   },
   {
     label: 'その他',
