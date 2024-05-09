@@ -4481,12 +4481,13 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
      * @summary 委托管理合同列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [query] 查询条件
-     * @param {boolean} [includeArchived] 是否包含已归档的合同
+     * @param {string} [building] 建筑名称
+     * @param {string} [owner] 业主姓名
+     * @param {string} [status] 合同状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getEntrustContracts(itemsPerPage?: number, page?: number, query?: string, includeArchived?: boolean, options: any = {}): FetchArgs {
+    getEntrustContracts(itemsPerPage?: number, page?: number, building?: string, owner?: string, status?: string, options: any = {}): FetchArgs {
       const localVarPath = `/entrust-contracts`;
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
@@ -4512,12 +4513,16 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         localVarQueryParameter['page'] = page;
       }
 
-      if (query !== undefined) {
-        localVarQueryParameter['query'] = query;
+      if (building !== undefined) {
+        localVarQueryParameter['building'] = building;
       }
 
-      if (includeArchived !== undefined) {
-        localVarQueryParameter['includeArchived'] = includeArchived;
+      if (owner !== undefined) {
+        localVarQueryParameter['owner'] = owner;
+      }
+
+      if (status !== undefined) {
+        localVarQueryParameter['status'] = status;
       }
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
@@ -5038,13 +5043,14 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
      * @summary 租赁合同列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [buildingId] 建筑ID
-     * @param {string} [roomId] 房间ID
-     * @param {string} [tenantId] 租客ID
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [tenant] 租客姓名
+     * @param {string} [status] 合同状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getRentalContracts(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string, options: any = {}): FetchArgs {
+    getRentalContracts(itemsPerPage?: number, page?: number, building?: string, room?: string, tenant?: string, status?: string, options: any = {}): FetchArgs {
       const localVarPath = `/rental-contracts`;
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
@@ -5070,16 +5076,20 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
         localVarQueryParameter['page'] = page;
       }
 
-      if (buildingId !== undefined) {
-        localVarQueryParameter['buildingId'] = buildingId;
+      if (building !== undefined) {
+        localVarQueryParameter['building'] = building;
       }
 
-      if (roomId !== undefined) {
-        localVarQueryParameter['roomId'] = roomId;
+      if (room !== undefined) {
+        localVarQueryParameter['room'] = room;
       }
 
-      if (tenantId !== undefined) {
-        localVarQueryParameter['tenantId'] = tenantId;
+      if (tenant !== undefined) {
+        localVarQueryParameter['tenant'] = tenant;
+      }
+
+      if (status !== undefined) {
+        localVarQueryParameter['status'] = status;
       }
 
       localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
@@ -7398,13 +7408,14 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      * @summary 委托管理合同列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [query] 查询条件
-     * @param {boolean} [includeArchived] 是否包含已归档的合同
+     * @param {string} [building] 建筑名称
+     * @param {string} [owner] 业主姓名
+     * @param {string} [status] 合同状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getEntrustContracts(itemsPerPage?: number, page?: number, query?: string, includeArchived?: boolean, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<EntrustContractListResponse> {
-      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getEntrustContracts(itemsPerPage, page, query, includeArchived, options);
+    getEntrustContracts(itemsPerPage?: number, page?: number, building?: string, owner?: string, status?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<EntrustContractListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getEntrustContracts(itemsPerPage, page, building, owner, status, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -7631,14 +7642,15 @@ export const DefaultApiFp = function(configuration?: Configuration) {
      * @summary 租赁合同列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [buildingId] 建筑ID
-     * @param {string} [roomId] 房间ID
-     * @param {string} [tenantId] 租客ID
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [tenant] 租客姓名
+     * @param {string} [status] 合同状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getRentalContracts(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RentalContractListResponse> {
-      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getRentalContracts(itemsPerPage, page, buildingId, roomId, tenantId, options);
+    getRentalContracts(itemsPerPage?: number, page?: number, building?: string, room?: string, tenant?: string, status?: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RentalContractListResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).getRentalContracts(itemsPerPage, page, building, room, tenant, status, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
         return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
           if (response.status >= 200 && response.status < 300) {
@@ -8742,13 +8754,14 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      * @summary 委托管理合同列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [query] 查询条件
-     * @param {boolean} [includeArchived] 是否包含已归档的合同
+     * @param {string} [building] 建筑名称
+     * @param {string} [owner] 业主姓名
+     * @param {string} [status] 合同状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getEntrustContracts(itemsPerPage?: number, page?: number, query?: string, includeArchived?: boolean, options?: any) {
-      return DefaultApiFp(configuration).getEntrustContracts(itemsPerPage, page, query, includeArchived, options)(fetch, basePath);
+    getEntrustContracts(itemsPerPage?: number, page?: number, building?: string, owner?: string, status?: string, options?: any) {
+      return DefaultApiFp(configuration).getEntrustContracts(itemsPerPage, page, building, owner, status, options)(fetch, basePath);
     },
     /**
      * 根据ID获取支出详情
@@ -8876,14 +8889,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
      * @summary 租赁合同列表
      * @param {number} [itemsPerPage] 每页条数
      * @param {number} [page] 页码
-     * @param {string} [buildingId] 建筑ID
-     * @param {string} [roomId] 房间ID
-     * @param {string} [tenantId] 租客ID
+     * @param {string} [building] 建筑名称
+     * @param {string} [room] 房间号
+     * @param {string} [tenant] 租客姓名
+     * @param {string} [status] 合同状态
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getRentalContracts(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string, options?: any) {
-      return DefaultApiFp(configuration).getRentalContracts(itemsPerPage, page, buildingId, roomId, tenantId, options)(fetch, basePath);
+    getRentalContracts(itemsPerPage?: number, page?: number, building?: string, room?: string, tenant?: string, status?: string, options?: any) {
+      return DefaultApiFp(configuration).getRentalContracts(itemsPerPage, page, building, room, tenant, status, options)(fetch, basePath);
     },
     /**
      * 根据ID获取房间详情
@@ -9731,14 +9745,15 @@ export class DefaultApi extends BaseAPI {
    * @summary 委托管理合同列表
    * @param {number} [itemsPerPage] 每页条数
    * @param {number} [page] 页码
-   * @param {string} [query] 查询条件
-   * @param {boolean} [includeArchived] 是否包含已归档的合同
+   * @param {string} [building] 建筑名称
+   * @param {string} [owner] 业主姓名
+   * @param {string} [status] 合同状态
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getEntrustContracts(itemsPerPage?: number, page?: number, query?: string, includeArchived?: boolean, options?: any) {
-    return DefaultApiFp(this.configuration).getEntrustContracts(itemsPerPage, page, query, includeArchived, options)(this.fetch, this.basePath);
+  public getEntrustContracts(itemsPerPage?: number, page?: number, building?: string, owner?: string, status?: string, options?: any) {
+    return DefaultApiFp(this.configuration).getEntrustContracts(itemsPerPage, page, building, owner, status, options)(this.fetch, this.basePath);
   }
 
   /**
@@ -9887,15 +9902,16 @@ export class DefaultApi extends BaseAPI {
    * @summary 租赁合同列表
    * @param {number} [itemsPerPage] 每页条数
    * @param {number} [page] 页码
-   * @param {string} [buildingId] 建筑ID
-   * @param {string} [roomId] 房间ID
-   * @param {string} [tenantId] 租客ID
+   * @param {string} [building] 建筑名称
+   * @param {string} [room] 房间号
+   * @param {string} [tenant] 租客姓名
+   * @param {string} [status] 合同状态
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getRentalContracts(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string, options?: any) {
-    return DefaultApiFp(this.configuration).getRentalContracts(itemsPerPage, page, buildingId, roomId, tenantId, options)(this.fetch, this.basePath);
+  public getRentalContracts(itemsPerPage?: number, page?: number, building?: string, room?: string, tenant?: string, status?: string, options?: any) {
+    return DefaultApiFp(this.configuration).getRentalContracts(itemsPerPage, page, building, room, tenant, status, options)(this.fetch, this.basePath);
   }
 
   /**

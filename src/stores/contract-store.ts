@@ -34,17 +34,37 @@ const defaultEntrustContractFormModel: EntrustContractFormModel = {
   managementFees: [],
 }
 
+export interface GetRentalContractListRequest {
+  itemsPerPage?: number;
+  page?: number;
+  building?: string;
+  room?: string;
+  tenant?: string;
+  status?: ContractBase.StatusEnum;
+}
+
+export interface GetEntrustContractListRequest {
+  itemsPerPage?: number;
+  page?: number;
+  building?: string;
+  owner?: string;
+  status?: ContractBase.StatusEnum;
+}
+
 export const useContractStore = defineStore('contract', {
   state: () => ({
+    rentalContractSearchParams: {} as GetRentalContractListRequest,
     rentalContractList: [] as RentalContractInResponse[],
+    entrustContractSearchParams: {} as GetEntrustContractListRequest,
     entrustContractList: [] as EntrustContractInResponse[],
     rentalContractFormModel: defaultRentalContractFormModel,
     entrustContractFormModel: defaultEntrustContractFormModel,
     managementFeeModel: {} as EntrustContractManagementFeeBase,
   }),
   actions: {
-    async getRentalContractList(itemsPerPage?: number, page?: number, buildingId?: string, roomId?: string, tenantId?: string) {
-      const resp = await api.getRentalContracts(itemsPerPage, page, buildingId, roomId, tenantId);
+    async getRentalContractList(payload: GetRentalContractListRequest) {
+      const { itemsPerPage, page, building, room, tenant, status } = payload;
+      const resp = await api.getRentalContracts(itemsPerPage, page, building, room, tenant, status?.toString());
       this.rentalContractList = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;
     },
@@ -78,8 +98,9 @@ export const useContractStore = defineStore('contract', {
     resetRentalContractFormModel() {
       this.rentalContractFormModel = defaultRentalContractFormModel;
     },
-    async getEntrustContractList(itemsPerPage?: number, page?: number, query?: string, includeArchived?: boolean,) {
-      const resp = await api.getEntrustContracts(itemsPerPage, page, query, includeArchived);
+    async getEntrustContractList(payload: GetEntrustContractListRequest) {
+      const { itemsPerPage, page, building, owner, status } = payload;
+      const resp = await api.getEntrustContracts(itemsPerPage, page, building, owner, status?.toString());
       this.entrustContractList = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;
     },

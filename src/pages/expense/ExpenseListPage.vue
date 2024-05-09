@@ -155,9 +155,9 @@ const remove = (expense: ExpenseInResponse) => {
 type Pagination = {
   sortBy?: string;
   descending?: boolean;
-  page?: number;
-  rowsPerPage?: number;
-  rowsNumber?: number;
+  page: number;
+  rowsPerPage: number;
+  rowsNumber: number;
 };
 
 const pagination: Ref<Pagination> = ref({
@@ -180,7 +180,7 @@ const onPageChange = async () => {
   tableRef.value?.requestServerInteraction({ pagination: pagination.value });
 };
 
-const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
+const onRequest = async ({ pagination: _pagination }: { pagination: { page: number, rowsPerPage: number}}) => {
   try {
     loading.value = true;
     const { page, rowsPerPage } = _pagination;

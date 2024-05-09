@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useContractStore } from 'stores/contract-store';
+import { GetRentalContractListRequest, useContractStore } from 'stores/contract-store';
 import { QTable, QTableProps, useQuasar } from 'quasar';
 import { computed, onMounted, Ref, ref } from 'vue';
 import { RentalContractInResponse } from 'src/api';
 import { useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { useContract } from 'src/utils/contract';
 
-const { rentalContractList: contracts } = storeToRefs(useContractStore());
+const {
+  rentalContractList: contracts,
+  rentalContractSearchParams: searchParams,
+} = storeToRefs(useContractStore());
+const {
+  statusOptions,
+} = useContract();
 const {
   statusToChipProps,
   promptRemindStatusToChipProps,
@@ -89,7 +96,7 @@ const toContractDetail = async (id?: string) => {
       params: { id },
     });
   } catch (e) {
-    console.error(e);
+    await toastHandler(e);
   }
 };
 
@@ -101,7 +108,7 @@ const toContractEdit = async (id?: string) => {
       params: { id },
     });
   } catch (e) {
-    console.error(e);
+    await toastHandler(e);
   }
 };
 
@@ -117,7 +124,7 @@ const promptToUpdateContract = async (id?: string) => {
     try {
       await useContractStore().promptRemindRentalContract(id);
     } catch (e) {
-      toastHandler('更新を促すに失敗しました。')
+      await toastHandler('更新を促すに失敗しました。')
     }
     tableRef.value?.requestServerInteraction();
   });
@@ -134,16 +141,14 @@ const toNewContract = async () => {
 };
 
 
-const searchText = ref('');
 const search = async () => {
   tableRef.value?.requestServerInteraction({ pagination: { ...pagination.value, page: 1 } });
 };
-const includeArchive = ref(false);
 
 const archiveContract = async (contract: RentalContractInResponse) => {
   $q.dialog({
     title: '契約を削除',
-    message: `契約「${contract.title}」を削除しますか？`,
+    message: '契約を削除しますか？',
     ok: { label: '確認', color: 'negative'},
     cancel: { label: 'キャンセル', color: 'grey-8'},
     persistent: true,
@@ -154,7 +159,7 @@ const archiveContract = async (contract: RentalContractInResponse) => {
     try {
       await useContractStore().deleteRentalContract(contract.id);
     } catch (e) {
-      console.error(e);
+      await toastHandler(e);
     }
     tableRef.value?.requestServerInteraction();
   });
@@ -163,9 +168,9 @@ const archiveContract = async (contract: RentalContractInResponse) => {
 type Pagination = {
   sortBy?: string;
   descending?: boolean;
-  page?: number;
-  rowsPerPage?: number;
-  rowsNumber?: number;
+  page: number;
+  rowsPerPage: number;
+  rowsNumber: number;
 };
 
 const pagination: Ref<Pagination> = ref({
@@ -188,11 +193,19 @@ const onPageChange = async () => {
   tableRef.value?.requestServerInteraction({ pagination: pagination.value });
 };
 
-const onRequest = async ({ pagination: _pagination }: { pagination: Pagination}) => {
+const onRequest = async ({ pagination: _pagination }: { pagination: { page: number, rowsPerPage: number } }) => {
   try {
     loading.value = true;
     const { page, rowsPerPage } = _pagination;
-    const pageMeta = await useContractStore().getRentalContractList(rowsPerPage, page);
+    const payload: GetRentalContractListRequest = {
+      itemsPerPage: rowsPerPage,
+      page,
+      building: searchParams.value.building,
+      room: searchParams.value.room,
+      tenant: searchParams.value.tenant,
+      status: searchParams.value.status,
+    }
+    const pageMeta = await useContractStore().getRentalContractList(payload);
     pagination.value = {
       sortBy: undefined,
       descending: false,
@@ -201,7 +214,7 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
       rowsNumber: pageMeta.total ?? 0,
     };
   } catch (e) {
-    console.error(e);
+    await toastHandler(e);
   } finally {
     loading.value = false;
   }
@@ -225,29 +238,63 @@ const onRequest = async ({ pagination: _pagination }: { pagination: Pagination})
           ref="tableRef"
         >
           <template #top-right>
-            <q-checkbox
-              v-model="includeArchive"
-              label="アーカイブを含む"
-              class="q-mr-sm"
-            />
-            <q-input
-              outlined
-              dense
-              placeholder="検索"
-              class="q-mr-sm"
-              v-model="searchText"
-              @keydown.enter.prevent="search"
-            >
-              <template #append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
             <q-btn
               color="primary"
               icon="sym_r_add"
               label="新規契約"
               @click="toNewContract"
             />
+          </template>
+          <template #top-row>
+            <q-tr>
+              <q-td>
+                <q-input
+                  v-model="searchParams.building"
+                  label="物件名"
+                  dense
+                  @keyup.enter="search"
+                />
+              </q-td>
+              <q-td>
+                <q-input
+                  v-model="searchParams.room"
+                  label="区画番号"
+                  dense
+                  @keyup.enter="search"
+                />
+              </q-td>
+              <q-td>
+                <q-input
+                  v-model="searchParams.tenant"
+                  label="入居者"
+                  dense
+                  @keyup.enter="search"
+                />
+              </q-td>
+              <q-td></q-td>
+              <q-td></q-td>
+              <q-td>
+                <q-select
+                  v-model="searchParams.status"
+                  label="契約状況"
+                  dense
+                  clearable
+                  emit-value
+                  map-options
+                  :options="statusOptions"
+                  @input="search"
+                  style="min-width: 100px;"
+                />
+              </q-td>
+              <q-td></q-td>
+              <q-td class="text-right">
+                <q-btn
+                  label="検索"
+                  color="primary"
+                  @click="search"
+                />
+              </q-td>
+            </q-tr>
           </template>
           <template #[`body-cell-buildingName`]="{ row }: { row: RentalContractInResponse }">
             <q-td>
