@@ -661,13 +661,13 @@
   resolved "https://registry.npmjs.org/@vee-validate/i18n/-/i18n-4.12.7.tgz#8ee9fbdd9d4e37c2bfff2b70b2ef1cc811f53e9a"
   integrity sha512-Tcf9XSobXJ8Hstbn0AhThKNUp/LLqjtW/O7Eufbq4aa1mYFVP7JcXeBHm7Z90fTI2+Pe3t9L16AY9T7e5ZQ7Zw==
 
-"@vee-validate/yup@^4.12.7":
-  version "4.12.7"
-  resolved "https://registry.npmjs.org/@vee-validate/yup/-/yup-4.12.7.tgz#c760b7ae393cdb4382c44177ccb92875a4188ed6"
-  integrity sha512-Q9A2YqfJGRY9XXoqdvY5y/2ZteRizxDAGjOoxzjQPKHmNZbA99cD3qdzgJAxJxuMkBAYA2Jh7XDSlY/fMoOLSw==
+"@vee-validate/yup@^4.12.8":
+  version "4.12.8"
+  resolved "https://registry.yarnpkg.com/@vee-validate/yup/-/yup-4.12.8.tgz#b9a41ddb5315a1d5b9fef96629f8af5d733cb3de"
+  integrity sha512-0QNR2kcllSXoV4mtoY/XhMda87LDpuS2lq6vbVU94tn11tGHkwaGYPAaOqclc5zrkhRl3fANtc31NxnMYoejOA==
   dependencies:
     type-fest "^4.8.3"
-    vee-validate "4.12.7"
+    vee-validate "4.12.8"
     yup "^1.3.2"
 
 "@vitejs/plugin-vue@^2.2.0":
@@ -3520,10 +3520,10 @@ vary@~1.1.2:
   resolved "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vee-validate@4.12.7, vee-validate@^4.12.7:
-  version "4.12.7"
-  resolved "https://registry.npmjs.org/vee-validate/-/vee-validate-4.12.7.tgz#9eb2ac9e5d6e3c8b4425db04f2ac7d30c1ff40a0"
-  integrity sha512-1BGql4XNu/3TqHFjBLV6OrZ4fRteHXxRc9tLF5Q40IgIo1cwYEyaccC1AL3tdFUr2E3JsYhXbiEExoUSy4C9nA==
+vee-validate@4.12.8, vee-validate@^4.12.7:
+  version "4.12.8"
+  resolved "https://registry.yarnpkg.com/vee-validate/-/vee-validate-4.12.8.tgz#e12c8e8239f75305dee2fc539660e9079803c8ec"
+  integrity sha512-A07rm3+y7SRk0CMD/O4nBT0nxtwjyfzGZwjEUDk18SxK0ZMzd4AFCzzdHlIiCE1QgHetxd0I3kVkZdN0GG0Oww==
   dependencies:
     "@vue/devtools-api" "^6.6.1"
     type-fest "^4.8.3"
