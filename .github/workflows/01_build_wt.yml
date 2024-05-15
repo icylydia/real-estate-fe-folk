@@ -1,11 +1,5 @@
 name: Build WT
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,3 +19,6 @@ jobs:
       with:
         name: wt-dist
         path: dist
+        if-no-files-found: error
+        retention-days: 1
+        overwrite: true

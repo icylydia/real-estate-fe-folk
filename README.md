@@ -18,6 +18,7 @@
 ### 安装依赖
 
 ```bash
+nvm install # 首次使用时执行，安装指定的node版本
 nvm use # 如果使用nvm
 ```
 
