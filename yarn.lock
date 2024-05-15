@@ -2951,10 +2951,10 @@ qs@^6.11.2:
   dependencies:
     side-channel "^1.0.6"
 
-quasar@^2.16.1:
-  version "2.16.1"
-  resolved "https://registry.npmjs.org/quasar/-/quasar-2.16.1.tgz#0e1e69d9d9d744d5f5f5abf524c44aeee2693cf7"
-  integrity sha512-aTFt/K6JWTuPf2Jmf4d3vxsR8O505Aq8Z7Q5kkgbkfebJ1r5O0+62jOD9+k/uFihVb1mj3cfHuf3xUSoxoGdIw==
+quasar@^2.16.3:
+  version "2.16.3"
+  resolved "https://registry.yarnpkg.com/quasar/-/quasar-2.16.3.tgz#37e6a49a05f14525954afa5a02819aaa39643e4d"
+  integrity sha512-O/70ifo2lkLsF92sAyfc/CfqdcaPSBcbe/4tZw1MjlCvFf6RMykxucVeQqxX/MP39Rilz9K0VK8kghPhOqJymw==
 
 queue-microtask@^1.2.2:
   version "1.2.3"
