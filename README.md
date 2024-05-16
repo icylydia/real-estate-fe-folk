@@ -1,9 +1,6 @@
 # 不动产管理系统前端
 
-![chuwa workflow](https://github.com/alpha-techs/real-estate-fe/actions/workflows/02_build_chuwa.yml/badge.svg)
-
-![wt workflow](https://github.com/alpha-techs/real-estate-fe/actions/workflows/01_build_wt.yml/badge.svg)
-
+![build](https://github.com/alpha-techs/real-estate-fe/actions/workflows/00_build.yml/badge.svg)
 
 基于[Quasar](https://quasar.dev/)搭建。使用Vue3和Vite。
 
