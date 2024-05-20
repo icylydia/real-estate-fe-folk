@@ -4,9 +4,10 @@ import { storeToRefs } from 'pinia';
 import { GetEntrustContractListRequest, useContractStore } from 'stores/contract-store';
 import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
-import { EntrustContractInResponse } from 'src/api';
+import { ContractBase, EntrustContractInResponse } from 'src/api';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { useContract } from 'src/utils/contract';
+import moment from 'moment';
 
 const loading = ref(false);
 const $q = useQuasar();
@@ -271,6 +272,18 @@ const onRequest = async ({ pagination: _pagination }: { pagination: { page: numb
               <q-chip
                 v-bind="statusToChipProps(row.status)"
               />
+              <template v-if="row.status == ContractBase.StatusEnum.Active && row.endDate && moment(row.endDate!) < moment()">
+                <q-icon
+                  name="warning"
+                  size="14px"
+                  class="q-ml-xs"
+                  color="warning"
+                >
+                  <q-tooltip>
+                    契約期間が終了しています
+                  </q-tooltip>
+                </q-icon>
+              </template>
             </q-td>
           </template>
           <template #[`body-cell-actions`]="{ key, row }: { key: string, row: EntrustContractInResponse }">

@@ -15,7 +15,7 @@ const toEdit = async () => {
   try {
     await router.push({ name: 'entrust-contract-edit', params: { id: contractId.value } });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -37,7 +37,7 @@ onMounted(async () => {
     });
   } catch (error) {
     loading.value = false;
-    toastHandler(error);
+    await toastHandler(error);
   }
 });
 
@@ -45,7 +45,7 @@ const statusToActive = async () => {
   try {
     await useContractStore().activeEntrustContract(contractId.value);
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -53,7 +53,7 @@ const statusToTerminated = async () => {
   try {
     await useContractStore().terminateEntrustContract(contractId.value);
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 </script>

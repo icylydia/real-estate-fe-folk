@@ -10,9 +10,10 @@ import { useOwnerStore } from 'stores/owner-store';
 import { useEntrustContract } from 'src/utils/entrust-contract';
 import { QTableProps } from 'quasar';
 import ManagementFeeDialog from 'components/contract/ManagementFeeDialog.vue';
-import { EntrustContractManagementFeeBase, RegularExpenseBase } from 'src/api';
+import { ContractBase, EntrustContractManagementFeeBase, RegularExpenseBase } from 'src/api';
 import _ from 'lodash';
 import { usePayment } from 'src/utils/payment';
+import moment from 'moment/moment';
 
 const { describeStatus } = useEntrustContract();
 const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
@@ -293,11 +294,25 @@ const managementFeeColumns: QTableProps['columns'] = (() => {
     <div class="text-h6" v-if="!newContract">
       管理委託契約基本情報{{ readonly ? '（閲覧）' : '（編集）'}}
     </div>
-    <q-badge
-      v-if="!newContract"
-      :color="describeStatus(contract.status).color"
-      :label="describeStatus(contract.status).description"
-    />
+    <div class="text-h6" v-if="!newContract">
+      <template v-if="contract.status == ContractBase.StatusEnum.Active && contract.endDate && moment(contract.endDate!) < moment()">
+        <q-icon
+          name="warning"
+          size="1rem"
+          class="q-mr-sm"
+          color="warning"
+        >
+          <q-tooltip>
+            契約期間が終了しています
+          </q-tooltip>
+        </q-icon>
+      </template>
+      <q-badge
+        class="full-height"
+        :color="describeStatus(contract.status).color"
+        :label="describeStatus(contract.status).description"
+      />
+    </div>
   </div>
   <q-list class="row">
     <q-item class="col-12" v-if="!newContract">
