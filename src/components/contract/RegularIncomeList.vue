@@ -30,13 +30,6 @@ const columns: QTableProps['columns'] = [
     sortable: false,
   },
   {
-    name: 'targetDay',
-    label: '日',
-    field: 'targetDay',
-    align: 'right',
-    sortable: false,
-  },
-  {
     name: 'amount',
     label: '金額',
     field: 'amount',
@@ -174,17 +167,6 @@ const handleDialogSubmit = async (value: RentalContractRegularIncome) => {
       </q-td>
       <q-td class="text-right" v-else>
         {{ row.targetMonths?.join(', ') }}
-      </q-td>
-    </template>
-    <template #[`body-cell-targetDay`]="{ row }: { row: RentalContractRegularIncome }">
-      <q-td class="text-right" v-if="row.targetDay == 'firstDay'">
-        月初
-      </q-td>
-      <q-td class="text-right" v-else-if="row.targetDay == 'lastDay'">
-        月末
-      </q-td>
-      <q-td class="text-right" v-else>
-        {{ row.targetDay }}
       </q-td>
     </template>
     <template #[`body-cell-actions`]="{ row }: { row: RentalContractRegularIncome }">

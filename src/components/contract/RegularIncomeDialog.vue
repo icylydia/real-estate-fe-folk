@@ -27,30 +27,6 @@ const { model } = storeToRefs(useRegularIncomeStore());
 const { regularIncomeCategoryOptions: categoryOptions } = useRentalContract();
 const { paymentMethodOptions } = usePayment();
 
-const dayOptions: Array<{
-  label: string;
-  value: string;
-}> = (() => {
-  const options: Array<{
-    label: string;
-    value: string;
-  }> = [{
-    label: '月初',
-    value: 'firstDay',
-  }];
-  for (let i = 1; i <= 31; i++) {
-    options.push({
-      label: `${i}日`,
-      value: i.toString(),
-    });
-  }
-  options.push({
-    label: '月末',
-    value: 'lastDay',
-  });
-  return options;
-})();
-
 const monthOptions: Array<{
   label: string;
   value: number;
@@ -124,7 +100,7 @@ const submit = () => {
                   />
                 </q-item-section>
               </q-item>
-              <q-item class="col-12">
+              <q-item class="col-6">
                 <q-item-section>
                   <q-input
                     v-model="model.amount"
@@ -137,24 +113,12 @@ const submit = () => {
                 <q-item-section>
                   <q-select
                     :model-value="model.targetMonths"
-                    @update:model-value="model.targetMonths = $event.sort((a: number, b: number) => a - b)"
+                    @update:model-value="model.targetMonths = $event?.sort((a: number, b: number) => a - b) ?? null"
                     emit-value
                     label="月"
                     :options="monthOptions"
                     clearable
                     multiple
-                  />
-                </q-item-section>
-              </q-item>
-              <q-item class="col-6">
-                <q-item-section>
-                  <q-select
-                    v-model="model.targetDay"
-                    label="日"
-                    :options="dayOptions"
-                    emit-value
-                    map-options
-                    clearable
                   />
                 </q-item-section>
               </q-item>

@@ -308,9 +308,9 @@ const validationSchema = toTypedSchema(object({
     .label('対象月'),
   amount: string().required().label('金額'),
   tax: string().nullable().notRequired().label('税'),
-  date: string().date().required().label('日付'),
-  paymentMethod: string().required().label('支払方法'),
-  otherPaymentDescription: string().nullable().notRequired().label('支払方法'),
+  date: string().date().nullable().notRequired().label('日付'),
+  paymentMethod: string().nullable().notRequired().label('支払方法'),
+  otherPaymentDescription: string().nullable().notRequired().label('その他支払方法'),
   note: string().nullable().notRequired().label('備考'),
   summary: string().nullable().notRequired().label('摘要'),
 }));
