@@ -56,5 +56,5 @@
     "npm": ">= 9.5.0",
     "yarn": ">= 1.21.19"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.22"
 }
