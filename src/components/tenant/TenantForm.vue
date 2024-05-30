@@ -89,13 +89,14 @@ const searchAddress = async (field: string, callback: (address: AddressInRespons
 };
 
 const filteredGuarantorCompanyOptions = ref<string[]>(guarantorCompanyOptions);
-const createGuarantorCompanyOption = (val: string, done: (item: string, mode: string) => void) => {
-  if (val.length > 0) {
-    if (!guarantorCompanyOptions.includes(val)) {
-      done(val, 'add-unique')
+const createGuarantorCompanyOption = (inputValue: string, doneFn: (item?: any, mode?: 'add' | 'add-unique' | 'toggle' | undefined) => void) => {
+  if (inputValue.length > 0) {
+    if (!guarantorCompanyOptions.includes(inputValue)) {
+      doneFn(inputValue, 'add-unique')
     }
   }
-}
+};
+
 const filterGuarantorCompanyFn = (val: string, update: (callbackFn: () => void) => void) => {
   update(() => {
     if (val === '') {
@@ -105,7 +106,7 @@ const filterGuarantorCompanyFn = (val: string, update: (callbackFn: () => void) 
     const needle = val.toLowerCase()
     filteredGuarantorCompanyOptions.value = guarantorCompanyOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
   })
-}
+};
 
 /**********************
  * Form validation

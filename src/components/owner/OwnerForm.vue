@@ -34,6 +34,15 @@ const validationSchema = toTypedSchema(object({
   phone: string().phone().nullable().transform((value, originalValue) => String(originalValue).trim() === '' ? null : value).label('電話番号'),
   email: string().email().notRequired().nullable().label('メールアドレス'),
   username: string().notRequired().nullable().label('ユーザー名'),
+  i18nAddress: object({
+    type: string().nullable().oneOf(['cn', 'jp', 'en']).label('住所類別'),
+    country: string().nullable().label('国名'),
+    province: string().nullable().label('州名など'),
+    detail1: string().nullable().label('区市町村名'),
+    detail2: string().nullable().label('○番－○号　町名,　○丁目'),
+    detail3: string().nullable().label('部屋番号、マンション名'),
+    postalCode: string().nullable().label('郵便番号'),
+  }).nullable().label('住所'),
 }));
 
 const initialValues: any = computed( () => {
@@ -140,6 +149,129 @@ defineEmits<{
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="メールアドレス"
+            :readonly="readonly"
+            dense
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+  </q-list>
+  <q-separator class="q-my-md" />
+  <div class="text-h6" v-if="!newOwner">
+    オーナー住所情報{{ readonly ? '（閲覧）' : '（編集）'}}
+  </div>
+  <q-list class="row">
+    <Field name="i18nAddress.type" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-select
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="住所類別"
+            :readonly="readonly"
+            dense
+            emit-value
+            map-options
+            :options="[
+              { label: '中国', value: 'cn' },
+              { label: '日本', value: 'jp' },
+              { label: 'その他', value: 'en' },
+            ]"
+            clearable
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="i18nAddress.postalCode" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="郵便番号"
+            :readonly="readonly"
+            dense
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="i18nAddress.country" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="国名"
+            :readonly="readonly"
+            dense
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="i18nAddress.province" #="{errorMessage, value, field}">
+      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="都道府県"
+            hint="州名など"
+            :readonly="readonly"
+            dense
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="i18nAddress.detail1" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="詳細住所１"
+            hint="区市町村名"
+            :readonly="readonly"
+            dense
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="i18nAddress.detail2" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="詳細住所２"
+            hint="○番－○号　町名,　○丁目"
+            :readonly="readonly"
+            dense
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="i18nAddress.detail3" #="{errorMessage, value, field}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="詳細住所３"
+            hint="部屋番号、マンション名"
             :readonly="readonly"
             dense
           />

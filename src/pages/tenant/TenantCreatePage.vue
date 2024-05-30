@@ -4,15 +4,18 @@ import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useTenantStore } from 'stores/tenant-store';
 import { FormValidationResult } from 'vee-validate';
+import { Optional } from 'src/utils/framework';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof TenantForm>>();
 
 const router = useRouter();
+const { toastHandler } = useErrorHandler();
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
+  if (!validation?.valid) {
     return;
   }
   loading.value = true;
@@ -24,7 +27,7 @@ const save = async () => {
       params: { id: newTenant.id }
     });
   } catch (error) {
-    console.error(error);
+    await toastHandler(error);
   } finally {
     loading.value = false;
   }
