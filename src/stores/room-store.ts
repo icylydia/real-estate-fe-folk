@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import { FileBase, RoomInRequest, RoomInResponse } from 'src/api';
+import { FileBase, RoomInRequest, RoomInResponse, TenantInResponse } from 'src/api';
 import { api } from 'boot/api';
+import { Nullable } from 'src/utils/framework';
 
 export type RoomFormModel = Partial<
   RoomInRequest & RoomInResponse
@@ -27,6 +28,16 @@ export const useRoomStore = defineStore('room', {
     },
     async deleteRoom(id: string) {
       return await api.deleteRoom(id);
+    },
+    async getCurrentRenter(id: string): Promise<Nullable<TenantInResponse>> {
+      try {
+        return await api.getCurrentRenter(id);
+      } catch (error: any) {
+        if (error.status === 404) {
+          return null;
+        }
+        throw error;
+      }
     },
     resetFormModel() {
       this.formModel = defaultFormModel;

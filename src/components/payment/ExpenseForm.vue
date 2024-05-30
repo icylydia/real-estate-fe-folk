@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import useErrorHandler from 'components/app/useErrorHandler';
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
 import { storeToRefs } from 'pinia';
 import { useExpenseStore } from 'stores/expense-store';
@@ -10,7 +11,9 @@ import { object, string } from 'yup';
 import { useOwnerStore } from 'stores/owner-store';
 import { useTenantStore } from 'stores/tenant-store';
 import { useBuildingStore } from 'stores/building-store';
+import { useRoomStore } from 'stores/room-store';
 
+const { toastHandler } = useErrorHandler();
 const {
   expenseCategoryOptions: categoryOptions,
   paymentMethodOptions,
@@ -87,10 +90,33 @@ const onFilterBuilding = (inputValue: string, doneFn: (callbackFn: () => void) =
 
 const handleBuildingChange = (e: any, callback: (e: any) => void) => {
   setFieldValue('room', null, false);
+  setFieldValue('tenant', null, false);
   useBuildingStore().resetRoomOptions();
   roomsStatus.value = RoomLoadingStatus.BeforeLoad
   callback(e);
+  updateOwnerByCurrentBuilding().then(() => {});
 };
+
+const updateOwnerByCurrentBuilding = async () => {
+  loadingOwners.value = true;
+  const buildingId = values.building?.id;
+  if (!buildingId) {
+    setFieldValue('owner', null, false);
+    return;
+  }
+  try {
+    const currentOwner = await useBuildingStore().getCurrentOwner(buildingId);
+    if (currentOwner) {
+      setFieldValue('owner', currentOwner, false);
+    } else {
+      setFieldValue('owner', null, false);
+    }
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
+    loadingOwners.value = false;
+  }
+}
 
 /**********************
  * Room select
@@ -155,6 +181,32 @@ const onFilterRoom = (inputValue: string, doneFn: (callbackFn: () => void) => vo
   }
 }
 
+const handleRoomChange = (e: any, callback: (e: any) => void) => {
+  callback(e);
+  updateRenterByCurrentRoom().then(() => {});
+};
+
+const updateRenterByCurrentRoom = async () => {
+  loadingRenters.value = true;
+  const roomId = values.room?.id;
+  if (!roomId) {
+    setFieldValue('tenant', null, false);
+    return;
+  }
+  try {
+    const currentRenter = await useRoomStore().getCurrentRenter(roomId);
+    if (currentRenter) {
+      setFieldValue('tenant', currentRenter, false);
+    } else {
+      setFieldValue('tenant', null, false);
+    }
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
+    loadingRenters.value = false;
+  }
+}
+
 /**********************
  * Renter select
  **********************/
@@ -164,6 +216,7 @@ type RenterOption = {
   firstName: string | undefined;
 }
 const renterOptions = ref<Array<RenterOption> | undefined>(undefined);
+const loadingRenters = ref(false);
 
 const getAllRenterOptions = () => {
   return useTenantStore().renterOptions.map((v) => {
@@ -225,6 +278,7 @@ type OwnerOption = {
   firstName: string | undefined;
 }
 const ownerOptions = ref<Array<OwnerOption> | undefined>(undefined);
+const loadingOwners = ref(false);
 
 const getAllOwnerOptions = () => {
   return useOwnerStore().ownerOptions.map((v) => {
@@ -371,7 +425,7 @@ defineExpose({
         <q-item-section>
           <q-select
             :model-value="value"
-            @update:model-value="handleChange"
+            @update:model-value="(event) => handleRoomChange(event, handleChange)"
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="区画"
@@ -401,6 +455,7 @@ defineExpose({
             @filter="onFilterOwner"
             :readonly="readonly"
             use-input
+            :loading="loadingOwners"
           >
           </q-select>
         </q-item-section>
@@ -421,6 +476,7 @@ defineExpose({
             @filter="onFilterRenter"
             :readonly="readonly"
             use-input
+            :loading="loadingRenters"
           >
           </q-select>
         </q-item-section>

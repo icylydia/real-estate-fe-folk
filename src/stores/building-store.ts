@@ -4,10 +4,11 @@ import _ from 'lodash';
 import {
   BuildingDetailResponse,
   BuildingInRequest,
-  BuildingListResponseItems, BuildingOptionsResponse, FileBase,
+  BuildingListResponseItems, BuildingOptionsResponse, FileBase, OwnerInResponse,
   PaginationResponsePagination, RegularExpenseBase,
   RoomOptionsResponse
 } from 'src/api';
+import { Nullable } from 'src/utils/framework';
 
 export type BuildingFormModel = Partial<
   BuildingInRequest & BuildingDetailResponse
@@ -92,6 +93,17 @@ export const useBuildingStore = defineStore('building', {
     async getRoomOptions(buildingId: string) {
       const resp = await api.getRoomOptions(buildingId);
       this.roomOptions = resp ?? [];
+    },
+
+    async getCurrentOwner(buildingId: string): Promise<Nullable<OwnerInResponse>> {
+      try {
+        return await api.getCurrentOwner(buildingId);
+      } catch (error: any) {
+        if (error.status === 404) {
+          return null;
+        }
+        throw error;
+      }
     },
 
     appendRegularExpense(regularExpense: RegularExpenseBase) {
