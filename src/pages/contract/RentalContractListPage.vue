@@ -356,19 +356,25 @@ const onRequest = async ({ pagination: _pagination }: { pagination: { page: numb
           </template>
           <template #[`body-cell-actions`]="{ key, row }: { key: string, row: RentalContractInResponse }">
             <q-td class="text-right">
-              <q-btn icon="sym_r_more_horiz" flat>
+              <q-btn
+                @click="toContractDetail(key)"
+                class="q-ml-sm"
+                size="sm"
+                flat
+                dense
+                icon="sym_r_visibility"
+              />
+              <q-btn
+                @click="toContractEdit(key)"
+                class="q-ml-sm"
+                size="sm"
+                flat
+                dense
+                icon="sym_r_edit"
+              />
+              <q-btn icon="sym_r_more_horiz" flat dense class="q-ml-sm">
                 <q-menu>
                   <q-list>
-                    <q-item dense clickable @click="toContractDetail(key)">
-                      <q-item-section>
-                        <q-item-label>詳細</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item dense clickable @click="toContractEdit(key)">
-                      <q-item-section>
-                        <q-item-label>編集</q-item-label>
-                      </q-item-section>
-                    </q-item>
                     <q-item dense clickable @click="promptToUpdateContract(key)">
                       <q-item-section>
                         <q-item-label>更新を促す</q-item-label>
