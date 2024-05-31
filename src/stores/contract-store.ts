@@ -51,15 +51,19 @@ export interface GetEntrustContractListRequest {
   status?: ContractBase.StatusEnum;
 }
 
+const defaultManagementFeeModel: EntrustContractManagementFeeBase = {
+  benefitType: EntrustContractManagementFeeBase.BenefitTypeEnum.Percentage,
+}
+
 export const useContractStore = defineStore('contract', {
   state: () => ({
     rentalContractSearchParams: {} as GetRentalContractListRequest,
     rentalContractList: [] as RentalContractInResponse[],
     entrustContractSearchParams: {} as GetEntrustContractListRequest,
     entrustContractList: [] as EntrustContractInResponse[],
-    rentalContractFormModel: defaultRentalContractFormModel,
-    entrustContractFormModel: defaultEntrustContractFormModel,
-    managementFeeModel: {} as EntrustContractManagementFeeBase,
+    rentalContractFormModel: {...defaultRentalContractFormModel},
+    entrustContractFormModel: {...defaultEntrustContractFormModel},
+    managementFeeModel: {...defaultManagementFeeModel} as EntrustContractManagementFeeBase,
   }),
   actions: {
     async getRentalContractList(payload: GetRentalContractListRequest) {
@@ -96,7 +100,7 @@ export const useContractStore = defineStore('contract', {
       return api.updateRentalContractPromptRenewal(id);
     },
     resetRentalContractFormModel() {
-      this.rentalContractFormModel = defaultRentalContractFormModel;
+      this.rentalContractFormModel = {...defaultRentalContractFormModel};
     },
     async getEntrustContractList(payload: GetEntrustContractListRequest) {
       const { itemsPerPage, page, building, owner, status } = payload;
@@ -123,7 +127,7 @@ export const useContractStore = defineStore('contract', {
       this.entrustContractFormModel = await  api.updateEntrustContractTerminate(id);
     },
     resetEntrustContractFormModel() {
-      this.entrustContractFormModel = defaultEntrustContractFormModel;
+      this.entrustContractFormModel = {...defaultEntrustContractFormModel};
     },
     statusToChipProps(status?: ContractBase.StatusEnum) {
       if (!status) {
@@ -187,7 +191,7 @@ export const useContractStore = defineStore('contract', {
       }
     },
     resetManagementFeeModel() {
-      this.managementFeeModel = {} as EntrustContractManagementFeeBase;
+      this.managementFeeModel = {...defaultManagementFeeModel};
     },
 
     appendRegularIncome(income: RentalContractRegularIncome) {

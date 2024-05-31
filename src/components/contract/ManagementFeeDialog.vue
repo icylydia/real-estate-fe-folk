@@ -6,7 +6,6 @@ import { useContractStore } from 'stores/contract-store';
 import { usePayment } from 'src/utils/payment';
 import { useEntrustContract } from 'src/utils/entrust-contract';
 import QInputPercentage from 'components/extension/QInputPercentage.vue';
-import { EntrustContractManagementFeeBase } from 'src/api';
 
 const { managementFeeModel: model } = storeToRefs(useContractStore());
 const {
@@ -72,25 +71,15 @@ const submit = () => {
                     clearable
                     emit-value
                     map-options
-                    @update:model-value="model.amount = undefined; model.percentage = undefined"
+                    disable
                   />
                 </q-item-section>
               </q-item>
-              <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                <q-item-section>
-                  <q-input
-                    v-model="model.amount"
-                    label="利益金額"
-                    :disable="model.benefitType !== EntrustContractManagementFeeBase.BenefitTypeEnum.Fixed"
-                  />
-                </q-item-section>
-              </q-item>
-              <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+              <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <q-item-section>
                   <q-input-percentage
                     v-model="model.percentage"
                     label="利益率"
-                    :disable="model.benefitType !== EntrustContractManagementFeeBase.BenefitTypeEnum.Percentage"
                   />
                 </q-item-section>
               </q-item>
