@@ -706,7 +706,7 @@ const managementFeeColumns: QTableProps['columns'] = (() => {
   <q-separator class="q-mt-md"/>
   <div class="fit row wrap justify-between items-start content-start">
     <div class="q-mt-md text-h6">
-      管理費用{{ readonly ? '（閲覧）' : '（編集）' }}
+      賃貸管理費用{{ readonly ? '（閲覧）' : '（編集）' }}
     </div>
     <q-btn
       v-if="!readonly"
