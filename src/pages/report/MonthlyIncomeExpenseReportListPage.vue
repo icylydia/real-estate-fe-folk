@@ -1,13 +1,17 @@
 <script setup lang="ts">
-// search params
 import { ref } from 'vue';
-import { useBuildingStore } from 'stores/building-store';
 import { QSelect, QTableProps } from 'quasar';
-import { MonthlyIncomeAndExpenseReportRequest, MonthlyIncomeAndExpenseReportResponse } from 'src/api';
+import { MonthlyIncomeAndExpenseReportInList, MonthlyIncomeAndExpenseReportRequest } from 'src/api';
 import { useReportStore } from 'stores/report-store';
 import { storeToRefs } from 'pinia';
 import MonthlyReportCommentDialog from 'components/report/MonthlyReportCommentDialog.vue';
+import useErrorHandler from 'components/app/useErrorHandler';
 
+const { toastHandler } = useErrorHandler();
+
+/******************
+ * search params
+ ******************/
 const selectedYear = ref<number>(new Date().getFullYear())
 const yearOptions = ref<Array<{ value: number; label: string }>>([])
 for (let i = 0; i < 10; i++) {
@@ -25,115 +29,48 @@ for (let i = 1; i <= 12; i++) {
   })
 }
 
-const selectedBuilding = ref<BuildingOption | null>(null)
-const selectedBuildingError = ref<string | undefined>(undefined)
-type BuildingOption = {
-  id: number | string | undefined;
-  name: string | undefined;
-}
-const buildingOptions = ref<Array<BuildingOption>>([])
-const getAllBuildingOptions = () => {
-  return useBuildingStore().buildingOptions.map((v) => {
-    return {
-      name: v.name || '',
-      id: v.id || '',
-    } as BuildingOption;
-  });
-};
-enum BuildingLoadStatus {
-  NOT_LOADED,
-  LOADING,
-  LOADED,
-  ABORTED,
-}
-const buildingLoadStatus = ref<BuildingLoadStatus>(BuildingLoadStatus.NOT_LOADED)
-const onFilterBuilding = (inputValue: string, doneFn: (callbackFn: () => void) => void) => {
-  if (
-    buildingLoadStatus.value === BuildingLoadStatus.NOT_LOADED ||
-    buildingLoadStatus.value === BuildingLoadStatus.ABORTED
-  ) {
-    buildingLoadStatus.value = BuildingLoadStatus.LOADING;
-    useBuildingStore()
-      .getBuildingOptions()
-      .then(() => {
-        buildingOptions.value = getAllBuildingOptions();
-        buildingLoadStatus.value = BuildingLoadStatus.LOADED;
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        doneFn(() => {});
-      })
-      .catch(() => {
-        buildingLoadStatus.value = BuildingLoadStatus.ABORTED;
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        doneFn(() => {});
-      });
-  }
-  if (inputValue === '') {
-    doneFn(() => {
-      buildingOptions.value = getAllBuildingOptions();
-    });
-  } else {
-    doneFn(() => {
-      buildingOptions.value = getAllBuildingOptions().filter((v) => {
-        return v.name && v.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
-      });
-    });
-  }
-}
-
 const onSearch = async () => {
-  if (!selectedBuilding.value) {
-    selectedBuildingError.value = '物件を選択してください';
-    return;
-  }
   loading.value = true;
   useReportStore().resetMonthlyReport();
-  const payload: MonthlyIncomeAndExpenseReportRequest = {
-    targetYear: selectedYear.value,
-    targetMonth: selectedMonth.value,
-    building: {
-      id: selectedBuilding.value?.id?.toString(),
-    },
-  };
-  await useReportStore().getMonthlyReport(payload);
+  await useReportStore().getMonthlyReportList(selectedYear.value, selectedMonth.value);
   loading.value = false;
 }
 
-// table
+/******************************************
+ * table
+ ******************************************/
 const loading = ref<boolean>(false)
+const pagination = ref({
+  page: 1,
+  rowsPerPage: 0,
+});
 const { monthlyIncomeAndExpenseReports: reports } = storeToRefs(useReportStore())
 const columns: QTableProps['columns'] = [
   {
-    name: 'targetYear',
-    label: '年',
-    field: 'targetYear',
-    align: 'left',
-    sortable: false,
-  },
-  {
-    name: 'targetMonth',
-    label: '月',
-    field: 'targetMonth',
-    align: 'left',
-    sortable: false,
-  },
-  {
-    name: 'buildingName',
+    name: 'building',
     label: '物件',
-    field: 'buildingName',
+    field: 'building',
     align: 'left',
     sortable: false,
   },
   {
-    name: 'ownerName',
+    name: 'reportExists',
+    label: '報告書',
+    field: 'reportExists',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'owner',
     label: 'オーナー',
-    field: 'ownerName',
+    field: 'owner',
     align: 'left',
     sortable: false,
   },
   {
-    name: 'status',
-    label: '状態',
-    field: 'status',
+    name: 'visibility',
+    label: '可視性',
+    field: 'visibility',
     align: 'left',
     sortable: false,
   },
@@ -146,32 +83,71 @@ const columns: QTableProps['columns'] = [
   },
 ];
 
-const downloadRow = (row: MonthlyIncomeAndExpenseReportResponse) => {
-  if (!row.url) return;
-  window.open(row.url, '_blank');
-}
-
-const disableRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
-  if (!row.id) return;
+const generateRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number) => {
+  if (!row.building?.id) {
+    await toastHandler('物件が見つかりません');
+    return
+  }
   loading.value = true;
-  await useReportStore().disableMonthlyReport(row.id);
-  loading.value = false;
+  try {
+    const payload: MonthlyIncomeAndExpenseReportRequest = {
+      targetYear: selectedYear.value,
+      targetMonth: selectedMonth.value,
+      building: {
+        id: row.building.id,
+      },
+    }
+    const report = await useReportStore().getMonthlyReport(payload);
+    if (!report) {
+      await toastHandler('報告書の生成に失敗しました');
+    }
+    reports.value[index].report = report;
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
 }
 
-const enableRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
-  if (!row.id) return;
+const downloadRow = (row: MonthlyIncomeAndExpenseReportInList) => {
+  if (!row.report?.url) return;
+  window.open(row.report.url, '_blank');
+}
+
+const disableRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number) => {
+  if (!row.report?.id) return;
   loading.value = true;
-  await useReportStore().enableMonthlyReport(row.id);
-  loading.value = false;
+  try {
+    reports.value[index].report = await useReportStore().disableMonthlyReport(row.report.id);
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
 }
 
+const enableRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number) => {
+  if (!row.report?.id) return;
+  loading.value = true;
+  try {
+    reports.value[index].report = await useReportStore().enableMonthlyReport(row.report.id);
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
+}
+
+/******************************************
+ * comment dialog
+ ******************************************/
 const showDialog = ref(false);
 const commentId = ref<number | null>(null);
 const commentContent = ref<string>('');
-const addCommentRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
-  if (!row.id) return;
-  commentId.value = row.id;
-  commentContent.value = row.note || '';
+const addCommentRow = async (row: MonthlyIncomeAndExpenseReportInList) => {
+  if (!row.report?.id) return;
+  commentId.value = row.report.id;
+  commentContent.value = row.report.note || '';
   showDialog.value = true;
 }
 
@@ -179,15 +155,33 @@ const submitComment = async (comment: string) => {
   showDialog.value = false;
   if (!commentId.value) return;
   loading.value = true;
-  await useReportStore().commentMonthlyReport(commentId.value, comment);
-  loading.value = false;
+  try {
+    const report = await useReportStore().commentMonthlyReport(commentId.value, comment);
+    if (!report) {
+      await toastHandler('コメントの登録に失敗しました');
+    }
+    const index = reports.value.findIndex((r) => r.report?.id === commentId.value);
+    if (index !== -1) {
+      reports.value[index].report = report;
+    }
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
 }
 
-const deleteRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
-  if (!row.id) return;
+const deleteRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number) => {
+  if (!row.report?.id) return;
   loading.value = true;
-  await useReportStore().deleteMonthlyReport(row.id);
-  loading.value = false;
+  try {
+    await useReportStore().deleteMonthlyReport(row.report.id);
+    reports.value[index].report = undefined;
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
@@ -235,22 +229,6 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
               autocomplete="off"
             />
           </div>
-          <div class="col-grow q-px-sm">
-            <q-select
-              v-model="selectedBuilding"
-              label="物件"
-              :options="buildingOptions"
-              option-label="name"
-              option-value="id"
-              use-input
-              @filter="onFilterBuilding"
-              dense
-              autocomplete="off"
-              :error="selectedBuildingError !== undefined"
-              :error-message="selectedBuildingError"
-              @update:model-value="selectedBuildingError = undefined"
-            />
-          </div>
           <div
             class="q-px-sm"
             style="max-width: 150px"
@@ -270,71 +248,107 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportResponse) => {
           :rows="reports"
           :columns="columns"
           row-key="id"
-          hide-pagination
           flat
           :loading="loading"
+          hide-pagination
+          v-model:pagination="pagination"
         >
-          <template #[`body-cell-buildingName`]="{ row }: { row: MonthlyIncomeAndExpenseReportResponse }">
+          <template #[`body-cell-building`]="{ row }: { row: MonthlyIncomeAndExpenseReportInList }">
             <q-td>
-              <a
-                :href="$router.resolve({
-                  name: 'building-detail',
-                  params: { id: row.building?.id },
-                }).href"
-              >
-                <template v-if="row.building">
-                  {{ row.building.name }}
-                </template>
-                <template v-else>
-                  -
-                </template>
-              </a>
-            </q-td>
-          </template>
-          <template #[`body-cell-ownerName`]="{ row }: { row: MonthlyIncomeAndExpenseReportResponse }">
-            <q-td>
-              <a
-                :href="$router.resolve({
-                  name: 'owner-detail',
-                  params: { id: row.owner?.id },
-                }).href"
-              >
-                <template v-if="row.owner">
-                  {{ row.owner.lastName }} {{ row.owner.firstName }}
-                </template>
-                <template v-else>
-                  -
-                </template>
-              </a>
-            </q-td>
-          </template>
-          <template #[`body-cell-status`]="{ row }: { row: MonthlyIncomeAndExpenseReportResponse }">
-            <q-td>
-              <template v-if="row.disabled">
-                <q-badge
-                  color="red"
-                  label="無効"
-                />
+              <template v-if="row.building?.id">
+                <a
+                  :href="$router.resolve({
+                    name: 'building-detail',
+                    params: { id: row.building!.id },
+                  }).href"
+                >
+                  {{ row.building?.name }}
+                </a>
               </template>
               <template v-else>
+                -
+              </template>
+            </q-td>
+          </template>
+          <template #[`body-cell-reportExists`]="{ row }: { row: MonthlyIncomeAndExpenseReportInList }">
+            <q-td>
+              <template v-if="row.report">
                 <q-badge
                   color="green"
-                  label="有効"
+                  label="生成済み"
+                  @click="downloadRow(row)"
+                  style="cursor: pointer;"
+                />
+              </template>
+              <template v-else>
+                <q-badge
+                  color="red"
+                  label="未生成"
                 />
               </template>
             </q-td>
           </template>
-          <template #[`body-cell-actions`]="{ row }: { row: MonthlyIncomeAndExpenseReportResponse }">
-            <q-td class="text-right">
-              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_download" @click="downloadRow(row)" />
-              <template v-if="row.disabled">
-                <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="enableRow(row)" />
+          <template #[`body-cell-owner`]="{ row }: { row: MonthlyIncomeAndExpenseReportInList }">
+            <q-td>
+              <template v-if="row.report?.owner">
+                <a
+                  :href="$router.resolve({
+                  name: 'owner-detail',
+                  params: { id: row.report?.owner?.id },
+                }).href"
+                >
+                  {{ row.report.owner.lastName }} {{ row.report.owner.firstName }}
+                </a>
               </template>
               <template v-else>
-                <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility_off" @click="disableRow(row)" />
+                -
               </template>
-              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_add_comment" @click="addCommentRow(row)" />
-              <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="deleteRow(row)" />
+            </q-td>
+          </template>
+          <template #[`body-cell-visibility`]="{ row }: { row: MonthlyIncomeAndExpenseReportInList }">
+            <q-td>
+              <template v-if="row.report">
+                <template v-if="row.report!.disabled">
+                  <q-badge
+                    color="red"
+                    label="不可"
+                  />
+                </template>
+                <template v-else>
+                  <q-badge
+                    color="green"
+                    label="可"
+                  />
+                </template>
+              </template>
+              <template v-else>
+                -
+              </template>
+            </q-td>
+          </template>
+          <template #[`body-cell-actions`]="{ row, rowIndex }: { row: MonthlyIncomeAndExpenseReportInList, rowIndex: number }">
+            <q-td class="text-right">
+              <template v-if="row.report">
+                <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_download" @click="downloadRow(row)" />
+                <template v-if="row.report?.disabled">
+                  <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="enableRow(row, rowIndex)" />
+                </template>
+                <template v-else>
+                  <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility_off" @click="disableRow(row, rowIndex)" />
+                </template>
+                <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_add_comment" @click="addCommentRow(row)" />
+                <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="deleteRow(row, rowIndex)" />
+              </template>
+              <template v-else>
+                <q-btn
+                  class="q-ml-sm"
+                  size="sm"
+                  flat
+                  dense
+                  icon="sym_r_resume"
+                  @click="generateRow(row, rowIndex)"
+                />
+              </template>
             </q-td>
           </template>
         </q-table>
