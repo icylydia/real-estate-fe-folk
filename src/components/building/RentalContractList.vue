@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 import { RentalContractInResponse } from 'src/api';
 import { useContractStore } from 'stores/contract-store';
+import moment from 'moment';
 
 const {
   formModel: building,
@@ -33,14 +34,14 @@ const columns: QTableProps['columns'] = [
   },
   {
     label: '契約開始日',
-    field: 'startDate',
+    field: (row: RentalContractInResponse) => moment(row.startDate).format('LL'),
     name: 'startDate',
     sortable: false,
     align: 'left',
   },
   {
     label: '契約終了日',
-    field: 'endDate',
+    field: (row: RentalContractInResponse) => moment(row.endDate).format('LL'),
     name: 'endDate',
     sortable: false,
     align: 'left',
@@ -58,6 +59,13 @@ const columns: QTableProps['columns'] = [
     name: 'promptRemindStatus',
     sortable: false,
     align: 'left',
+  },
+  {
+    label: '操作',
+    field: 'actions',
+    name: 'actions',
+    sortable: false,
+    align: 'right',
   },
 ];
 </script>
@@ -118,6 +126,18 @@ const columns: QTableProps['columns'] = [
           v-if="promptRemindStatusToChipProps(row.promptRemindStatus)"
           :label="promptRemindStatusToChipProps(row.promptRemindStatus)!.label"
           :color="promptRemindStatusToChipProps(row.promptRemindStatus)!.color"
+        />
+      </q-td>
+    </template>
+    <template #[`body-cell-actions`]="{ row }: { row: RentalContractInResponse }">
+      <q-td class="text-right">
+        <q-btn
+          @click="() => $router.push({ name: 'rental-contract-detail', params: { id: row.id } })"
+          class="q-ml-sm"
+          size="sm"
+          flat
+          dense
+          icon="sym_r_visibility"
         />
       </q-td>
     </template>
