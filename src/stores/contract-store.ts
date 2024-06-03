@@ -51,9 +51,6 @@ export interface GetEntrustContractListRequest {
   status?: ContractBase.StatusEnum;
 }
 
-const defaultManagementFeeModel: EntrustContractManagementFeeBase = {
-  benefitType: EntrustContractManagementFeeBase.BenefitTypeEnum.Percentage,
-}
 
 export const useContractStore = defineStore('contract', {
   state: () => ({
@@ -63,7 +60,6 @@ export const useContractStore = defineStore('contract', {
     entrustContractList: [] as EntrustContractInResponse[],
     rentalContractFormModel: {...defaultRentalContractFormModel},
     entrustContractFormModel: {...defaultEntrustContractFormModel},
-    managementFeeModel: {...defaultManagementFeeModel} as EntrustContractManagementFeeBase,
   }),
   actions: {
     async getRentalContractList(payload: GetRentalContractListRequest) {
@@ -190,9 +186,6 @@ export const useContractStore = defineStore('contract', {
           return null;
       }
     },
-    resetManagementFeeModel() {
-      this.managementFeeModel = {...defaultManagementFeeModel};
-    },
 
     appendRegularIncome(income: RentalContractRegularIncome) {
       if (this.rentalContractFormModel.regularIncomes) {
@@ -214,6 +207,29 @@ export const useContractStore = defineStore('contract', {
     removeRegularIncome(id: number) {
       if (this.rentalContractFormModel.regularIncomes) {
         this.rentalContractFormModel.regularIncomes = this.rentalContractFormModel.regularIncomes.filter(income => income.id !== id)
+      }
+    },
+
+    appendManagementFee(managementFee: EntrustContractManagementFeeBase) {
+      if (this.entrustContractFormModel.managementFees) {
+        this.entrustContractFormModel.managementFees.push(managementFee)
+      } else {
+        this.entrustContractFormModel.managementFees = [managementFee]
+      }
+    },
+
+    replaceManagementFee(managementFee: EntrustContractManagementFeeBase) {
+      if (this.entrustContractFormModel.managementFees) {
+        const index = this.entrustContractFormModel.managementFees.findIndex(re => re.id === managementFee.id)
+        if (index !== -1) {
+          this.entrustContractFormModel.managementFees[index] = managementFee
+        }
+      }
+    },
+
+    removeManagementFee(id: number) {
+      if (this.entrustContractFormModel.managementFees) {
+        this.entrustContractFormModel.managementFees = this.entrustContractFormModel.managementFees.filter(fee => fee.id !== id)
       }
     },
   }

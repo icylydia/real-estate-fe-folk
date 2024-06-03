@@ -8,17 +8,13 @@ import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
 import { useOwnerStore } from 'stores/owner-store';
 import { useEntrustContract } from 'src/utils/entrust-contract';
-import { QTableProps } from 'quasar';
-import ManagementFeeDialog from 'components/contract/ManagementFeeDialog.vue';
-import { ContractBase, EntrustContractManagementFeeBase, RegularExpenseBase } from 'src/api';
-import _ from 'lodash';
-import { usePayment } from 'src/utils/payment';
+import { ContractBase } from 'src/api';
 import moment from 'moment/moment';
 
 const { describeStatus } = useEntrustContract();
 const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
 
-const props = defineProps({
+defineProps({
   readonly: {
     type: Boolean,
     default: false,
@@ -206,87 +202,6 @@ const { validate, values } = useForm({
 defineExpose({
   validate,
 });
-
-/**********************
- * Management fee dialog
- **********************/
-const { managementFeeModel } = storeToRefs(useContractStore());
-const { resetManagementFeeModel } = useContractStore();
-const { benefitTypeToChipProps } = useEntrustContract();
-const { describeIncomeCategory } = usePayment();
-const showDialog = ref(false);
-const dialogMode = ref<'add' | 'edit'>('add');
-const editingIndex = ref<number | null>(null);
-
-const showAddingDialog = () => {
-  resetManagementFeeModel();
-  dialogMode.value = 'add';
-  showDialog.value = true;
-};
-
-const handleDialogSubmit = (regularExpense: RegularExpenseBase) => {
-  if (dialogMode.value === 'add') {
-    contract.value.managementFees?.push(regularExpense);
-  } else {
-    const index = editingIndex.value;
-    if (index === null) {
-      return;
-    }
-    contract.value.managementFees?.splice(index, 1, regularExpense);
-  }
-}
-
-const removeManagementFee = (index: number) => {
-  contract.value.managementFees?.splice(index, 1);
-}
-
-const editManagementFee = (index: number) => {
-  const model = contract.value.managementFees?.[index];
-  if (!model) {
-    return;
-  }
-  editingIndex.value = index;
-  managementFeeModel.value = _.cloneDeep(model);
-  dialogMode.value = 'edit';
-  showDialog.value = true;
-}
-
-
-const managementFeeColumns: QTableProps['columns'] = (() => {
-  let columns: QTableProps['columns'] = [
-    {
-      name: 'incomeCategory',
-      label: 'カテゴリ',
-      field: 'incomeCategory',
-      align: 'left',
-      sortable: false,
-    },
-    {
-      name: 'benefitType',
-      label: '種別',
-      field: 'benefitType',
-      align: 'left',
-      sortable: false,
-    },
-    {
-      name: 'benefit',
-      label: '利益',
-      field: 'benefit',
-      align: 'right',
-      sortable: false,
-    },
-  ];
-  if (!props.readonly) {
-    columns.push({
-      name: 'actions',
-      label: '操作',
-      field: 'actions',
-      align: 'right',
-      sortable: false,
-    });
-  }
-  return columns;
-})();
 </script>
 
 <template>
@@ -703,62 +618,4 @@ const managementFeeColumns: QTableProps['columns'] = (() => {
       </Field>
     </template>
   </q-list>
-  <q-separator class="q-mt-md"/>
-  <div class="fit row wrap justify-between items-start content-start">
-    <div class="q-mt-md text-h6">
-      賃貸管理費用{{ readonly ? '（閲覧）' : '（編集）' }}
-    </div>
-    <q-btn
-      v-if="!readonly"
-      class="q-mt-md"
-      color="primary"
-      label="追加"
-      icon="sym_r_add"
-      @click="showAddingDialog"
-    />
-  </div>
-  <q-table
-    :rows="contract.managementFees ?? []"
-    :columns="managementFeeColumns"
-    flat
-    hide-pagination
-    :pagination="{
-      rowsPerPage: 0,
-    }"
-  >
-    <template #[`body-cell-incomeCategory`]="{ row }: { row: EntrustContractManagementFeeBase }">
-      <q-td>
-        {{ describeIncomeCategory(row.incomeCategory) }}
-      </q-td>
-    </template>
-    <template #[`body-cell-benefitType`]="{ row }: { row: EntrustContractManagementFeeBase }">
-      <q-td>
-        <q-chip
-          v-bind="benefitTypeToChipProps(row.benefitType)"
-        />
-      </q-td>
-    </template>
-    <template #[`body-cell-benefit`]="{ row }: { row: EntrustContractManagementFeeBase }">
-      <q-td class="text-right">
-        <template v-if="row.benefitType == EntrustContractManagementFeeBase.BenefitTypeEnum.Fixed">
-          {{ $filters.jpyCurrency(row.amount) }}
-        </template>
-        <template v-else-if="row.benefitType == EntrustContractManagementFeeBase.BenefitTypeEnum.Percentage">
-          {{ $filters.percentage(row.percentage) }}
-        </template>
-      </q-td>
-    </template>
-    <template #[`body-cell-actions`]="{ rowIndex }: { rowIndex: number }">
-      <q-td class="text-right">
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="editManagementFee(rowIndex)"/>
-        <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="removeManagementFee(rowIndex)"/>
-      </q-td>
-    </template>
-  </q-table>
-  <management-fee-dialog
-    :show="showDialog"
-    :mode="dialogMode"
-    @update:show="showDialog = $event"
-    @submit="handleDialogSubmit"
-  />
 </template>

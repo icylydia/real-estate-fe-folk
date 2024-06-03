@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const usePayment = () => {
   const incomeCategoryOptions: Array<{
     label: string,
@@ -61,21 +63,38 @@ export const usePayment = () => {
     },
   ];
 
+  const managementFeeCategoryOptions: Array<{
+    label: string,
+    value: string,
+  }> = incomeCategoryOptions.filter((option) => {
+    return _.includes([
+      'monthlyRent',
+      'managementFees',
+      'parkingFees',
+      'bicycleParkingFees',
+      'utilityCharges'
+    ], option.value);
+  });
+
   const expenseCategoryOptions: Array<{
     label: string,
     value: string,
   }> = [
     {
-      label: 'PM費用',
+      label: '賃貸管理費用',
       value: 'propertyManagementFees',
     },
     {
-      label: 'BM費用',
+      label: '建物管理費用',
       value: 'buildingManagementFees',
     },
     {
-      label: '管理修繕金',
+      label: '管理修繕積立金',
       value: 'managementRepairFees',
+    },
+    {
+      label: '修繕金',
+      value: 'repairFees',
     },
     {
       label: '振込手数料',
@@ -98,6 +117,10 @@ export const usePayment = () => {
       value: 'waterCharges',
     },
     {
+      label: '水道光熱費',
+      value: 'utilityCharges',
+    },
+    {
       label: 'インターネット費用',
       value: 'internetExpenses',
     },
@@ -108,6 +131,38 @@ export const usePayment = () => {
     {
       label: '敷金返還',
       value: 'securityDepositRefund',
+    },
+    {
+      label: '納税管理費',
+      value: 'taxManagementFees',
+    },
+    {
+      label: '業務委託料',
+      value: 'outsourcingFees',
+    },
+    {
+      label: '広告料',
+      value: 'advertisingFees',
+    },
+    {
+      label: '海外送金手数料',
+      value: 'internationalTransferFees',
+    },
+    {
+      label: '事務所使用料',
+      value: 'officeUsageFees',
+    },
+    {
+      label: '点検費用',
+      value: 'inspectionFees',
+    },
+    {
+      label: '日常清掃費',
+      value: 'dailyCleaningFees',
+    },
+    {
+      label: '定期清掃費',
+      value: 'periodicCleaningFees',
     },
     {
       label: 'その他',
@@ -166,40 +221,19 @@ export const usePayment = () => {
 
   const describeIncomeCategory = (value?: any): string => {
     if (!value) return '未知';
-    const dictionary: Map<string, string> = new Map([
-      ['monthlyRent', '月額賃料'],
-      ['managementFees', '管理共益費'],
-      ['keyMoney', '礼金'],
-      ['securityDeposit', '敷金'],
-      ['guaranteeDeposit', '保証金'],
-      ['renewalFees', '更新料'],
-      ['parkingFees', '駐車料'],
-      ['bicycleParkingFees', '駐輪料金'],
-      ['cleaningFees', '清掃料金'],
-      ['electricityCharges', '電気料金'],
-      ['waterCharges', '水道料金'],
-      ['gasCharges', 'ガス代'],
-      ['utilityCharges', '水道光熱費'],
-      ['otherIncome', 'その他'],
-    ]);
+    const words: [string, string][] = incomeCategoryOptions.map((option) => {
+      return [option.value, option.label]
+    });
+    const dictionary: Map<string, string> = new Map(words);
     return dictionary.get(value) || '未知';
   };
   const describeExpenseCategory = (value?: any): string => {
     if (!value) return '未知';
-    const dictionary: Map<string, string> = new Map([
-      ['propertyManagementFees', 'PM費用'],
-      ['buildingManagementFees', 'BM費用'],
-      ['managementRepairFees', '管理修繕金'],
-      ['transferHandlingFees', '振込手数料'],
-      ['lowVoltageElectricityCharges', '低圧電気料金'],
-      ['electricityCharges', '電気料金'],
-      ['gasCharges', 'ガス代'],
-      ['waterCharges', '水道料金'],
-      ['internetExpenses', 'インターネット費用'],
-      ['adjustmentFees', '精算金'],
-      ['securityDepositRefund', '敷金返還'],
-      ['otherExpenses', 'その他'],
-    ]);
+    const words: [string, string][] = expenseCategoryOptions.map((option) => {
+      return [option.value, option.label]
+    });
+
+    const dictionary: Map<string, string> = new Map(words);
     return dictionary.get(value) || '未知';
   };
   const describeIncomeConfirmStatus = (value?: any): { description: string, color: string} => {
@@ -228,6 +262,7 @@ export const usePayment = () => {
   }
   return {
     incomeCategoryOptions,
+    managementFeeCategoryOptions,
     expenseCategoryOptions,
     paymentMethodOptions,
     confirmStatusOptions,

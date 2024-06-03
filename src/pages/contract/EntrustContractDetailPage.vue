@@ -5,6 +5,7 @@ import { useContractStore } from 'stores/contract-store';
 import { useRoute, useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { storeToRefs } from 'pinia';
+import ManagementFeeList from 'components/contract/ManagementFeeList.vue';
 
 const loading = ref(false);
 const router = useRouter();
@@ -105,6 +106,11 @@ const statusToTerminated = async () => {
           @click="toEdit"
         />
       </q-card-actions>
+    </q-card>
+    <q-card bordered class="q-mt-md">
+      <q-card-section>
+        <management-fee-list />
+      </q-card-section>
     </q-card>
   </q-page>
 </template>

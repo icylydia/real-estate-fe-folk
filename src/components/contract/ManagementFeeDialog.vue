@@ -2,14 +2,14 @@
 import { PropType } from 'vue';
 import _ from 'lodash';
 import { storeToRefs } from 'pinia';
-import { useContractStore } from 'stores/contract-store';
 import { usePayment } from 'src/utils/payment';
 import { useEntrustContract } from 'src/utils/entrust-contract';
 import QInputPercentage from 'components/extension/QInputPercentage.vue';
+import { useManagementFeeStore } from 'stores/management-fee-store';
 
-const { managementFeeModel: model } = storeToRefs(useContractStore());
+const { model } = storeToRefs(useManagementFeeStore());
 const {
-  incomeCategoryOptions: categoryOptions,
+  managementFeeCategoryOptions: categoryOptions,
 } = usePayment();
 const { benefitTypeOptions } = useEntrustContract();
 
