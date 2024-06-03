@@ -4,9 +4,11 @@ import { useRoute, useRouter } from 'vue-router';
 import { nextTick, onMounted, ref } from 'vue';
 import { useTenantStore } from 'stores/tenant-store';
 import ContractList from 'components/tenant/ContractList.vue';
+import useErrorHandler from 'components/app/useErrorHandler';
+
 
 const loading = ref(false);
-
+const { toastHandler } = useErrorHandler();
 const route = useRoute()
 const tenantId = ref(route.params.id)
 const router = useRouter()
@@ -17,7 +19,7 @@ const toEdit = async () => {
     }
     await router.push({ name: 'tenant-edit', params: { id: tenantId.value } });
   } catch (error) {
-    console.log(error);
+    await toastHandler(error);
   }
 }
 

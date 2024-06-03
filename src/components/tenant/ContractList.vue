@@ -5,10 +5,12 @@ import { QTableProps } from 'quasar';
 import { RentalContractInResponse } from 'src/api';
 import { useContractStore } from 'stores/contract-store';
 import { useRouter } from 'vue-router';
+import useErrorHandler from 'components/app/useErrorHandler';
+import moment from 'moment';
 
-const tenantStore = useTenantStore();
 const { statusToChipProps, promptRemindStatusToChipProps } = useContractStore();
-const contracts = computed(() => tenantStore.formModel.contracts ?? []);
+const contracts = computed(() => useTenantStore().formModel.contracts ?? []);
+const { toastHandler } = useErrorHandler();
 
 const columns: QTableProps['columns'] = [
   {
@@ -20,21 +22,21 @@ const columns: QTableProps['columns'] = [
   },
   {
     label: '区画番号',
-    field: row => row.room.name,
+    field: (row: RentalContractInResponse) => row.room?.name ?? '',
     name: 'roomName',
     sortable: false,
     align: 'left',
   },
   {
     label: '契約開始日',
-    field: 'startDate',
+    field: (row: RentalContractInResponse) => row.startDate ? moment(row.startDate).format('LL') : '-',
     name: 'startDate',
     sortable: false,
     align: 'left',
   },
   {
     label: '契約終了日',
-    field: 'endDate',
+    field: (row: RentalContractInResponse) => row.endDate ? moment(row.endDate).format('LL') : '-',
     name: 'endDate',
     sortable: false,
     align: 'left',
@@ -71,7 +73,7 @@ const toContractDetail = async (id?: string) => {
       params: { id },
     });
   } catch (e) {
-    console.error(e);
+    await toastHandler(e);
   }
 };
 
@@ -83,7 +85,7 @@ const toContractEdit = async (id?: string) => {
       params: { id },
     });
   } catch (e) {
-    console.error(e);
+    await toastHandler(e);
   }
 };
 
@@ -95,7 +97,7 @@ const promptToUpdateContract = async (id?: string) => {
       params: { id },
     });
   } catch (e) {
-    console.error(e);
+    await toastHandler(e);
   }
 };
 </script>
@@ -155,22 +157,28 @@ const promptToUpdateContract = async (id?: string) => {
         />
       </q-td>
     </template>
-    <template #[`body-cell-actions`]="{ row }: { row: RentalContractInResponse }">
+    <template #[`body-cell-actions`]="{ key }: { key: string }">
       <q-td class="text-right">
+        <q-btn
+          @click="toContractDetail(key)"
+          class="q-ml-sm"
+          size="sm"
+          flat
+          dense
+          icon="sym_r_visibility"
+        />
+        <q-btn
+          @click="toContractEdit(key)"
+          class="q-ml-sm"
+          size="sm"
+          flat
+          dense
+          icon="sym_r_edit"
+        />
         <q-btn icon="sym_r_more_horiz" flat>
           <q-menu>
             <q-list>
-              <q-item dense clickable @click="toContractDetail(row.id)">
-                <q-item-section>
-                  <q-item-label>詳細</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item dense clickable @click="toContractEdit(row.id)">
-                <q-item-section>
-                  <q-item-label>編集</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item dense clickable @click="promptToUpdateContract(row.id)">
+              <q-item dense clickable @click="promptToUpdateContract(key)">
                 <q-item-section>
                   <q-item-label>更新を促す</q-item-label>
                 </q-item-section>
