@@ -91,56 +91,6 @@ export const useBuilding = () => {
       value: 'industrial',
     },
   ];
-  const regularExpenseOptions: { label: string, value: string }[] = [
-    {
-      label: 'PM費用',
-      value: 'propertyManagementFees',
-    },
-    {
-      label: 'BM費用',
-      value: 'buildingManagementFees',
-    },
-    {
-      label: '管理修繕金',
-      value: 'managementRepairFees',
-    },
-    {
-      label: '振込手数料',
-      value: 'transferHandlingFees',
-    },
-    {
-      label: '低圧電気料金',
-      value: 'lowVoltageElectricityCharges',
-    },
-    {
-      label: '電気料金',
-      value: 'electricityCharges',
-    },
-    {
-      label: 'ガス代',
-      value: 'gasCharges',
-    },
-    {
-      label: '水道料金',
-      value: 'waterCharges',
-    },
-    {
-      label: 'インターネット費用',
-      value: 'internetExpenses',
-    },
-    {
-      label: '精算金',
-      value: 'adjustmentFees',
-    },
-    {
-      label: '敷金返還',
-      value: 'securityDepositRefund',
-    },
-    {
-      label: 'その他',
-      value: 'otherExpenses',
-    }
-  ];
   const fileCategoryOptions: { label: string, value: string }[] = [
     {
       label: '売買契約',
@@ -180,7 +130,6 @@ export const useBuilding = () => {
     buildingStructureOptions,
     landRightsOptions,
     landUseZoneOptions,
-    regularExpenseOptions,
     fileCategoryOptions,
   }
 }

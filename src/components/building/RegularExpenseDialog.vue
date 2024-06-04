@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useBuilding } from 'src/utils/building';
 import { PropType } from 'vue';
 import { usePayment } from 'src/utils/payment';
 import { RegularExpenseBase } from 'src/api';
@@ -24,8 +23,7 @@ const emit = defineEmits<{
 }>();
 
 const { model } = storeToRefs(useRegularExpenseStore());
-const { regularExpenseOptions: categoryOptions } = useBuilding();
-const { paymentMethodOptions } = usePayment();
+const { paymentMethodOptions, expenseCategoryOptions: categoryOptions } = usePayment();
 
 const monthOptions: Array<{
   label: string;
