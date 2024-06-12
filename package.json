@@ -33,7 +33,7 @@
     "yup-locale-ja": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.6",
+    "@babel/core": "^7.24.7",
     "@intlify/vite-plugin-vue-i18n": "^7.0.0",
     "@quasar/app-vite": "^1.9.3",
     "@types/isomorphic-fetch": "^0.0.39",
