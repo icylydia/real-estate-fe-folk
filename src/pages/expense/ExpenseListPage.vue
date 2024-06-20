@@ -4,9 +4,10 @@ import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useExpenseStore } from 'stores/expense-store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { ExpenseInResponse } from 'src/api';
+import { ExpenseInResponse, IncomeInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { Optional } from 'src/utils/framework';
 
 const loading = ref(false);
 const $q = useQuasar();
@@ -18,11 +19,12 @@ const {
 } = usePayment();
 const selectedRows = ref<ExpenseInResponse[]>([]);
 const { toastHandler } = useErrorHandler();
+const buildingHighlight = ref<Optional<string>>(undefined);
 
 const columns: QTableProps['columns'] = [
   {
     label: '物件名',
-    field: (row: ExpenseInResponse) => row.building?.name ?? '',
+    field: 'buildingName',
     name: 'buildingName',
     sortable: false,
     align: 'left',
@@ -203,6 +205,7 @@ const onRequest = async ({ pagination: _pagination }: { pagination: { page: numb
       rowsPerPage: pageMeta.itemsPerPage ?? 15,
       rowsNumber: pageMeta.total ?? 0,
     };
+    buildingHighlight.value = searchParams.value.building;
   } catch (error) {
     await toastHandler(error);
   } finally {
@@ -287,6 +290,11 @@ const rejectAll = (expenses: ExpenseInResponse[]) => {
                   <q-separator vertical class="q-mx-lg" />
                 </template>
                 <q-btn label="新規" color="primary" class="float-right" icon="sym_r_add" @click="toCreate()" />
+              </template>
+              <template #[`body-cell-buildingName`]="{ row }: { row: IncomeInResponse }">
+                <q-td>
+                  <div v-html="$filters.highlight(row.building?.name ?? '', buildingHighlight )"></div>
+                </q-td>
               </template>
               <template #[`body-cell-category`]="{ row }: { row: ExpenseInResponse }">
                 <q-td>

@@ -8,6 +8,7 @@ declare module '@vue/runtime-core' {
       jpyCurrency: (value: Optional<number>) => string;
       percentage: (value: Optional<number>) => string;
       dateTime: (value: string, precision?: 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year') => string;
+      highlight: (value: string, keyword: string | undefined) => string;
     }
   }
 }
@@ -55,10 +56,18 @@ const dateTime = (value: string, precision: 'second' | 'minute' | 'hour' | 'day'
   return moment(value).format(format);
 }
 
+const highlight = (value: string, keyword: string | undefined) => {
+  if (!keyword) {
+    return value;
+  }
+  return value.replace(new RegExp(keyword, 'g'), `<mark>${keyword}</mark>`);
+}
+
 export default boot(({ app }) => {
   app.config.globalProperties.$filters = {
     jpyCurrency,
     percentage,
     dateTime,
+    highlight,
   };
 });
