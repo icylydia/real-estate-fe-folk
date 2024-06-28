@@ -29,7 +29,7 @@ const toEdit = async () => {
       params: { id: expenseId.value },
     });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -39,7 +39,7 @@ const backToList = async () => {
       name: 'expense-list',
     });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -56,7 +56,7 @@ const reload = async () => {
     });
   } catch (error) {
     loading.value = false;
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -65,7 +65,7 @@ const approve = async () => {
     await useExpenseStore().confirmAll([expenseId.value]);
     await reload();
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
@@ -74,14 +74,14 @@ const reject = async () => {
     await useExpenseStore().rejectAll([expenseId.value]);
     await reload();
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   }
 };
 
 const remove = async () => {
   $q.dialog({
     title: '支出削除',
-    message: `支出「${expense.value.title} 」を削除しますか？`,
+    message: '支出を削除しますか？',
     ok: { label: '確認', color: 'negative'},
     cancel: { label: 'キャンセル', color: 'grey-8'},
     persistent: true,
@@ -92,7 +92,7 @@ const remove = async () => {
     try {
       await useExpenseStore().deleteExpense(expense.value.id);
     } catch (e) {
-      toastHandler('支出の削除に失敗しました。');
+      await toastHandler('支出の削除に失敗しました。');
     }
     await router.push({
       name: 'expense-list',

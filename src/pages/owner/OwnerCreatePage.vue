@@ -14,7 +14,7 @@ const { toastHandler } = useErrorHandler();
 
 const save = async () => {
   const validation: FormValidationResult<any> | undefined = await form.value?.validate();
-  if (!validation || !validation.valid) {
+  if (!validation || !validation.valid || !validation.values) {
     return;
   }
   loading.value = true;

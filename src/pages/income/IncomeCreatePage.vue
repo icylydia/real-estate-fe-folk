@@ -8,16 +8,17 @@ import { Optional } from 'src/utils/framework';
 import useErrorHandler from 'components/app/useErrorHandler';
 
 const router = useRouter();
-const loading = ref(false);
+const loading = ref(true);
+const saving = ref(false);
 const form = ref<InstanceType<typeof IncomeForm>>();
 const { toastHandler } = useErrorHandler();
 
 const onSave = async () => {
   const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
-  if (!validation || !validation.valid) {
+  if (!validation || !validation.valid || !validation.values) {
     return;
   }
-  loading.value = true;
+  saving.value = true;
   try {
     const data = validation.values;
     const newIncome　= await useIncomeStore().createIncome(data);
@@ -28,12 +29,11 @@ const onSave = async () => {
   } catch (error) {
     await toastHandler(error)
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 };
 
 onMounted(() => {
-  loading.value = true;
   useIncomeStore().resetFormModel();
   nextTick(() => {
     loading.value = false;
@@ -49,7 +49,7 @@ onMounted(() => {
           <div class="text-h5">新規収入</div>
         </q-card-section>
         <q-separator></q-separator>
-        <q-linear-progress indeterminate v-if="loading" />
+        <q-linear-progress indeterminate v-if="saving" />
         <q-card-section>
           <income-form new-income ref="form" v-if="!loading" />
         </q-card-section>
@@ -60,6 +60,7 @@ onMounted(() => {
             color="primary"
             label="保存"
             @click="onSave"
+            :disable="loading || saving"
           ></q-btn>
         </q-card-actions>
       </q-form>

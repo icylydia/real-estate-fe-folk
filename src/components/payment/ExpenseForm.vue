@@ -12,6 +12,7 @@ import { useOwnerStore } from 'stores/owner-store';
 import { useTenantStore } from 'stores/tenant-store';
 import { useBuildingStore } from 'stores/building-store';
 import { useRoomStore } from 'stores/room-store';
+import moment from 'moment';
 
 const { toastHandler } = useErrorHandler();
 const {
@@ -356,6 +357,7 @@ const validationSchema = toTypedSchema(object({
   targetYear: string()
     .required()
     .matches(/^[0-9]{4}$/, '対象年は4桁の数字で入力してください。')
+    .default(moment().year().toString())
     .label('対象年'),
   targetMonth: string()
     .required()

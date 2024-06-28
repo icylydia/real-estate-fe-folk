@@ -48,7 +48,7 @@ onMounted(async () => {
 
 const save = async () => {
   const validation: Optional<FormValidationResult<any>> = await form.value?.validate();
-  if (!validation || !validation.valid) {
+  if (!validation || !validation.valid || !validation.values) {
     return;
   }
   saving.value = true;
