@@ -30,6 +30,10 @@ export const usePayment = () => {
       value: 'renewalFees',
     },
     {
+      label: '精算金',
+      value: 'adjustmentFees',
+    },
+    {
       label: '駐車料',
       value: 'parkingFees',
     },
@@ -163,6 +167,14 @@ export const usePayment = () => {
     {
       label: '定期清掃費',
       value: 'periodicCleaningFees',
+    },
+    {
+      label: '仲介手数料',
+      value: 'brokerageCommission',
+    },
+    {
+      label: '更新手数料',
+      value: 'renewalCommission',
     },
     {
       label: 'その他',
