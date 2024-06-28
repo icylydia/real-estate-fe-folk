@@ -174,14 +174,14 @@ const validationSchema = toTypedSchema(object({
     accountHolder: string().nullable().notRequired().label('口座名義'),
   }).nullable().notRequired().label('日本銀行'),
   overseasBank: object({
-    country: string().nullable().notRequired().label('国名'),
+    country: string().nullable().notRequired().label('国名・所在地'),
     bankCode: string().nullable().notRequired().label('銀行コード'),
     swiftCode: string().nullable().notRequired().label('SWIFTコード'),
     bankName: string().nullable().notRequired().label('銀行名'),
-    ibanCode: string().nullable().notRequired().label('IBANコード'),
+    ibanCode: string().nullable().notRequired().label('口座番号/IBANコード'),
     currency: string().nullable().notRequired().label('通貨'),
     accountHolder: string().nullable().notRequired().label('口座名義'),
-    accountHolderNickname: string().nullable().notRequired().label('口座名義（愛称）'),
+    accountHolderNickname: string().nullable().notRequired().label('登録名'),
     postCode: string().nullable().notRequired().label('郵便番号'),
     address: string().nullable().notRequired().label('住所'),
     telephone: string().nullable().notRequired().label('電話番号'),
@@ -454,7 +454,7 @@ defineExpose({
               @update:model-value="handleChange"
               :error-message="errorMessage"
               :error="!!errorMessage"
-              label="国名"
+              label="国名・所在地"
               :readonly="readonly"
             />
           </q-item-section>
@@ -510,7 +510,7 @@ defineExpose({
               @update:model-value="handleChange"
               :error-message="errorMessage"
               :error="!!errorMessage"
-              label="IBANコード"
+              label="口座番号/IBANコード"
               :readonly="readonly"
             />
           </q-item-section>
@@ -552,7 +552,7 @@ defineExpose({
               @update:model-value="handleChange"
               :error-message="errorMessage"
               :error="!!errorMessage"
-              label="口座名義（ニックネーム）"
+              label="登録名"
               :readonly="readonly"
             />
           </q-item-section>
