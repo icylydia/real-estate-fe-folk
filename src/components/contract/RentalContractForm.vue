@@ -342,7 +342,7 @@ defineExpose({
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="契約開始日"
-            :readonly="readonly"
+            :readonly="readonly || !newContract"
             hint="フォーマット: 2021-01-01"
           />
         </q-item-section>
