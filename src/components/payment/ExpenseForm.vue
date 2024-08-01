@@ -616,22 +616,6 @@ defineExpose({
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="note" #="{errorMessage, value, handleChange}">
-      <q-item class="col-12">
-        <q-item-section>
-          <q-input
-            :model-value="value"
-            @update:model-value="handleChange"
-            :error-message="errorMessage"
-            :error="!!errorMessage"
-            label="備考"
-            autogrow
-            clearable
-            :readonly="readonly"
-          />
-        </q-item-section>
-      </q-item>
-    </Field>
     <Field name="summary" #="{errorMessage, value, handleChange}">
       <q-item class="col-12">
         <q-item-section>
@@ -641,6 +625,22 @@ defineExpose({
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="摘要"
+            autogrow
+            clearable
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="note" #="{errorMessage, value, handleChange}">
+      <q-item class="col-12">
+        <q-item-section>
+          <q-input
+            :model-value="value"
+            @update:model-value="handleChange"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="備考"
             autogrow
             clearable
             :readonly="readonly"
