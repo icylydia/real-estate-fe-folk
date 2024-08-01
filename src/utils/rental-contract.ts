@@ -73,6 +73,10 @@ const regularIncomeCategoryOptions: { label: string, value: string }[] = [
     value: 'cleaningFees',
   },
   {
+    label: 'クリーニング費用',
+    value: 'cleaningFees2',
+  },
+  {
     label: '電気料金',
     value: 'electricityCharges',
   },

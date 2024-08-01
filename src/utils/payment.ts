@@ -46,6 +46,10 @@ export const usePayment = () => {
       value: 'cleaningFees',
     },
     {
+      label: 'クリーニング費用',
+      value: 'cleaningFees2',
+    },
+    {
       label: '電気料金',
       value: 'electricityCharges',
     },
@@ -161,6 +165,10 @@ export const usePayment = () => {
       value: 'inspectionFees',
     },
     {
+      label: 'クリーニング費用',
+      value: 'cleaningFees',
+    },
+    {
       label: '日常清掃費',
       value: 'dailyCleaningFees',
     },
@@ -175,6 +183,18 @@ export const usePayment = () => {
     {
       label: '更新手数料',
       value: 'renewalCommission',
+    },
+    {
+      label: '税金',
+      value: 'tax',
+    },
+    {
+      label: '共用部電気',
+      value: 'commonAreaElectricityCharges',
+    },
+    {
+      label: '共用部水道',
+      value: 'commonAreaWaterCharges',
     },
     {
       label: 'その他',
