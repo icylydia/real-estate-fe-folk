@@ -60,7 +60,7 @@ const highlight = (value: string, keyword: string | undefined) => {
   if (!keyword) {
     return value;
   }
-  return value.replace(new RegExp(keyword, 'g'), `<mark>${keyword}</mark>`);
+  return value.replace(new RegExp(`(${keyword})`, 'gi'), '<mark>$1</mark>');
 }
 
 export default boot(({ app }) => {
