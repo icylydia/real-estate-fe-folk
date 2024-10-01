@@ -54,7 +54,7 @@ class CustomAPI extends DefaultApi {
 
 type ApiType = CustomAPI;
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentCustomProperties {
     $api: ApiType;
   }

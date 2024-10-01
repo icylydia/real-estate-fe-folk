@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
 import {
+  FileBase,
   MonthlyIncomeAndExpenseReportInList,
   MonthlyIncomeAndExpenseReportRequest,
   MonthlyIncomeAndExpenseReportResponse
@@ -9,6 +10,7 @@ import {
 export const useReportStore = defineStore('report', {
   state: () => ({
     monthlyIncomeAndExpenseReports: [] as MonthlyIncomeAndExpenseReportInList[],
+    fileModel: {} as FileBase,
   }),
   actions: {
     resetMonthlyReport(): void {
@@ -44,6 +46,9 @@ export const useReportStore = defineStore('report', {
       id: number
     ): Promise<void> {
       await api.deleteMonthlyIncomeAndExpense(id.toString());
-    }
+    },
+    resetFileModel() {
+      this.fileModel = {} as FileBase;
+    },
   },
 });

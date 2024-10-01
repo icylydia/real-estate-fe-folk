@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { QSelect, QTableProps } from 'quasar';
 import { MonthlyIncomeAndExpenseReportInList, MonthlyIncomeAndExpenseReportRequest } from 'src/api';
 import { useReportStore } from 'stores/report-store';
@@ -7,16 +7,29 @@ import { storeToRefs } from 'pinia';
 import MonthlyReportCommentDialog from 'components/report/MonthlyReportCommentDialog.vue';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { useRouter } from 'vue-router';
+import MonthlyReportAttachmentDialog from 'components/report/MonthlyReportAttachmentDialog.vue';
 
 const { toastHandler } = useErrorHandler();
 
 const router = useRouter();
 
+onMounted(async () => {
+  await resetPage();
+});
+
+const resetPage = () => {
+  useReportStore().resetMonthlyReport();
+  loading.value = false;
+  showDialog.value = false;
+  showAttachmentDialog.value = false;
+}
+
 /******************
  * search params
  ******************/
 const selectedYear = ref<number>(new Date().getFullYear())
-const yearOptions = ref<Array<{ value: number; label: string }>>([])
+type YearOptionType = { value: number; label: string }
+const yearOptions = ref<Array<YearOptionType>>([])
 for (let i = 0; i < 10; i++) {
   yearOptions.value.push({
     value: new Date().getFullYear() - i,
@@ -24,7 +37,8 @@ for (let i = 0; i < 10; i++) {
   })
 }
 const selectedMonth = ref<number>(new Date().getMonth() + 1)
-const monthOptions = ref<Array<{ value: number; label: string }>>([])
+type MonthOptionType = { value: number; label: string }
+const monthOptions = ref<Array<MonthOptionType>>([])
 for (let i = 1; i <= 12; i++) {
   monthOptions.value.push({
     value: i,
@@ -152,6 +166,14 @@ const addCommentRow = async (row: MonthlyIncomeAndExpenseReportInList) => {
   commentId.value = row.report.id;
   commentContent.value = row.report.note || '';
   showDialog.value = true;
+}
+
+const showAttachmentDialog = ref(false);
+const attachmentReportId = ref<number | undefined>(undefined);
+const manageAttachments = async (row: MonthlyIncomeAndExpenseReportInList) => {
+  if (!row.report?.id) return;
+  attachmentReportId.value = row.report.id;
+  showAttachmentDialog.value = true;
 }
 
 const submitComment = async (comment: string) => {
@@ -340,6 +362,7 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility_off" @click="disableRow(row, rowIndex)" />
                 </template>
                 <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_add_comment" @click="addCommentRow(row)" />
+                <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_attach_file" @click="manageAttachments(row)" />
                 <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_delete" @click="deleteRow(row, rowIndex)" />
               </template>
               <template v-else>
@@ -364,5 +387,10 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number
     :show="showDialog"
     @update:show="showDialog=$event"
     @submit="submitComment"
+  />
+  <monthly-report-attachment-dialog
+    :show="showAttachmentDialog"
+    @update:show="showAttachmentDialog=$event"
+    :report-id="attachmentReportId || 0"
   />
 </template>
