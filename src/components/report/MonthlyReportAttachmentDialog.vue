@@ -100,7 +100,7 @@ const handleDialogSubmit = async (data: FileBase, file: File | undefined) => {
         entity: FileBase.EntityEnum.MonthlyReport,
         entityId: props.reportId.toString(),
       };
-      const resp = useFileStore().uploadFile(formData, file);
+      const resp = await useFileStore().uploadFile(formData, file);
       if (resp) {
         await loadAttachments();
       } else {
