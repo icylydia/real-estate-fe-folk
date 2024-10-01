@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref } from 'vue';
+import { computed, onMounted, Ref, ref, useTemplateRef } from 'vue';
 import { QTable, QTableProps, useQuasar } from 'quasar';
 import { useIncomeStore } from 'stores/income-store';
 import { storeToRefs } from 'pinia';
@@ -177,7 +177,7 @@ const paginationMax = computed(() => {
   return Math.ceil(pagination.value.rowsNumber / pagination.value.rowsPerPage)
 });
 
-const tableRef = ref<QTable | null>(null);
+const tableRef = useTemplateRef<QTable | undefined>('tableRef');
 const onPageChange = async () => {
   tableRef.value?.requestServerInteraction({ pagination: pagination.value });
 };

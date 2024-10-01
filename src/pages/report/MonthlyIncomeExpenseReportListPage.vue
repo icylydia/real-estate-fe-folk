@@ -6,8 +6,11 @@ import { useReportStore } from 'stores/report-store';
 import { storeToRefs } from 'pinia';
 import MonthlyReportCommentDialog from 'components/report/MonthlyReportCommentDialog.vue';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { useRouter } from 'vue-router';
 
 const { toastHandler } = useErrorHandler();
+
+const router = useRouter();
 
 /******************
  * search params
@@ -257,7 +260,7 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number
             <q-td>
               <template v-if="row.building?.id">
                 <a
-                  :href="$router.resolve({
+                  :href="router.resolve({
                     name: 'building-detail',
                     params: { id: row.building!.id },
                   }).href"
@@ -292,7 +295,7 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number
             <q-td>
               <template v-if="row.report?.owner">
                 <a
-                  :href="$router.resolve({
+                  :href="router.resolve({
                   name: 'owner-detail',
                   params: { id: row.report?.owner?.id },
                 }).href"

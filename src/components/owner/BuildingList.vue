@@ -3,7 +3,9 @@ import { QTableProps } from 'quasar';
 import { BuildingInResponse } from 'src/api';
 import { useOwnerStore } from 'stores/owner-store';
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const ownerStore = useOwnerStore();
 const buildings = computed(() => ownerStore.formModel.buildings ?? []);
 
@@ -50,7 +52,7 @@ const columns: QTableProps['columns'] = [
     <template #[`body-cell-building`]="{ row }: { row: BuildingInResponse }">
       <q-td>
         <a
-          :href="$router.resolve({
+          :href="router.resolve({
                   name: 'building-detail',
                   params: { id: row.id },
                 }).href"

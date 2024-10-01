@@ -1,3 +1,6 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <q-page class="row items-center justify-evenly">
     <div>
@@ -9,9 +12,3 @@
     </div>
   </q-page>
 </template>
-
-<script>
-export default {
-  name: 'ConstructingPage'
-}
-</script>

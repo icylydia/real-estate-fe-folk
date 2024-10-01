@@ -52,7 +52,7 @@
 
                 <a
                   class="float-right q-mt-sm q-pl-md"
-                  :href="$router.resolve({ name: 'reset-password' }).href"
+                  :href="router.resolve({ name: 'reset-password' }).href"
                 >
                   ログインできない場合はこちら
                 </a>
@@ -99,7 +99,7 @@ const onSubmit = handleSubmit(async (values) => {
     const loginResponse = await api.login(payload);
     const token = loginResponse.data?.token;
     if (!token) {
-      toastHandler(new Error('ログインに失敗しました'));
+      await toastHandler(new Error('ログインに失敗しました'));
       return
     }
     const user = { token }
@@ -107,10 +107,10 @@ const onSubmit = handleSubmit(async (values) => {
     await router.push({ name: 'building-list' });
   } catch (e) {
     if (e instanceof Response && e.status === 401) {
-      toastHandler(new Error('メールアドレスまたはパスワードが間違っています'));
+      await toastHandler(new Error('メールアドレスまたはパスワードが間違っています'));
       return
     } else {
-      toastHandler(new Error('ログインに失敗しました'));
+      await toastHandler(new Error('ログインに失敗しました'));
       return
     }
   }

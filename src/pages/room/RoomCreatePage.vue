@@ -8,6 +8,7 @@ import { storeToRefs } from 'pinia';
 import { FormValidationResult } from 'vee-validate';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { Optional } from 'src/utils/framework';
+import { RoomInRequest } from 'src/api';
 
 const loading = ref(true);
 const saving = ref(false);
@@ -53,7 +54,7 @@ const save = async () => {
   }
   saving.value = true;
   try {
-    const data = validation.values;
+    const data = validation.values as RoomInRequest;
     const room = await useRoomStore().createRoom(data);
     await router.push({
       name: 'room-detail',
@@ -89,7 +90,7 @@ const save = async () => {
             style="width: 100px"
             color="negative"
             label="取消"
-            @click="$router.back()"
+            @click="router.back()"
           ></q-btn>
           <q-btn
             style="width: 100px"

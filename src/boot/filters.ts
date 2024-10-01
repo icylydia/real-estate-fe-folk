@@ -2,17 +2,6 @@ import { boot } from 'quasar/wrappers';
 import moment from 'moment';
 import { Optional } from 'src/utils/framework';
 
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $filters: {
-      jpyCurrency: (value: Optional<number>) => string;
-      percentage: (value: Optional<number>) => string;
-      dateTime: (value: string, precision?: 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year') => string;
-      highlight: (value: string, keyword: string | undefined) => string;
-    }
-  }
-}
-
 const jpyCurrency = (value: Optional<number>): string => {
   if (value === undefined) {
     return '';

@@ -6,6 +6,7 @@ import { useIncomeStore } from 'stores/income-store';
 import { FormValidationResult } from 'vee-validate';
 import { Optional } from 'src/utils/framework';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { IncomeInRequest } from 'src/api';
 
 const router = useRouter();
 const loading = ref(true);
@@ -20,7 +21,7 @@ const onSave = async () => {
   }
   saving.value = true;
   try {
-    const data = validation.values;
+    const data = validation.values as IncomeInRequest;
     const newIncome　= await useIncomeStore().createIncome(data);
     await router.push({
       name: 'income-detail',

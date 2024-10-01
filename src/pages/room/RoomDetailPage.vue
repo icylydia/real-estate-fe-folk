@@ -28,7 +28,7 @@ onMounted(async () => {
       loading.value = false;
     });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
     loading.value = false;
   }
 });

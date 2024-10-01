@@ -4,6 +4,7 @@ import RoomForm from 'components/room/RoomForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useRoomStore } from 'stores/room-store';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { FormValidationResult } from 'vee-validate';
 
 const loading = ref(false);
 const saving = ref(false);
@@ -28,14 +29,14 @@ onMounted(async () => {
       loading.value = false;
     });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
     loading.value = false;
   }
 });
 
 const onSave = async () => {
-  const validation = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: FormValidationResult<any> = await form.value?.validate();
+  if (!validation || !validation.valid || !validation.values) {
     return;
   }
   saving.value = true;
@@ -51,7 +52,7 @@ const onSave = async () => {
       params: { id: roomId.value },
     });
   } catch (error) {
-    toastHandler(error);
+    await toastHandler(error);
   } finally {
     saving.value = false;
   }

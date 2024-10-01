@@ -7,6 +7,7 @@ import { useBuildingStore } from 'stores/building-store';
 import { FormValidationResult } from 'vee-validate';
 import _ from 'lodash';
 import { Optional } from 'src/utils/framework';
+import { BuildingInRequest } from 'src/api';
 
 const loading = ref(false);
 const saving = ref(false);
@@ -47,7 +48,7 @@ const onSave = async () => {
     const newBuilding = {
       ...useBuildingStore().formModel,
       ...necessaryData,
-    };
+    } as BuildingInRequest;
     await useBuildingStore().updateBuilding(buildingId.value, newBuilding);
     await router.push({
       name: 'building-detail',

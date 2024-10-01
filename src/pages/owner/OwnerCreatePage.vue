@@ -5,6 +5,7 @@ import OwnerForm from 'components/owner/OwnerForm.vue';
 import { useOwnerStore } from 'stores/owner-store';
 import { FormValidationResult } from 'vee-validate';
 import useErrorHandler from 'components/app/useErrorHandler';
+import { OwnerInRequest } from 'src/api';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof OwnerForm>>();
@@ -19,7 +20,7 @@ const save = async () => {
   }
   loading.value = true;
   try {
-    const data = validation.values;
+    const data = validation.values as OwnerInRequest;
     const newOwner = await useOwnerStore().createOwner(data);
     await router.push({
       name: 'owner-detail',

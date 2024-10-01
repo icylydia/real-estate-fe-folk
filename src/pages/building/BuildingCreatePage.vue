@@ -7,6 +7,7 @@ import useErrorHandler from 'components/app/useErrorHandler';
 import { FormValidationResult } from 'vee-validate';
 import _ from 'lodash';
 import { Optional } from 'src/utils/framework';
+import { BuildingInRequest } from 'src/api';
 
 const loading = ref(false);
 const saving = ref(false);
@@ -35,7 +36,7 @@ const onSave = async () => {
     const newBuilding = {
       ...useBuildingStore().formModel,
       ...necessaryData,
-    };
+    } as BuildingInRequest;
     const building = await useBuildingStore().createBuilding(newBuilding);
     await router.push({
       name: 'building-detail',
@@ -67,7 +68,7 @@ const onSave = async () => {
             style="width: 100px"
             color="negative"
             label="取消"
-            @click="$router.back()"
+            @click="router.back()"
             :disable="loading || saving"
           ></q-btn>
           <q-btn

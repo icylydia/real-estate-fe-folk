@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref } from 'vue';
+import { computed, onMounted, Ref, ref, useTemplateRef } from 'vue';
 import { useOwnerStore } from 'stores/owner-store';
 import { storeToRefs } from 'pinia';
 import { QTable, QTableProps, useQuasar } from 'quasar';
@@ -9,7 +9,7 @@ import { OwnerInResponse, TenantInResponse } from 'src/api';
 import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false)
-const tableRef = ref<QTable | null>(null);
+const tableRef = useTemplateRef<QTable | null>('tableRef');
 const { ownerList: owners } = storeToRefs(useOwnerStore());
 const { getOwnerList, deleteOwner } = useOwnerStore();
 const { toastHandler } = useErrorHandler();
@@ -203,7 +203,7 @@ const onPageChange = async () => {
           <template #[`body-cell-name`]="{ row }: { row: TenantInResponse }">
             <q-td>
               <a
-                :href="$router.resolve({
+                :href="router.resolve({
                   name: 'owner-detail',
                   params: { id: row.id },
                 }).href"

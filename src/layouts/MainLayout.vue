@@ -57,7 +57,7 @@ import { logout } from 'src/auth';
 import { storeToRefs } from 'pinia';
 import { useAppStore } from 'stores/app-store';
 
-export default defineComponent({
+export default defineComponent<any>({
   name: 'MainLayout',
 
   components: {

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { BuildingInResponse } from 'src/api';
 import { QTable, QTableProps, useQuasar } from 'quasar';
-import { computed, onMounted, Ref, ref } from 'vue';
+import { computed, onMounted, Ref, ref, useTemplateRef } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useBuildingStore } from 'stores/building-store';
@@ -63,7 +63,7 @@ const paginationMax = computed(() => {
 
 const loading = ref(false);
 
-const tableRef = ref<QTable | null>(null);
+const tableRef = useTemplateRef<QTable | null>('tableRef');
 
 onMounted(async () => {
   tableRef.value?.requestServerInteraction();
@@ -134,7 +134,7 @@ const remove = async (building: BuildingInResponse) => {
     try {
       await deleteBuilding(building.id);
     } catch (e) {
-      toastHandler(new Error('削除に失敗しました。'));
+      await toastHandler(new Error('削除に失敗しました。'));
     }
 
     tableRef.value?.requestServerInteraction();
