@@ -14,7 +14,7 @@ const ownerId = ref<string | RouteParamValue[]>(route.params.id)
 const router = useRouter()
 const toEdit = async () => {
   try {
-    if (!(ownerId.value instanceof String)) {
+    if (!(ownerId.value instanceof String || typeof ownerId.value == 'string')) {
       throw new Error('Invalid owner id');
     }
     await router.push({ name: 'owner-edit', params: { id: ownerId.value } });
@@ -27,7 +27,8 @@ const { getOwner, reset } = useOwnerStore();
 onMounted(async () => {
   loading.value = true;
   try {
-    if (!(ownerId.value instanceof String)) {
+    if (!(ownerId.value instanceof String || typeof ownerId.value == 'string')) {
+      console.log(typeof ownerId.value);
       throw new Error('Invalid owner id');
     }
     reset();
