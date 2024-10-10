@@ -1,32 +1,36 @@
 export const useMonthlyReport = () => {
   const fileCategoryOptions: { label: string, value: string }[] = [
     {
-      label: '売買契約',
-      value: 'contract',
+      label: '月次報告書',
+      value: 'monthlyReport',
     },
     {
-      label: '資産管理・物件管理',
-      value: 'propertyManagement',
+      label: '領収書',
+      value: 'receipt',
     },
     {
-      label: '賃貸借管理',
-      value: 'rentalManagement',
+      label: '請求書',
+      value: 'bill',
     },
     {
-      label: '保険',
-      value: 'insurance',
+      label: '見積書',
+      value: 'estimate',
     },
     {
-      label: '税務',
-      value: 'tax',
+      label: '収入明細',
+      value: 'incomeDetail',
     },
     {
-      label: 'ローン・融資',
-      value: 'loan',
+      label: '清掃報告',
+      value: 'cleaningReport',
     },
     {
-      label: '工事関係',
-      value: 'construction',
+      label: '点検報告',
+      value: 'inspectionReport',
+    },
+    {
+      label: '作業報告',
+      value: 'workReport',
     },
     {
       label: 'その他',
