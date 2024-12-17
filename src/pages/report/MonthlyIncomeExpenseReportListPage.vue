@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { QSelect, QTableProps } from 'quasar';
-import { MonthlyIncomeAndExpenseReportInList, MonthlyIncomeAndExpenseReportRequest } from 'src/api';
+import type { QTableProps } from 'quasar';
+import type { MonthlyIncomeAndExpenseReportInList, MonthlyIncomeAndExpenseReportRequest } from 'src/api';
 import { useReportStore } from 'stores/report-store';
 import { storeToRefs } from 'pinia';
 import MonthlyReportCommentDialog from 'components/report/MonthlyReportCommentDialog.vue';
@@ -118,7 +118,9 @@ const generateRow = async (row: MonthlyIncomeAndExpenseReportInList, index: numb
     if (!report) {
       await toastHandler('報告書の生成に失敗しました');
     }
-    reports.value[index].report = report;
+    if (reports.value && reports.value[index]) {
+      reports.value[index].report = report;
+    }
   } catch (error) {
     await toastHandler(error);
   } finally {
@@ -135,7 +137,9 @@ const disableRow = async (row: MonthlyIncomeAndExpenseReportInList, index: numbe
   if (!row.report?.id) return;
   loading.value = true;
   try {
-    reports.value[index].report = await useReportStore().disableMonthlyReport(row.report.id);
+    if (reports.value && reports.value[index]) {
+      reports.value[index].report = await useReportStore().disableMonthlyReport(row.report.id);
+    }
   } catch (error) {
     await toastHandler(error);
   } finally {
@@ -147,7 +151,9 @@ const enableRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number
   if (!row.report?.id) return;
   loading.value = true;
   try {
-    reports.value[index].report = await useReportStore().enableMonthlyReport(row.report.id);
+    if (reports.value && reports.value[index]) {
+      reports.value[index].report = await useReportStore().enableMonthlyReport(row.report.id);
+    }
   } catch (error) {
     await toastHandler(error);
   } finally {
@@ -187,7 +193,9 @@ const submitComment = async (comment: string) => {
     }
     const index = reports.value.findIndex((r) => r.report?.id === commentId.value);
     if (index !== -1) {
-      reports.value[index].report = report;
+      if (reports.value && reports.value[index]) {
+        reports.value[index].report = report;
+      }
     }
   } catch (error) {
     await toastHandler(error);
@@ -201,7 +209,9 @@ const deleteRow = async (row: MonthlyIncomeAndExpenseReportInList, index: number
   loading.value = true;
   try {
     await useReportStore().deleteMonthlyReport(row.report.id);
-    reports.value[index].report = undefined;
+    if (reports.value && reports.value[index]) {
+      reports.value[index].report = undefined;
+    }
   } catch (error) {
     await toastHandler(error);
   } finally {

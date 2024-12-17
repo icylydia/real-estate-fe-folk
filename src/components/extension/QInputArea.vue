@@ -28,7 +28,17 @@ export default defineComponent({
   },
   emits: ['update:modelValue'],
   methods: {
-    handleUpdateModelValue(value: string) {
+    handleUpdateModelValue(value: string | number | null) {
+      if (value === null) {
+        this.$emit('update:modelValue', null);
+        return;
+      }
+
+      if (typeof value === 'number') {
+        this.$emit('update:modelValue', value);
+        return;
+      }
+
       let precision = typeof this.precision === 'string' ? parseInt(this.precision, 10) : this.precision;
       if (!precision || precision < 0) precision = 2;
       const parsedValue = Number(value.replace(/[^0-9.]/g, '')).toFixed(precision);

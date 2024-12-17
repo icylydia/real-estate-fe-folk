@@ -4,10 +4,10 @@ import { nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBuildingStore } from 'stores/building-store';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import _ from 'lodash';
-import { Optional } from 'src/utils/framework';
-import { BuildingInRequest } from 'src/api';
+import type { Optional } from 'src/utils/framework';
+import type { BuildingInRequest } from 'src/api';
 
 const loading = ref(false);
 const saving = ref(false);

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import EntrustContractForm from 'components/contract/EntrustContractForm.vue';
 import { computed, onMounted, ref } from 'vue';
-import TenantForm from 'components/tenant/TenantForm.vue';
+import type TenantForm from 'components/tenant/TenantForm.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { EntrustContractFormModel, useContractStore } from 'stores/contract-store';
-import { FormValidationResult } from 'vee-validate';
+import type { EntrustContractFormModel } from 'stores/contract-store';
+import { useContractStore } from 'stores/contract-store';
+import type { FormValidationResult } from 'vee-validate';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { Optional } from 'src/utils/framework';
+import type { Optional } from 'src/utils/framework';
 import _ from 'lodash';
 
 const router = useRouter();

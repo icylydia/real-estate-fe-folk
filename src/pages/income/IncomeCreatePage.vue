@@ -3,10 +3,10 @@ import IncomeForm from 'components/payment/IncomeForm.vue';
 import { useRouter } from 'vue-router';
 import { nextTick, onMounted, ref } from 'vue';
 import { useIncomeStore } from 'stores/income-store';
-import { FormValidationResult } from 'vee-validate';
-import { Optional } from 'src/utils/framework';
+import type { FormValidationResult } from 'vee-validate';
+import type { Optional } from 'src/utils/framework';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { IncomeInRequest } from 'src/api';
+import type { IncomeInRequest } from 'src/api';
 
 const router = useRouter();
 const loading = ref(true);
@@ -22,7 +22,7 @@ const onSave = async () => {
   saving.value = true;
   try {
     const data = validation.values as IncomeInRequest;
-    const newIncome　= await useIncomeStore().createIncome(data);
+    const newIncome = await useIncomeStore().createIncome(data);
     await router.push({
       name: 'income-detail',
       params: { id: newIncome.id }

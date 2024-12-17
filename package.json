@@ -5,14 +5,16 @@
   "productName": "不動産管理システム",
   "author": "chris.li <chris.li@bytedance.com>",
   "private": true,
+  "type": "module",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
+    "postinstall": "quasar prepare",
+    "lint": "eslint -c ./eslint.config.js \"./src*/**/*.{ts,js,cjs,mjs,vue}\"",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "dev": "quasar dev",
     "build": "quasar build",
-    "dev-wt": "VITE_APP_API_URL=https://real-estate-wt-be.alpha-technology.com/api quasar dev",
+    "dev-wt": "quasar dev",
     "build-wt": "ENV=wt quasar build",
-    "build-chuwa": "VITE_APP_API_URL=https://chuwa-api.alphatechs.co.jp/api quasar build"
+    "build-chuwa": "quasar build"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.15",
@@ -34,22 +36,24 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
+    "@eslint/js": "^9.17.0",
     "@intlify/vite-plugin-vue-i18n": "^7.0.0",
-    "@quasar/app-vite": "^1.11.0",
+    "@quasar/app-vite": "^2.0.2",
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.10.2",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
+    "@vue/eslint-config-typescript": "^14.1.4",
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.7",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint": "9",
     "eslint-plugin-vue": "^9.32.0",
+    "globals": "^15.13.0",
     "lodash": "^4.17.21",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite-plugin-checker": "^0.8.0",
+    "vue-tsc": "^2.1.10"
   },
   "engines": {
     "node": "^20",

@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
 import _ from 'lodash';
-import {
+import type {
   BuildingDetailResponse,
   BuildingInRequest,
   BuildingListResponseItems, BuildingOptionsResponse, FileBase, OwnerInResponse,
   PaginationResponsePagination, RegularExpenseBase,
   RoomOptionsResponse
 } from 'src/api';
-import { Nullable } from 'src/utils/framework';
+import type { Nullable } from 'src/utils/framework';
 
 export type BuildingFormModel = Partial<
   BuildingInRequest & BuildingDetailResponse

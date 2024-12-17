@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {DepartmentInResponse} from 'src/api';
-import {onMounted, ref, Ref} from 'vue';
-import {useRouter} from 'vue-router';
-import {useDepartmentStore} from 'stores/department-store';
-import {storeToRefs} from 'pinia';
-import {useQuasar} from 'quasar';
+import type { DepartmentInResponse } from 'src/api';
+import type { Ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useDepartmentStore } from 'stores/department-store';
+import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
 
 const selected: Ref<string[]> = ref([]);
 const loading = ref(false);

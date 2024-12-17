@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref } from 'vue';
-import { QTable, QTableProps, useQuasar } from 'quasar';
+import type { Ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import type { QTable, QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import { useExpenseStore } from 'stores/expense-store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { ExpenseInResponse, IncomeInResponse } from 'src/api';
+import type { ExpenseInResponse, IncomeInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { Optional } from 'src/utils/framework';
+import type { Optional } from 'src/utils/framework';
 
 const loading = ref(false);
 const $q = useQuasar();
@@ -222,9 +224,8 @@ const confirmAll = (expenses: ExpenseInResponse[]) => {
     persistent: true,
   }).onOk(async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await useExpenseStore().confirmAll(expenses.map((expense) => expense.id!));
-    } catch (e) {
+    } catch {
       await toastHandler('承認に失敗しました');
     }
     tableRef.value?.requestServerInteraction();
@@ -240,9 +241,8 @@ const rejectAll = (expenses: ExpenseInResponse[]) => {
     persistent: true,
   }).onOk(async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await useExpenseStore().rejectAll(expenses.map((expense) => expense.id!));
-    } catch (e) {
+    } catch {
       await toastHandler('拒否に失敗しました');
     }
     tableRef.value?.requestServerInteraction();

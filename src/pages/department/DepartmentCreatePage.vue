@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import DepartmentForm from 'components/department/DepartmentForm.vue';
 import { useRouter } from 'vue-router';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import { useDepartmentStore } from 'stores/department-store';
 
 const loading = ref(false);
@@ -10,8 +10,8 @@ const form = ref<InstanceType<typeof DepartmentForm>>();
 const router = useRouter();
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: FormValidationResult<any> | undefined = await form.value?.validate();
+  if (!validation || !validation.valid || !validation.values) {
     return;
   }
   loading.value = true;

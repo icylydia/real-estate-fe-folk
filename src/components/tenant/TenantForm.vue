@@ -7,9 +7,10 @@ import { useEmergencyContact } from 'src/utils/emergency-contact';
 import { computed, ref } from 'vue';
 import { toTypedSchema } from '@vee-validate/yup';
 import { object, string } from 'yup';
-import { Field, useForm, ValidationResult } from 'vee-validate';
+import type { Field, ValidationResult } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import { useAddressStore } from 'stores/address-store';
-import { AddressInResponse } from 'src/api';
+import type { AddressInResponse } from 'src/api';
 import _ from 'lodash';
 
 const props = defineProps({
@@ -84,7 +85,7 @@ const searchAddress = async (field: string, callback: (address: AddressInRespons
     const address = await useAddressStore().getAddressByPostalCode(postalCode);
     callback(address);
   } catch (e) {
-    //
+    console.error(e);
   }
 };
 

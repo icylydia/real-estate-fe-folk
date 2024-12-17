@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useTenantStore } from 'stores/tenant-store';
 import { computed } from 'vue';
-import { QTableProps } from 'quasar';
-import { RentalContractInResponse } from 'src/api';
+import type { QTableProps } from 'quasar';
+import type { RentalContractInResponse } from 'src/api';
 import { useContractStore } from 'stores/contract-store';
 import { useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';

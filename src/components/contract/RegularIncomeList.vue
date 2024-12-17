@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { QTableProps, useQuasar } from 'quasar';
+import type { QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useContractStore } from 'stores/contract-store';
 import { useRegularIncomeStore } from 'stores/regular-income-store';
 import RegularIncomeDialog from 'components/contract/RegularIncomeDialog.vue';
-import { RentalContractRegularIncome } from 'src/api';
+import type { RentalContractRegularIncome } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 import useErrorHandler from 'components/app/useErrorHandler';
 

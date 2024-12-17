@@ -91,7 +91,7 @@ const remove = async () => {
     }
     try {
       await useIncomeStore().deleteIncome(income.value.id);
-    } catch (e) {
+    } catch {
       await toastHandler('収入の削除に失敗しました。');
     }
     await router.push({

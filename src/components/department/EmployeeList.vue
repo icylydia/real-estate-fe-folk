@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useDepartmentStore } from 'stores/department-store';
-import { QTableProps } from 'quasar';
-import { EmployeeModel } from 'stores/employee-store';
+import type { QTableProps } from 'quasar';
+import type { EmployeeModel } from 'stores/employee-store';
 import { useRouter } from 'vue-router';
 
 const { formModel: department } = storeToRefs(useDepartmentStore());

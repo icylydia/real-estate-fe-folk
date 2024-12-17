@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { EntrustContractManagementFeeBase } from 'src/api';
 import _ from 'lodash';
 import { api } from 'boot/api';
-import { Optional } from 'src/utils/framework';
+import type { Optional } from 'src/utils/framework';
 
 const defaultManagementFeeModel: EntrustContractManagementFeeBase = {
   benefitType: EntrustContractManagementFeeBase.BenefitTypeEnum.Percentage,

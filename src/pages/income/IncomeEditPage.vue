@@ -2,11 +2,12 @@
 import IncomeForm from 'components/payment/IncomeForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, nextTick, onMounted, ref } from 'vue';
-import { IncomeModel, useIncomeStore } from 'stores/income-store';
-import { FormValidationResult } from 'vee-validate';
+import type { IncomeModel } from 'stores/income-store';
+import { useIncomeStore } from 'stores/income-store';
+import type { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { Optional } from 'src/utils/framework';
+import type { Optional } from 'src/utils/framework';
 
 const router = useRouter();
 const loading = ref(false);

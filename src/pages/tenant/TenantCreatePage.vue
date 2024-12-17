@@ -3,9 +3,10 @@ import TenantForm from 'components/tenant/TenantForm.vue';
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useTenantStore } from 'stores/tenant-store';
-import { FormValidationResult } from 'vee-validate';
-import { Optional } from 'src/utils/framework';
+import type { FormValidationResult } from 'vee-validate';
+import type { Optional } from 'src/utils/framework';
 import useErrorHandler from 'components/app/useErrorHandler';
+import type { TenantInRequest } from 'src/api';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof TenantForm>>();
@@ -20,7 +21,7 @@ const save = async () => {
   }
   loading.value = true;
   try {
-    const data = validation.values;
+    const data = validation.values as TenantInRequest;
     const newTenant = await useTenantStore().createTenant(data);
     await router.push({
       name: 'tenant-detail',

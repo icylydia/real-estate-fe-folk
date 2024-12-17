@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { GetRentalContractListRequest, useContractStore } from 'stores/contract-store';
-import { QTable, QTableProps, useQuasar } from 'quasar';
-import { computed, onMounted, Ref, ref } from 'vue';
-import { RentalContractInResponse } from 'src/api';
+import type { GetRentalContractListRequest } from 'stores/contract-store';
+import { useContractStore } from 'stores/contract-store';
+import type { QTable, QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
+import type { Ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import type { RentalContractInResponse } from 'src/api';
 import { useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { useContract } from 'src/utils/contract';
@@ -123,7 +126,7 @@ const promptToUpdateContract = async (id?: string) => {
   }).onOk(async (): Promise<void> => {
     try {
       await useContractStore().promptRemindRentalContract(id);
-    } catch (e) {
+    } catch {
       await toastHandler('更新を促すに失敗しました。')
     }
     tableRef.value?.requestServerInteraction();
@@ -136,7 +139,7 @@ const toNewContract = async () => {
       name: 'rental-contract-create',
     });
   } catch (e) {
-    console.error(e);
+    await toastHandler(e);
   }
 };
 

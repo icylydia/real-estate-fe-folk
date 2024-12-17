@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
-import { FileBase } from 'src/api';
+import type { FileBase } from 'src/api';
 
 const DEFAULT_MAIN_PHOTO_URL = import.meta.env.VITE_APP_DEFAULT_MAIN_PHOTO;
 

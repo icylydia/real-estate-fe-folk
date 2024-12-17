@@ -2,7 +2,8 @@
 import { storeToRefs } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 import { computed, ref } from 'vue';
-import { QTableProps, useQuasar } from 'quasar';
+import type { QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import { useFile } from 'src/utils/file';
 import FileDialog from 'components/building/FileDialog.vue';
 import { FileBase } from 'src/api';
@@ -25,7 +26,7 @@ const handleDialogSubmit = async (data: FileBase, file: File) => {
     if (resp) {
       useBuildingStore().appendFile(resp);
     }
-  } catch (e) {
+  } catch {
     await toastHandler('ファイルのアップロードに失敗しました');
   }
 }
@@ -54,7 +55,7 @@ const deleteFile = async (file: FileBase) => {
     try {
       await useFileStore().deleteFile(file.id);
       useBuildingStore().removeFile(file.id);
-    } catch (e) {
+    } catch {
       await toastHandler('ファイルの削除に失敗しました');
     }
   });
@@ -119,12 +120,12 @@ const columns: QTableProps['columns'] = [
     </template>
     <template #[`body-cell-category`]="{ row }: { row: FileBase }">
       <q-td>
-        {{ describeCategory(row.category) }}
+        {{ row.category ? describeCategory(row.category) : '' }}
       </q-td>
     </template>
     <template #[`body-cell-uploadedAt`]="{ row }: { row: FileBase }">
       <q-td>
-        {{ $filters.dateTime(row.uploadedAt, "minute") }}
+        {{ row.uploadedAt ? $filters.dateTime(row.uploadedAt, "minute") : '' }}
       </q-td>
     </template>
     <template #[`body-cell-actions`]="{ row }: { row: FileBase }">

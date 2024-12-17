@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { QTableProps, useQuasar } from 'quasar';
-import { RoomInResponse } from 'src/api';
+import type { QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
+import type { RoomInResponse } from 'src/api';
 import { useRoom } from 'src/utils/room';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
@@ -77,7 +78,7 @@ const removeRoom = async (room: RoomInResponse) => {
     try {
       await useRoomStore().deleteRoom(room.id);
       useBuildingStore().removeRoom(room.id);
-    } catch (e) {
+    } catch {
       await toastHandler('ファイルの削除に失敗しました');
     }
   });

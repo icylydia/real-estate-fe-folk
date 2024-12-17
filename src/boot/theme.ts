@@ -1,7 +1,7 @@
-import { boot } from 'quasar/wrappers'
+import { defineBoot } from '#q-app/wrappers';
 import { setCssVar } from 'quasar';
 
-export default boot(() => {
+export default defineBoot(() => {
   setCssVar('primary', import.meta.env.VITE_APP_PRIMARY_COLOR);
   setCssVar('secondary', import.meta.env.VITE_APP_SECONDARY_COLOR);
   setCssVar('accent', import.meta.env.VITE_APP_ACCENT_COLOR);

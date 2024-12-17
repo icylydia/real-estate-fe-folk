@@ -49,113 +49,93 @@
   </q-layout>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import EssentialLink from 'components/EssentialLink.vue';
 import useApp from 'components/app/useApp';
-import { logout } from 'src/auth';
+import { logout as authLogout } from 'src/auth';
 import { storeToRefs } from 'pinia';
 import { useAppStore } from 'stores/app-store';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
-export default defineComponent<any>({
-  name: 'MainLayout',
+const { isSidebarOpen: leftDrawerOpen } = storeToRefs(useAppStore());
+const { appName, appVersion } = useApp()
 
-  components: {
-    EssentialLink
-  },
+const toggleLeftDrawer = () => {
+  leftDrawerOpen.value = !leftDrawerOpen.value
+}
 
-  setup () {
-    const { isSidebarOpen: leftDrawerOpen } = storeToRefs(useAppStore());
-    const {appName, appVersion} = useApp()
-
-    return {
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      },
-      appName,
-      appVersion,
-    }
-  },
-
-  data () {
-    return {
-      essentialLinks: [
-        {
-          title: '物件管理',
-          icon: 'sym_r_home_work',
-          link: this.$router.resolve({ name: 'building-list' }).href,
-        },
-        {
-          title: 'オーナー管理',
-          icon: 'sym_r_productivity',
-          link: this.$router.resolve({ name: 'owner-list' }).href,
-        },
-        {
-          title: '入居者管理',
-          icon: 'sym_r_family_restroom',
-          link: this.$router.resolve({ name: 'tenant-list' }).href,
-        },
-        {
-          title: '契約管理',
-          icon: 'sym_r_edit_document',
-          subMenu: [
-            {
-              title: '賃貸借契約一覧',
-              icon: 'sym_r_contract',
-              link: this.$router.resolve({ name: 'rental-contract-list' }).href,
-            },
-            {
-              title: '管理委託契約一覧',
-              icon: 'sym_r_real_estate_agent',
-              link: this.$router.resolve({ name: 'entrust-contract-list' }).href,
-            },
-          ],
-        },
-        {
-          title: '収支管理',
-          icon: 'sym_r_currency_exchange',
-          subMenu: [
-            {
-              title: '収入一覧',
-              icon: 'sym_r_trending_up',
-              link: this.$router.resolve({ name: 'income-list' }).href,
-            },
-            {
-              title: '支出一覧',
-              icon: 'sym_r_trending_down',
-              link: this.$router.resolve({ name: 'expense-list' }).href,
-            },
-            {
-              title: '月次収支',
-              icon: 'sym_r_summarize',
-              link: this.$router.resolve({ name: 'monthly-income-expense-report-list' }).href,
-            },
-          ],
-        },
-        {
-          title: '部署管理',
-          icon: 'sym_r_tenancy',
-          link: this.$router.resolve({ name: 'department-list' }).href,
-        },
-        {
-          title: '社員管理',
-          icon: 'sym_r_group',
-          link: this.$router.resolve({ name: 'employee-list' }).href,
-        },
-      ]
-    }
-  },
-
-  methods: {
-    async logout () {
-      logout()
-      try {
-        await this.$router.push({ name: 'login' })
-      } catch (err) {
-        console.error(err)
-      }
-    }
+const logout = async () => {
+  authLogout()
+  try {
+    await router.push({ name: 'login' })
+  } catch (err) {
+    console.error(err)
   }
-});
+}
+
+const essentialLinks = [
+  {
+    title: '物件管理',
+    icon: 'sym_r_home_work',
+    link: router.resolve({ name: 'building-list' }).href,
+  },
+  {
+    title: 'オーナー管理',
+    icon: 'sym_r_productivity',
+    link: router.resolve({ name: 'owner-list' }).href,
+  },
+  {
+    title: '入居者管理',
+    icon: 'sym_r_family_restroom',
+    link: router.resolve({ name: 'tenant-list' }).href,
+  },
+  {
+    title: '契約管理',
+    icon: 'sym_r_edit_document',
+    subMenu: [
+      {
+        title: '賃貸借契約一覧',
+        icon: 'sym_r_contract',
+        link: router.resolve({ name: 'rental-contract-list' }).href,
+      },
+      {
+        title: '管理委託契約一覧',
+        icon: 'sym_r_real_estate_agent',
+        link: router.resolve({ name: 'entrust-contract-list' }).href,
+      },
+    ],
+  },
+  {
+    title: '収支管理',
+    icon: 'sym_r_currency_exchange',
+    subMenu: [
+      {
+        title: '収入一覧',
+        icon: 'sym_r_trending_up',
+        link: router.resolve({ name: 'income-list' }).href,
+      },
+      {
+        title: '支出一覧',
+        icon: 'sym_r_trending_down',
+        link: router.resolve({ name: 'expense-list' }).href,
+      },
+      {
+        title: '月次収支',
+        icon: 'sym_r_summarize',
+        link: router.resolve({ name: 'monthly-income-expense-report-list' }).href,
+      },
+    ],
+  },
+  {
+    title: '部署管理',
+    icon: 'sym_r_tenancy',
+    link: router.resolve({ name: 'department-list' }).href,
+  },
+  {
+    title: '社員管理',
+    icon: 'sym_r_group',
+    link: router.resolve({ name: 'employee-list' }).href,
+  },
+]
 </script>

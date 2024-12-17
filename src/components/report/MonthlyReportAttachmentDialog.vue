@@ -3,7 +3,8 @@ import { nextTick, ref, watch } from 'vue';
 import { FileBase } from 'src/api';
 import { useApi } from 'boot/api';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { QTableProps, useQuasar } from 'quasar';
+import type { QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import FileDialog from 'components/report/FileDialog.vue';
 import { useFileStore } from 'stores/file-store';
 import { useFile } from 'src/utils/file';
@@ -128,7 +129,7 @@ const deleteFile = async (file: FileBase) => {
     try {
       await useFileStore().deleteFile(file.id);
       await loadAttachments();
-    } catch (e) {
+    } catch {
       await toastHandler('ファイルの削除に失敗しました');
     }
   });
@@ -178,7 +179,7 @@ const { describeCategory } = useFile();
           </template>
           <template #[`body-cell-category`]="{ row }: { row: FileBase }">
             <q-td>
-              {{ describeCategory(row.category) }}
+              {{ row.category ? describeCategory(row.category) : '' }}
             </q-td>
           </template>
           <template #[`body-cell-actions`]="{ row }: { row: FileBase }">

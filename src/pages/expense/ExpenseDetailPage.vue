@@ -91,7 +91,7 @@ const remove = async () => {
     }
     try {
       await useExpenseStore().deleteExpense(expense.value.id);
-    } catch (e) {
+    } catch {
       await toastHandler('支出の削除に失敗しました。');
     }
     await router.push({

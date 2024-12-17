@@ -2,7 +2,7 @@
 import { nextTick, onMounted, ref } from 'vue';
 import BuildingList from 'components/owner/BuildingList.vue';
 import OwnerForm from 'components/owner/OwnerForm.vue';
-import { RouteParamValue, useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useOwnerStore } from 'stores/owner-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 const { toastHandler } = useErrorHandler();
@@ -10,13 +10,10 @@ const { toastHandler } = useErrorHandler();
 const loading = ref(false);
 
 const route = useRoute()
-const ownerId = ref<string | RouteParamValue[]>(route.params.id)
+const ownerId = ref<string>(route.params.id as string || '-1')
 const router = useRouter()
 const toEdit = async () => {
   try {
-    if (!(ownerId.value instanceof String || typeof ownerId.value == 'string')) {
-      throw new Error('Invalid owner id');
-    }
     await router.push({ name: 'owner-edit', params: { id: ownerId.value } });
   } catch (error) {
     await toastHandler(error);
@@ -27,10 +24,6 @@ const { getOwner, reset } = useOwnerStore();
 onMounted(async () => {
   loading.value = true;
   try {
-    if (!(ownerId.value instanceof String || typeof ownerId.value == 'string')) {
-      console.log(typeof ownerId.value);
-      throw new Error('Invalid owner id');
-    }
     reset();
     await getOwner(ownerId.value);
     await nextTick(() => {

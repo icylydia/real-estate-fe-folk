@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useDepartmentStore } from 'stores/department-store';
-import { DepartmentInResponse, EmployeeBase } from 'src/api';
+import type { DepartmentInResponse, EmployeeBase, EmployeeInResponse } from 'src/api';
 import { computed, ref } from 'vue';
 import { useEmployeeStore } from 'stores/employee-store';
 import { toTypedSchema } from '@vee-validate/yup';
@@ -53,8 +53,8 @@ const leaderFilter = (val: string, update: () => void) => {
   if (val === '') {
     leaderOptions.value = employees.value;
   } else {
-    leaderOptions.value = employees.value.filter((v) => {
-      const fullName = v.lastName ?? '' + v.firstName ?? '';
+    leaderOptions.value = employees.value.filter((v: EmployeeInResponse) => {
+      const fullName = (v.lastName ?? '') + (v.firstName ?? '');
       return fullName.toLowerCase().indexOf(val.toLowerCase()) > -1;
     });
   }
@@ -163,7 +163,7 @@ defineExpose({
             :options="parentDepartmentOptions"
             :option-label="(option: DepartmentInResponse) => option.name ?? ''"
             option-value="id"
-            @filter="departmentFilter"
+            @filter="departmentFilter as any"
             :readonly="readonly"
             use-input
           >
@@ -184,7 +184,7 @@ defineExpose({
             :options="leaderOptions"
             :option-label="(option: EmployeeBase) => option.lastName + ' ' + option.firstName"
             option-value="id"
-            @filter="leaderFilter"
+            @filter="leaderFilter as any"
             :readonly="readonly"
             use-input
           >

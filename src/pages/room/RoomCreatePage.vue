@@ -5,10 +5,10 @@ import RoomForm from 'components/room/RoomForm.vue';
 import { useRoomStore } from 'stores/room-store';
 import { useBuildingStore } from 'stores/building-store';
 import { storeToRefs } from 'pinia';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { Optional } from 'src/utils/framework';
-import { RoomInRequest } from 'src/api';
+import type { Optional } from 'src/utils/framework';
+import type { RoomInRequest } from 'src/api';
 
 const loading = ref(true);
 const saving = ref(false);
@@ -60,7 +60,7 @@ const save = async () => {
       name: 'room-detail',
       params: { id: room.id },
     });
-  } catch (error) {
+  } catch {
     await toastHandler('保存に失敗しました。');
   } finally {
     saving.value = false;

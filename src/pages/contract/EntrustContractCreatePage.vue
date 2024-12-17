@@ -3,8 +3,8 @@ import EntrustContractForm from 'components/contract/EntrustContractForm.vue';
 import { nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useContractStore } from 'stores/contract-store';
-import { FormValidationResult } from 'vee-validate';
-import { Optional } from 'src/utils/framework';
+import type { FormValidationResult } from 'vee-validate';
+import type { Optional } from 'src/utils/framework';
 import useErrorHandler from 'components/app/useErrorHandler';
 import _ from 'lodash';
 

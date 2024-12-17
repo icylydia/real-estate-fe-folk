@@ -3,8 +3,8 @@ import RentalContractForm from 'components/contract/RentalContractForm.vue';
 import { nextTick, onMounted, ref } from 'vue';
 import { useContractStore } from 'stores/contract-store';
 import { useRouter } from 'vue-router';
-import { FormValidationResult } from 'vee-validate';
-import { Optional } from 'src/utils/framework';
+import type { FormValidationResult } from 'vee-validate';
+import type { Optional } from 'src/utils/framework';
 import useErrorHandler from 'components/app/useErrorHandler';
 import _ from 'lodash';
 

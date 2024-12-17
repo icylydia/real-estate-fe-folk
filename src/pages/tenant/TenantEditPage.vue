@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { TenantFormModel, useTenantStore } from 'stores/tenant-store';
+import type { TenantFormModel } from 'stores/tenant-store';
+import { useTenantStore } from 'stores/tenant-store';
 import TenantForm from 'components/tenant/TenantForm.vue';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
 import useErrorHandler from 'components/app/useErrorHandler';
 
@@ -31,8 +32,8 @@ onMounted(async () => {
 });
 
 const save = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: FormValidationResult<any> | undefined = await form.value?.validate();
+  if (!validation || !validation.valid) {
     return;
   }
   loading.value = true;

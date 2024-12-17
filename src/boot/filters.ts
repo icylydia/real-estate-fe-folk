@@ -1,6 +1,6 @@
-import { boot } from 'quasar/wrappers';
+import { defineBoot } from '#q-app/wrappers';
 import moment from 'moment';
-import { Optional } from 'src/utils/framework';
+import type { Optional } from 'src/utils/framework';
 
 const jpyCurrency = (value: Optional<number>): string => {
   if (value === undefined) {
@@ -52,7 +52,7 @@ const highlight = (value: string, keyword: string | undefined) => {
   return value.replace(new RegExp(`(${keyword})`, 'gi'), '<mark>$1</mark>');
 }
 
-export default boot(({ app }) => {
+export default defineBoot(({ app }) => {
   app.config.globalProperties.$filters = {
     jpyCurrency,
     percentage,

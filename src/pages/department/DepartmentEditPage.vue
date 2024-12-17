@@ -2,8 +2,9 @@
 import DepartmentForm from 'components/department/DepartmentForm.vue';
 import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { DepartmentFormModel, useDepartmentStore } from 'stores/department-store';
-import { FormValidationResult } from 'vee-validate';
+import type { DepartmentFormModel } from 'stores/department-store';
+import { useDepartmentStore } from 'stores/department-store';
+import type { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
 import useErrorHandler from 'components/app/useErrorHandler';
 
@@ -31,8 +32,8 @@ onMounted(async () => {
 });
 
 const save =  async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: FormValidationResult<any> | undefined = await form.value?.validate();
+  if (!validation || !validation.valid || !validation.values) {
     return;
   }
   saving.value = true;
@@ -47,8 +48,8 @@ const save =  async () => {
       name: 'department-detail',
       params: { id: departmentId }
     });
-  } catch (error) {
-    toastHandler('部署の更新に失敗しました。')
+  } catch {
+    await toastHandler('部署の更新に失敗しました。')
   } finally {
     saving.value = false;
   }

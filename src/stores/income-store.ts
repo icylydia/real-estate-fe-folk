@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { IncomeDetailResponse, IncomeInRequest, IncomeInResponse, PaginationResponsePagination } from 'src/api';
+import type { IncomeDetailResponse, IncomeInRequest, IncomeInResponse, PaginationResponsePagination } from 'src/api';
 import { api } from 'boot/api';
 
 interface GetIncomeListRequest {

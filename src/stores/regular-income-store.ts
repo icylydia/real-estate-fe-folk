@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { RentalContractRegularIncome } from 'src/api';
+import type { RentalContractRegularIncome } from 'src/api';
 import { api } from 'boot/api';
 import _ from 'lodash';
 

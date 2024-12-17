@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import { EmployeeModel, useEmployeeStore } from 'stores/employee-store';
-import {QTableProps, useQuasar} from 'quasar';
+import type { EmployeeModel } from 'stores/employee-store';
+import { useEmployeeStore } from 'stores/employee-store';
+import type { QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import { storeToRefs } from 'pinia';
 
 const router = useRouter();

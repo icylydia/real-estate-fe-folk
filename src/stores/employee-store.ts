@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { EmployeeInRequest, EmployeeInResponse } from 'src/api';
+import type { EmployeeInRequest, EmployeeInResponse } from 'src/api';
 import { api } from 'boot/api';
 
 export type EmployeeModel = Partial<

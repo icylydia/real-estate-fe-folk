@@ -25,7 +25,15 @@ export default defineComponent({
     },
   },
   methods: {
-    handleUpdateModelValue(value: string) {
+    handleUpdateModelValue(value: string | number | null) {
+      if (value === null) {
+        this.$emit('update:modelValue', undefined);
+        return;
+      }
+      if (typeof value === 'number') {
+        this.$emit('update:modelValue', value);
+        return;
+      }
       const parsedValue = parseInt(value.replace(/\D/g, ''), 10);
       const emitValue = isNaN(parsedValue) ? undefined : parsedValue;
       this.$emit('update:modelValue', emitValue);

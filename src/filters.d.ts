@@ -1,4 +1,6 @@
-import { Optional } from 'src/utils/framework';
+import type { Optional } from 'src/utils/framework';
+
+export {}
 
 declare module 'vue' {
   interface ComponentCustomProperties {

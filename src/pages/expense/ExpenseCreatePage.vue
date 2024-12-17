@@ -3,8 +3,8 @@ import ExpenseForm from 'components/payment/ExpenseForm.vue';
 import { useRouter } from 'vue-router';
 import { nextTick, onMounted, ref } from 'vue';
 import { useExpenseStore } from 'stores/expense-store';
-import { FormValidationResult } from 'vee-validate';
-import { Optional } from 'src/utils/framework';
+import type { FormValidationResult } from 'vee-validate';
+import type { Optional } from 'src/utils/framework';
 import useErrorHandler from 'components/app/useErrorHandler';
 
 const router = useRouter();

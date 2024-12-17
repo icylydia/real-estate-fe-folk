@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { QTableProps } from 'quasar';
-import { BuildingInResponse } from 'src/api';
+import type { QTableProps } from 'quasar';
+import type { BuildingInResponse } from 'src/api';
 import { useOwnerStore } from 'stores/owner-store';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';

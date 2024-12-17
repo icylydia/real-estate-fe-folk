@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref } from 'vue';
+import type { Ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { GetEntrustContractListRequest, useContractStore } from 'stores/contract-store';
-import { QTable, QTableProps, useQuasar } from 'quasar';
+import type { GetEntrustContractListRequest } from 'stores/contract-store';
+import { useContractStore } from 'stores/contract-store';
+import type { QTable, QTableProps } from 'quasar';
+import {  useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
-import { ContractBase, EntrustContractInResponse } from 'src/api';
+import type { EntrustContractInResponse } from 'src/api';
+import { ContractBase } from 'src/api';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { useContract } from 'src/utils/contract';
 import moment from 'moment';

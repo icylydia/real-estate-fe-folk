@@ -2,7 +2,6 @@ import { Notify } from 'quasar'
 import { AxiosError } from 'axios';
 
 export default () => {
-  // eslint-disable-next-line
   const toastHandler = async (error: any) => {
     let message: string;
     if (error instanceof Response) {

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { DepartmentDetailResponse, DepartmentInRequest, DepartmentInResponse } from 'src/api';
+import type { DepartmentDetailResponse, DepartmentInRequest, DepartmentInResponse } from 'src/api';
 import { api } from 'boot/api';
 import _ from 'lodash';
 

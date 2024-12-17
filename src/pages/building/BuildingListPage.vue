@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { BuildingInResponse } from 'src/api';
-import { QTable, QTableProps, useQuasar } from 'quasar';
-import { computed, onMounted, Ref, ref, useTemplateRef } from 'vue';
+import type { BuildingInResponse } from 'src/api';
+import type { QTable, QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
+import type { Ref } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useBuildingStore } from 'stores/building-store';
@@ -41,7 +43,7 @@ const columns: QTableProps['columns'] = [
 type Pagination = {
   sortBy?: string;
   descending?: boolean;
-  page?: number;
+  page: number;
   rowsPerPage?: number;
   rowsNumber?: number;
 };
@@ -133,7 +135,7 @@ const remove = async (building: BuildingInResponse) => {
     }
     try {
       await deleteBuilding(building.id);
-    } catch (e) {
+    } catch {
       await toastHandler(new Error('削除に失敗しました。'));
     }
 
@@ -196,10 +198,10 @@ const remove = async (building: BuildingInResponse) => {
               </template>
               <template #[`body-cell-address`]="{ row }: { row: BuildingInResponse }">
                 <q-td>
-                  {{ row.address.prefectureName }}{{ row.address.detailAddress1 }}{{ row.address.detailAddress2 }}
+                  {{ row.address?.prefectureName }}{{ row.address?.detailAddress1 }}{{ row.address?.detailAddress2 }}
                 </q-td>
               </template>
-              <template #[`body-cell-actions`]="{ key, row }: { row: BuildingInResponse }">
+              <template #[`body-cell-actions`]="{ key, row }: { key: string, row: BuildingInResponse }">
                 <q-td class="text-right">
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_visibility" @click="detail(key)" />
                   <q-btn class="q-ml-sm" size="sm" flat dense icon="sym_r_edit" @click="edit(key)" />

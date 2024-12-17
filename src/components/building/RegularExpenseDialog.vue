@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { usePayment } from 'src/utils/payment';
 import { RegularExpenseBase } from 'src/api';
 import _ from 'lodash';

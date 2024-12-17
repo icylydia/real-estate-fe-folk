@@ -74,7 +74,7 @@ import useErrorHandler from 'components/app/useErrorHandler.js';
 import { login } from 'src/auth';
 import { useRouter } from 'vue-router';
 import { useApi } from 'boot/api';
-import { AuthLoginBody } from 'src/api';
+import type { AuthLoginBody } from 'src/api';
 
 const {appName, appVersion} = useApp();
 

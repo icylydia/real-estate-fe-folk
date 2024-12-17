@@ -2,7 +2,8 @@
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
 import QInputArea from 'components/extension/QInputArea.vue';
 import { useRoom } from 'src/utils/room';
-import { computed, onMounted, PropType } from 'vue';
+import type { PropType } from 'vue';
+import { computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoomStore } from 'stores/room-store';
 import { toTypedSchema } from '@vee-validate/yup';

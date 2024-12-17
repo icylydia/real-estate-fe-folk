@@ -4,7 +4,7 @@ import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useEmployeeStore } from 'stores/employee-store';
 import { storeToRefs } from 'pinia';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import { useQuasar } from 'quasar';
 import useErrorHandler from 'components/app/useErrorHandler';
 
@@ -33,7 +33,7 @@ onMounted(async () => {
 
 const save = async () => {
   const validation: FormValidationResult<any> | undefined = await form.value?.validate();
-  if (!validation || !validation.valid) {
+  if (!validation || !validation.valid || !validation.values) {
     return;
   }
   saving.value = true;

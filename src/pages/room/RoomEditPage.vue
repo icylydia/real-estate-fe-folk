@@ -4,7 +4,7 @@ import RoomForm from 'components/room/RoomForm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useRoomStore } from 'stores/room-store';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 
 const loading = ref(false);
 const saving = ref(false);
@@ -35,7 +35,7 @@ onMounted(async () => {
 });
 
 const onSave = async () => {
-  const validation: FormValidationResult<any> = await form.value?.validate();
+  const validation: FormValidationResult<any> | undefined = await form.value?.validate();
   if (!validation || !validation.valid || !validation.values) {
     return;
   }

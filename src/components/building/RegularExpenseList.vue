@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { QTableProps, useQuasar } from 'quasar';
-import { RegularExpenseBase } from 'src/api';
+import type { QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
+import type { RegularExpenseBase } from 'src/api';
 import { useBuildingStore } from 'stores/building-store';
 import { computed, ref } from 'vue';
 import { usePayment } from 'src/utils/payment';

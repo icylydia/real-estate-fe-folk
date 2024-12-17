@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useDepartmentStore } from 'stores/department-store';
-import { DepartmentInResponse } from 'src/api';
+import type { DepartmentInResponse } from 'src/api';
 import { storeToRefs } from 'pinia';
 import { useEmployeeStore } from 'stores/employee-store';
 import { useGender } from 'src/utils/gender';
@@ -260,7 +260,7 @@ defineEmits<{
             :options="options"
             option-label="name"
             option-value="id"
-            @filter="filterFn"
+            @filter="filterFn as any"
             :readonly="readonly"
             use-input
             multiple

@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref, useTemplateRef } from 'vue';
+import type { Ref } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
 import { useOwnerStore } from 'stores/owner-store';
 import { storeToRefs } from 'pinia';
-import { QTable, QTableProps, useQuasar } from 'quasar';
+import type { QTable, QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import { useGender } from 'src/utils/gender';
 import { useRouter } from 'vue-router';
-import { OwnerInResponse, TenantInResponse } from 'src/api';
+import type { OwnerInResponse, TenantInResponse } from 'src/api';
 import useErrorHandler from 'components/app/useErrorHandler';
 
 const loading = ref(false)
@@ -147,7 +149,7 @@ const columns: QTableProps['columns'] = [
 type Pagination = {
   sortBy?: string;
   descending?: boolean;
-  page?: number;
+  page: number;
   rowsPerPage?: number;
   rowsNumber?: number;
 };

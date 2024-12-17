@@ -3,9 +3,9 @@ import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import OwnerForm from 'components/owner/OwnerForm.vue';
 import { useOwnerStore } from 'stores/owner-store';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { OwnerInRequest } from 'src/api';
+import type { OwnerInRequest } from 'src/api';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof OwnerForm>>();

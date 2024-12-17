@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { QTableProps } from 'quasar';
+import type { QTableProps } from 'quasar';
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
-import { RentalContractInResponse } from 'src/api';
+import type { RentalContractInResponse } from 'src/api';
 import { useContractStore } from 'stores/contract-store';
 import moment from 'moment';
 

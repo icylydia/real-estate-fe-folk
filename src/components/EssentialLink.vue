@@ -7,13 +7,13 @@
     :header-inset-level="insetLevel"
     v-if="subMenu.length > 0"
   >
-<q-list>
-    <essential-link
-      v-for="(link, index) in subMenu"
-      :key="index"
-      v-bind="link"
-      :inset-level="insetLevel + 0.5"
-    />
+    <q-list>
+      <essential-link
+        v-for="(link, index) in subMenu"
+        :key="index"
+        v-bind="link"
+        :inset-level="insetLevel + 0.5"
+      />
     </q-list>
   </q-expansion-item>
   <q-item
@@ -37,41 +37,36 @@
   </q-item>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
 
-export default defineComponent({
-  name: 'EssentialLink',
-  props: {
-    title: {
-      type: String,
-      default: ''
-    },
+  caption: {
+    type: String,
+    default: ''
+  },
 
-    caption: {
-      type: String,
-      default: ''
-    },
+  link: {
+    type: String,
+    default: '#'
+  },
 
-    link: {
-      type: String,
-      default: '#'
-    },
+  icon: {
+    type: String,
+    default: ''
+  },
 
-    icon: {
-      type: String,
-      default: ''
-    },
+  insetLevel: {
+    type: Number,
+    default: 0
+  },
 
-    insetLevel: {
-      type: Number,
-      default: 0
-    },
-
-    subMenu: {
-      type: Array,
-      default: () => []
-    }
+  subMenu: {
+    type: Array<any>,
+    default: () => []
   }
 });
 </script>

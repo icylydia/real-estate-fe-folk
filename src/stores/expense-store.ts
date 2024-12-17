@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ExpenseDetailResponse, ExpenseInRequest, ExpenseInResponse, PaginationResponsePagination } from 'src/api';
+import type { ExpenseDetailResponse, ExpenseInRequest, ExpenseInResponse, PaginationResponsePagination } from 'src/api';
 import { api } from 'boot/api';
 
 interface GetExpenseListRequest {

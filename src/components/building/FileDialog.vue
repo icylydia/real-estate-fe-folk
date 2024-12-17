@@ -25,7 +25,7 @@ const { fileCategoryOptions } = useBuilding();
   <div class="q-pa-md q-gutter-sm">
     <q-dialog
       :model-value="show"
-      @update:model-value="$emit('update:show', $event.target.value)"
+      @update:model-value="$emit('update:show', $event)"
       persistent
     >
       <q-card class="card">

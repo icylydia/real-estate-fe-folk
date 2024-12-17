@@ -1,4 +1,4 @@
-import { boot } from 'quasar/wrappers'
+import { defineBoot } from '#q-app/wrappers';
 import { setLocale } from 'yup'
 import { suggestive } from 'yup-locale-ja'
 import _ from 'lodash';
@@ -6,7 +6,7 @@ import _ from 'lodash';
 // "async" is optional;
 // more info on params: https://v2.quasar.dev/quasar-cli/boot-files
 // noinspection JSUnusedGlobalSymbols
-export default boot(async (/* { app, router, ... } */) => {
+export default defineBoot(async (/* { app, router, ... } */) => {
   let locale = {
     ...suggestive,
   }

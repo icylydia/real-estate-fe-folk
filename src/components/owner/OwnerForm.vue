@@ -255,7 +255,7 @@ defineEmits<{
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="詳細住所２"
-            hint="○番－○号　町名,　○丁目"
+            hint="○番－○号 町名, ○丁目"
             :readonly="readonly"
             dense
           />

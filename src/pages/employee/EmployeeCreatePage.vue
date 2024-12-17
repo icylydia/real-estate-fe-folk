@@ -3,14 +3,15 @@ import EmployeeForm from 'components/employee/EmployeeForm.vue';
 import { onMounted, ref } from 'vue';
 import { useEmployeeStore } from 'stores/employee-store';
 import { useRouter } from 'vue-router';
+import { type FormValidationResult } from 'vee-validate';
 
 const loading = ref(false);
 const form = ref<InstanceType<typeof EmployeeForm>>();
 const router = useRouter();
 
 const save = async () => {
-  const validation = await form.value?.validate();
-  if (!validation.valid) {
+  const validation: FormValidationResult<any> | undefined = await form.value?.validate();
+  if (!validation || !validation.valid || !validation.values) {
     return;
   }
   loading.value = true;

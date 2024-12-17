@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref, useTemplateRef } from 'vue';
-import { QTable, QTableProps, useQuasar } from 'quasar';
+import type { Ref } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
+import type { QTable, QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import { useIncomeStore } from 'stores/income-store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { ExpenseInResponse, IncomeInResponse } from 'src/api';
+import type { ExpenseInResponse, IncomeInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { Optional } from 'src/utils/framework';
+import type { Optional } from 'src/utils/framework';
 
 const loading = ref(false);
 const $q = useQuasar();
@@ -222,10 +224,9 @@ const confirmAll = (incomes: IncomeInResponse[]) => {
     persistent: true,
   }).onOk(async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const incomeIds = incomes.map((income) => income.id!);
       await useIncomeStore().confirmAll(incomeIds);
-    } catch (e) {
+    } catch {
       await toastHandler('承認に失敗しました');
     }
     tableRef.value?.requestServerInteraction();
@@ -241,10 +242,9 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
     persistent: true,
   }).onOk(async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const incomeIds = incomes.map((income) => income.id!);
       await useIncomeStore().rejectAll(incomeIds);
-    } catch (e) {
+    } catch {
       await toastHandler('拒否に失敗しました');
     }
     tableRef.value?.requestServerInteraction();

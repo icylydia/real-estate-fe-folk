@@ -2,8 +2,9 @@
 import { storeToRefs } from 'pinia';
 import { useBuildingStore } from 'stores/building-store';
 import { computed } from 'vue';
-import { QTableProps } from 'quasar';
-import { ContractBase, EntrustContractInResponse } from 'src/api';
+import type { QTableProps } from 'quasar';
+import type { EntrustContractInResponse } from 'src/api';
+import { ContractBase } from 'src/api';
 import { useContractStore } from 'stores/contract-store';
 import moment from 'moment';
 

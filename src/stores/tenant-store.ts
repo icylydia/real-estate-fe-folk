@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/api';
-import {
+import type {
   PaginationResponsePagination,
   TenantDetailResponse,
   TenantInRequest,

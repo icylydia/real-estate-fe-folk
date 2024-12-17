@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { RegularExpenseBase } from 'src/api';
+import type { RegularExpenseBase } from 'src/api';
 import { api } from 'boot/api';
 import _ from 'lodash';
 

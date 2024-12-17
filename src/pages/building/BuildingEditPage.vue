@@ -4,10 +4,10 @@ import { useRoute, useRouter } from 'vue-router';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { computed, onMounted, ref } from 'vue';
 import { useBuildingStore } from 'stores/building-store';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import _ from 'lodash';
-import { Optional } from 'src/utils/framework';
-import { BuildingInRequest } from 'src/api';
+import type { Optional } from 'src/utils/framework';
+import type { BuildingInRequest } from 'src/api';
 
 const loading = ref(false);
 const saving = ref(false);

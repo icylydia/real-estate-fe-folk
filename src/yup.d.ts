@@ -1,9 +1,7 @@
-import * as yup from 'yup';
-import { AnyObject, Flags, Maybe } from 'yup';
+import type * as yup from 'yup';
+import type { AnyObject, Flags, Maybe } from 'yup';
 
 declare module 'yup' {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   interface StringSchema<
     TType extends Maybe<string> = string | undefined,
     TContext = AnyObject,

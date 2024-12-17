@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import { FileBase, RoomInRequest, RoomInResponse, TenantInResponse } from 'src/api';
+import type { FileBase, RoomInRequest, RoomInResponse, TenantInResponse } from 'src/api';
 import { api } from 'boot/api';
-import { Nullable } from 'src/utils/framework';
+import type { Nullable } from 'src/utils/framework';
 
 export type RoomFormModel = Partial<
   RoomInRequest & RoomInResponse

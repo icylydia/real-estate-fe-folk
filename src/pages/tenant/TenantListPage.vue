@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { onMounted, Ref, ref, computed } from 'vue';
+import type { Ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useTenantStore } from 'stores/tenant-store';
-import { TenantInResponse } from 'src/api';
+import type { TenantInResponse } from 'src/api';
 import { useRouter } from 'vue-router';
-import { QTable, QTableProps, useQuasar } from 'quasar';
+import type { QTable, QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import { useGender } from 'src/utils/gender';
 import useErrorHandler from 'components/app/useErrorHandler';
 
@@ -146,7 +148,7 @@ const { describe: describeGender } = useGender();
 type Pagination = {
   sortBy?: string;
   descending?: boolean;
-  page?: number;
+  page: number;
   rowsPerPage?: number;
   rowsNumber?: number;
 };

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import ExpenseForm from 'components/payment/ExpenseForm.vue';
 import { computed, nextTick, onMounted, ref } from 'vue';
-import { ExpenseModel,useExpenseStore } from 'stores/expense-store';
+import type { ExpenseModel } from 'stores/expense-store';
+import { useExpenseStore } from 'stores/expense-store';
 import { useRoute, useRouter } from 'vue-router';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
 import useErrorHandler from 'components/app/useErrorHandler';
-import { Optional } from 'src/utils/framework';
+import type { Optional } from 'src/utils/framework';
 
 const loading = ref(false);
 const saving = ref(false);

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import RentalContractForm from 'components/contract/RentalContractForm.vue';
 import { computed, nextTick, onMounted, ref } from 'vue';
-import TenantForm from 'components/tenant/TenantForm.vue';
+import type TenantForm from 'components/tenant/TenantForm.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { RentalContractFormModel, useContractStore } from 'stores/contract-store';
-import { FormValidationResult } from 'vee-validate';
-import { Optional } from 'src/utils/framework';
+import type { RentalContractFormModel } from 'stores/contract-store';
+import { useContractStore } from 'stores/contract-store';
+import type { FormValidationResult } from 'vee-validate';
+import type { Optional } from 'src/utils/framework';
 import _ from 'lodash';
 import useErrorHandler from 'components/app/useErrorHandler';
 

@@ -2,11 +2,17 @@ import { defineStore } from 'pinia';
 import { api } from 'boot/api';
 import {
   ContractBase,
-  EntrustContractBase, EntrustContractInRequest,
-  EntrustContractInResponse, EntrustContractManagementFeeBase, PaginationResponsePagination,
+  EntrustContractBase,
   RentalContractBase,
+} from 'src/api';
+import type {
+  EntrustContractInRequest,
+  EntrustContractInResponse,
+  EntrustContractManagementFeeBase,
+  PaginationResponsePagination,
   RentalContractInRequest,
-  RentalContractInResponse, RentalContractRegularIncome
+  RentalContractInResponse,
+  RentalContractRegularIncome,
 } from 'src/api';
 
 export type RentalContractFormModel = Partial<

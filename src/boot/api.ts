@@ -1,7 +1,8 @@
-import { boot } from 'quasar/wrappers';
+import { defineBoot } from '#q-app/wrappers';
 import { inject } from 'vue';
 import { getToken } from 'src/auth';
-import { DefaultApi, Configuration, FileBase } from 'src/api';
+import type { FileBase } from 'src/api';
+import { Configuration, DefaultApi } from 'src/api';
 import axios from 'axios';
 
 export interface UploadMainPhotoResponse {
@@ -29,14 +30,18 @@ class CustomAPI extends DefaultApi {
     const url = `${this.configuration.basePath}/file/upload-file`;
     const formData = new FormData();
     formData.append('file', file);
-    data.name && formData.append('name', data.name);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    data.category && formData.append('category', data.category);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    data.entity && formData.append('entity', data.entity);
-    data.entityId && formData.append('entityId', data.entityId);
+    if (data.name) {
+      formData.append('name', data.name);
+    }
+    if (data.category) {
+      formData.append('category', String(data.category));
+    }
+    if (data.entity) {
+      formData.append('entity', String(data.entity));
+    }
+    if (data.entityId) {
+      formData.append('entityId', String(data.entityId));
+    }
     const resp = await axios.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -69,7 +74,7 @@ const api: ApiType = new CustomAPI(apiConfig, import.meta.env.VITE_APP_API_URL, 
 
 const API_KEY = 'API_KEY';
 
-export default boot(({ app }) => {
+export default defineBoot(({ app }) => {
   app.config.globalProperties.$api = api;
 
   app.provide(API_KEY, api);

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useContractStore } from 'stores/contract-store';
-import { QTableProps, useQuasar } from 'quasar';
-import { EntrustContractManagementFeeBase, RentalContractRegularIncome } from 'src/api';
+import type { QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
+import type { EntrustContractManagementFeeBase, RentalContractRegularIncome } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 import { useEntrustContract } from 'src/utils/entrust-contract';
 import { useManagementFeeStore } from 'stores/management-fee-store';

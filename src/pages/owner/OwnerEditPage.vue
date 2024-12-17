@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { OwnerFormModel, useOwnerStore } from 'stores/owner-store';
+import type { OwnerFormModel } from 'stores/owner-store';
+import { useOwnerStore } from 'stores/owner-store';
 import OwnerForm from 'components/owner/OwnerForm.vue';
-import { FormValidationResult } from 'vee-validate';
+import type { FormValidationResult } from 'vee-validate';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import useErrorHandler from 'components/app/useErrorHandler';
