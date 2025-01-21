@@ -19,7 +19,7 @@
   "dependencies": {
     "@quasar/extras": "^1.16.15",
     "@vee-validate/i18n": "^4.14.7",
-    "@vee-validate/yup": "^4.14.7",
+    "@vee-validate/yup": "^4.15.0",
     "axios": "^1.7.9",
     "isomorphic-fetch": "^3.0.0",
     "moment": "^2.30.1",
