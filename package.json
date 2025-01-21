@@ -53,7 +53,7 @@
     "prettier": "^3.4.2",
     "typescript": "^5.7.3",
     "vite-plugin-checker": "^0.8.0",
-    "vue-tsc": "^2.1.10"
+    "vue-tsc": "^2.2.0"
   },
   "engines": {
     "node": "^20",
