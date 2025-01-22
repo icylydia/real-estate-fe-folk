@@ -38,7 +38,7 @@
     "@babel/core": "^7.26.0",
     "@eslint/js": "^9.17.0",
     "@intlify/vite-plugin-vue-i18n": "^7.0.0",
-    "@quasar/app-vite": "^2.0.2",
+    "@quasar/app-vite": "^2.0.8",
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.17.14",
     "@types/node": "^22.10.7",
