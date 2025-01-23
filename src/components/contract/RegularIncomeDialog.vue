@@ -119,7 +119,13 @@ const submit = () => {
                     :options="monthOptions"
                     clearable
                     multiple
-                  />
+                  >
+                    <template #before-options>
+                      <div class="q-pa-sm">
+                        <q-btn label="毎月" color="primary" @click="model.targetMonths = monthOptions.map((v) => v.value)" />
+                      </div>
+                    </template>
+                  </q-select>
                 </q-item-section>
               </q-item>
               <q-item class="col-12">
