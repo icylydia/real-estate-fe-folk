@@ -542,7 +542,15 @@ defineExpose({
         <q-item-section>
           <q-input-currency
             :model-value="value"
-            @update:model-value="handleChange"
+            @update:model-value="(value) => {
+              handleChange(value);
+              if (value) {
+                const tax = Math.round(value * 0.1);
+                setFieldValue('tax', tax, false);
+              } else {
+                setFieldValue('tax', undefined, false);
+              }
+            }"
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="金額"

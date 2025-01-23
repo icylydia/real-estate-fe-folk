@@ -5,6 +5,7 @@ import { usePayment } from 'src/utils/payment';
 import { RegularExpenseBase } from 'src/api';
 import _ from 'lodash';
 import { useRegularExpenseStore } from 'stores/regular-expense-store';
+import QInputCurrency from 'components/extension/QInputCurrency.vue';
 
 defineProps({
   show: {
@@ -100,8 +101,17 @@ const submit = () => {
               </q-item>
               <q-item class="col-6">
                 <q-item-section>
-                  <q-input
-                    v-model="model.amount"
+                  <q-input-currency
+                    :model-value="model.amount"
+                    @update:model-value="(value) => {
+                      model.amount = value;
+                      if (value) {
+                        const tax = Math.round(value * 0.1);
+                        model.tax = tax;
+                      } else {
+                        model.tax = undefined;
+                      }
+                    }"
                     label="金額(税抜)"
                     clearable
                   />
