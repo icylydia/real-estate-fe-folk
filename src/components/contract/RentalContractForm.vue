@@ -8,6 +8,7 @@ import { Field, useForm } from 'vee-validate';
 import { useBuildingStore } from 'stores/building-store';
 import { useTenantStore } from 'stores/tenant-store';
 import { useRentalContract } from 'src/utils/rental-contract';
+import QInputDatePicker from 'components/extension/QInputDatePicker.vue';
 
 const { rentalContractFormModel: contract } = storeToRefs(useContractStore());
 const { describeStatus } = useRentalContract();
@@ -336,7 +337,7 @@ defineExpose({
     <Field name="startDate" #="{errorMessage, value, field}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-date-picker
             :model-value="value"
             v-bind="field"
             :error-message="errorMessage"
@@ -351,7 +352,7 @@ defineExpose({
     <Field name="endDate" #="{errorMessage, value, field}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-date-picker
             :model-value="value"
             v-bind="field"
             :error-message="errorMessage"

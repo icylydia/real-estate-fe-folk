@@ -10,6 +10,7 @@ import { useOwnerStore } from 'stores/owner-store';
 import { useEntrustContract } from 'src/utils/entrust-contract';
 import { ContractBase } from 'src/api';
 import moment from 'moment/moment';
+import QInputDatePicker from 'components/extension/QInputDatePicker.vue';
 
 const { describeStatus } = useEntrustContract();
 const { entrustContractFormModel: contract } = storeToRefs(useContractStore());
@@ -278,7 +279,7 @@ defineExpose({
     <Field name="startDate" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-date-picker
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"
@@ -293,7 +294,7 @@ defineExpose({
     <Field name="endDate" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-date-picker
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"

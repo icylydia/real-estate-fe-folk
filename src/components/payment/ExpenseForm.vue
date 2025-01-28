@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import useErrorHandler from 'components/app/useErrorHandler';
 import QInputCurrency from 'components/extension/QInputCurrency.vue';
+import QInputDatePicker from 'components/extension/QInputDatePicker.vue';
 import { storeToRefs } from 'pinia';
 import { useExpenseStore } from 'stores/expense-store';
 import { usePayment } from 'src/utils/payment';
@@ -576,7 +577,7 @@ defineExpose({
     <Field name="date" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-date-picker
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"

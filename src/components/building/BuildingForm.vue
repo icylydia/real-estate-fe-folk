@@ -1,19 +1,28 @@
 <script lang="ts" setup>
-import QInputCurrency from 'components/extension/QInputCurrency.vue';
-import QInputArea from 'components/extension/QInputArea.vue';
-import { storeToRefs } from 'pinia';
+// Vue core
 import { computed, ref } from 'vue';
+
+// Third party libraries
+import { storeToRefs } from 'pinia';
 import _ from 'lodash';
-import { useFileStore } from 'stores/file-store';
-import { useBuildingStore } from 'stores/building-store';
 import { toTypedSchema } from '@vee-validate/yup';
 import { object, string, number } from 'yup';
-import type { ValidationResult } from 'vee-validate';
 import { Field, useForm } from 'vee-validate';
-import { useBuilding } from 'src/utils/building';
-import { useAddressStore } from 'stores/address-store';
-import useErrorHandler from 'components/app/useErrorHandler';
+import type { ValidationResult } from 'vee-validate';
+
+// Components
+import QInputCurrency from 'components/extension/QInputCurrency.vue';
+import QInputArea from 'components/extension/QInputArea.vue';
 import QInputPercentage from 'components/extension/QInputPercentage.vue';
+import QInputYearMonthPicker from 'components/extension/QInputYearMonthPicker.vue';
+// Stores
+import { useFileStore } from 'stores/file-store';
+import { useBuildingStore } from 'stores/building-store';
+import { useAddressStore } from 'stores/address-store';
+
+// Utils and hooks
+import { useBuilding } from 'src/utils/building';
+import useErrorHandler from 'components/app/useErrorHandler';
 
 defineProps({
   readonly: {
@@ -350,7 +359,7 @@ defineExpose({
     <Field name="completionDate" #="{errorMessage, value, handleChange}">
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
+          <q-input-year-month-picker
             :model-value="value"
             @update:model-value="handleChange"
             :error-message="errorMessage"
