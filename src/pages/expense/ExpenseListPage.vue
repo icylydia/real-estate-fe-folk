@@ -60,7 +60,7 @@ const columns: QTableProps['columns'] = [
     align: 'left',
   },
   {
-    label: '金額',
+    label: '金額(税込)',
     field: 'amount',
     name: 'amount',
     sortable: false,
@@ -303,7 +303,7 @@ const rejectAll = (expenses: ExpenseInResponse[]) => {
               </template>
               <template #[`body-cell-amount`]="{ row }: { row: ExpenseInResponse }">
                 <q-td class="text-right">
-                  {{ $filters.jpyCurrency(row.amount) }}
+                  {{ $filters.jpyCurrency((row.amount ?? 0) + (row.tax ?? 0) ) }}
                 </q-td>
               </template>
               <template #[`body-cell-confirmStatus`]="{ row }: { row: ExpenseInResponse }">
