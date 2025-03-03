@@ -372,6 +372,12 @@ export interface BuildingBase {
    * @memberof BuildingBase
    */
   note?: string;
+  /**
+   * 删除时间
+   * @type {Date}
+   * @memberof BuildingBase
+   */
+  deletedAt?: Date;
 }
 
 /**
@@ -2650,6 +2656,12 @@ export interface RoomBase {
    * @memberof RoomBase
    */
   note?: string;
+  /**
+   * 删除时间
+   * @type {Date}
+   * @memberof RoomBase
+   */
+  deletedAt?: Date;
 }
 
 /**

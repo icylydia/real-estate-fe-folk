@@ -15,14 +15,14 @@ const { toastHandler } = useErrorHandler();
 const columns: QTableProps['columns'] = [
   {
     label: '物件名',
-    field: row => row.building.name,
+    field: 'buildingName',
     name: 'buildingName',
     sortable: false,
     align: 'left',
   },
   {
     label: '区画番号',
-    field: (row: RentalContractInResponse) => row.room?.name ?? '',
+    field: 'roomName',
     name: 'roomName',
     sortable: false,
     align: 'left',
@@ -124,9 +124,11 @@ const promptToUpdateContract = async (id?: string) => {
                   name: 'building-detail',
                   params: { id: row.building!.id },
                 }).href"
+          v-if="row.building && row.building?.deletedAt == null"
         >
-          {{ row.building!.name }}
+          {{ row.building?.name }}
         </a>
+        <template v-else>{{ row.building?.name }}</template>
       </q-td>
     </template>
     <template #[`body-cell-roomName`]="{ row }: { row: RentalContractInResponse }">
@@ -136,9 +138,11 @@ const promptToUpdateContract = async (id?: string) => {
                   name: 'room-detail',
                   params: { id: row.room!.id },
                 }).href"
+          v-if="row.room && row.room!.deletedAt == null"
         >
           {{ row.room!.name }}
         </a>
+        <template v-else>{{ row.room?.name }}</template>
       </q-td>
     </template>
     <template #[`body-cell-status`]="{ row }: { row: RentalContractInResponse }">
