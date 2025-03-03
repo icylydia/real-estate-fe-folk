@@ -148,6 +148,15 @@ const submit = () => {
               <q-item class="col-12">
                 <q-item-section>
                   <q-input
+                    v-model="model.summary"
+                    label="摘要"
+                    clearable
+                  />
+                </q-item-section>
+              </q-item>
+              <q-item class="col-12">
+                <q-item-section>
+                  <q-input
                     v-model="model.note"
                     label="備考"
                     clearable

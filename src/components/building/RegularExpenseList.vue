@@ -58,6 +58,20 @@ const columns: QTableProps['columns'] = [
     sortable: false,
   },
   {
+    name: 'summary',
+    label: '摘要',
+    field: (row) => row?.summary ? (row?.summary.length > 20 ? row?.summary.substring(0, 20) + '...' : row?.summary) : '',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'note',
+    label: '備考',
+    field: (row) => row?.note ? (row?.note.length > 20 ? row?.note.substring(0, 20) + '...' : row?.note) : '',
+    align: 'left',
+    sortable: false,
+  },
+  {
     name: 'actions',
     label: '操作',
     field: 'actions',

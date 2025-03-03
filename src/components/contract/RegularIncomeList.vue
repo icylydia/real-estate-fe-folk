@@ -38,6 +38,13 @@ const columns: QTableProps['columns'] = [
     sortable: false,
   },
   {
+    name: 'note',
+    label: '備考',
+    field: (row) => row?.note ? (row?.note.length > 20 ? row?.note.substring(0, 20) + '...' : row?.note) : '',
+    align: 'left',
+    sortable: false,
+  },
+  {
     name: 'actions',
     label: '操作',
     field: 'actions',
