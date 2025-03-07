@@ -10,6 +10,7 @@ import type { ExpenseInResponse, IncomeInResponse } from 'src/api';
 import { usePayment } from 'src/utils/payment';
 import useErrorHandler from 'components/app/useErrorHandler';
 import type { Optional } from 'src/utils/framework';
+import moment from 'moment';
 
 const loading = ref(false);
 const $q = useQuasar();
@@ -91,6 +92,10 @@ const columns: QTableProps['columns'] = [
 
 onMounted(async () => {
   tableRef.value?.requestServerInteraction();
+});
+
+const todayLabel = computed(() => {
+  return moment().format('YYYY-MM-DD');
 });
 
 const search = async () => {
@@ -306,6 +311,14 @@ const rejectAll = (expenses: ExpenseInResponse[]) => {
                   {{ $filters.jpyCurrency((row.amount ?? 0) + (row.tax ?? 0) ) }}
                 </q-td>
               </template>
+              <template #[`body-cell-date`]="{ row }: { row: ExpenseInResponse }">
+                <q-td class="td-hover">
+                  {{ row.date }}
+                  <q-tooltip class="bg-primary text-body2">
+                    今日：{{ todayLabel }}
+                  </q-tooltip>
+                </q-td>
+              </template>
               <template #[`body-cell-confirmStatus`]="{ row }: { row: ExpenseInResponse }">
                 <q-td>
                   <q-chip
@@ -442,3 +455,9 @@ const rejectAll = (expenses: ExpenseInResponse[]) => {
     </div>
   </q-page>
 </template>
+
+<style scoped>
+.td-hover {
+  cursor: pointer;
+}
+</style>
