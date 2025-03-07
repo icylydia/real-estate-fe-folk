@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import type { QTableProps } from 'quasar';
 import type { MonthlyIncomeAndExpenseReportInList, MonthlyIncomeAndExpenseReportRequest } from 'src/api';
 import { useReportStore } from 'stores/report-store';
@@ -14,7 +14,10 @@ const { toastHandler } = useErrorHandler();
 const router = useRouter();
 
 onMounted(async () => {
-  await resetPage();
+  resetPage();
+  await nextTick(async () => {
+    await onSearch()
+  })
 });
 
 const resetPage = () => {
