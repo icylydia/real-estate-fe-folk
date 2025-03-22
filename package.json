@@ -20,7 +20,7 @@
     "@quasar/extras": "^1.16.15",
     "@vee-validate/i18n": "^4.15.0",
     "@vee-validate/yup": "^4.15.0",
-    "axios": "^1.7.9",
+    "axios": "^1.8.4",
     "isomorphic-fetch": "^3.0.0",
     "moment": "^2.30.1",
     "pinia": "^3.0.1",
