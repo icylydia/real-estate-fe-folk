@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
-    "@eslint/js": "^9.17.0",
+    "@eslint/js": "^9.23.0",
     "@intlify/vite-plugin-vue-i18n": "^7.0.0",
     "@quasar/app-vite": "^2.0.8",
     "@types/isomorphic-fetch": "^0.0.39",
