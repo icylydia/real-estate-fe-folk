@@ -2793,6 +2793,19 @@ export interface RoomOptionsResponse {
   name?: string;
 }
 /**
+ *
+ * @export
+ * @interface SortRoomsRequest
+ */
+export interface SortRoomsRequest {
+  /**
+   *
+   * @type {Array<RoomInResponse>}
+   * @memberof SortRoomsRequest
+   */
+  rooms?: Array<RoomInResponse>;
+}
+/**
  * 租客
  * @export
  * @interface TenantBase
@@ -6032,6 +6045,104 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据指定顺序排序房间
+     * @summary 排序房间
+     * @param {SortRoomsRequest} body 排序房间
+     * @param {string} id 建筑ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    sortRooms(body: SortRoomsRequest, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling sortRooms.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling sortRooms.');
+      }
+      const localVarPath = `/building/{id}/sortRooms`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      localVarUrlObj.search = null;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"SortRoomsRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 根据指定顺序排序房间
+     * @summary 排序房间
+     * @param {SortRoomsRequest} body 排序房间
+     * @param {string} id 建筑ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    sortRooms_2(body: SortRoomsRequest, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling sortRooms_2.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling sortRooms_2.');
+      }
+      const localVarPath = `/building/{id}/sortRooms`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      localVarUrlObj.search = null;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"SortRoomsRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 根据ID更新建筑
      * @summary 更新建筑
      * @param {BuildingInRequest} body 建筑信息
@@ -8544,6 +8655,46 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据指定顺序排序房间
+     * @summary 排序房间
+     * @param {SortRoomsRequest} body 排序房间
+     * @param {string} id 建筑ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    sortRooms(body: SortRoomsRequest, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).sortRooms(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * 根据指定顺序排序房间
+     * @summary 排序房间
+     * @param {SortRoomsRequest} body 排序房间
+     * @param {string} id 建筑ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    sortRooms_2(body: SortRoomsRequest, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).sortRooms_2(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 根据ID更新建筑
      * @summary 更新建筑
      * @param {BuildingInRequest} body 建筑信息
@@ -9776,6 +9927,28 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).resetOwnerInitialPassword(id, options)(fetch, basePath);
     },
     /**
+     * 根据指定顺序排序房间
+     * @summary 排序房间
+     * @param {SortRoomsRequest} body 排序房间
+     * @param {string} id 建筑ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    sortRooms(body: SortRoomsRequest, id: string, options?: any) {
+      return DefaultApiFp(configuration).sortRooms(body, id, options)(fetch, basePath);
+    },
+    /**
+     * 根据指定顺序排序房间
+     * @summary 排序房间
+     * @param {SortRoomsRequest} body 排序房间
+     * @param {string} id 建筑ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    sortRooms_2(body: SortRoomsRequest, id: string, options?: any) {
+      return DefaultApiFp(configuration).sortRooms_2(body, id, options)(fetch, basePath);
+    },
+    /**
      * 根据ID更新建筑
      * @summary 更新建筑
      * @param {BuildingInRequest} body 建筑信息
@@ -10908,6 +11081,32 @@ export class DefaultApi extends BaseAPI {
    */
   public resetOwnerInitialPassword(id: string, options?: any) {
     return DefaultApiFp(this.configuration).resetOwnerInitialPassword(id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据指定顺序排序房间
+   * @summary 排序房间
+   * @param {SortRoomsRequest} body 排序房间
+   * @param {string} id 建筑ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public sortRooms(body: SortRoomsRequest, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).sortRooms(body, id, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据指定顺序排序房间
+   * @summary 排序房间
+   * @param {SortRoomsRequest} body 排序房间
+   * @param {string} id 建筑ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public sortRooms_2(body: SortRoomsRequest, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).sortRooms_2(body, id, options)(this.fetch, this.basePath);
   }
 
   /**

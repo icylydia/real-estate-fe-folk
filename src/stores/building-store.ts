@@ -5,7 +5,7 @@ import type {
   BuildingDetailResponse,
   BuildingInRequest,
   BuildingListResponseItems, BuildingOptionsResponse, FileBase, OwnerInResponse,
-  PaginationResponsePagination, RegularExpenseBase,
+  PaginationResponsePagination, RegularExpenseBase, RoomInResponse,
   RoomOptionsResponse
 } from 'src/api';
 import type { Nullable } from 'src/utils/framework';
@@ -147,6 +147,10 @@ export const useBuildingStore = defineStore('building', {
       if (this.formModel.rooms) {
         this.formModel.rooms = this.formModel.rooms.filter(room => room.id !== id)
       }
+    },
+
+    async sortRooms(rooms: Array<RoomInResponse>, buildingId: string): Promise<any> {
+      return api.sortRooms({rooms}, buildingId);
     },
   },
 });

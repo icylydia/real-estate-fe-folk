@@ -85,7 +85,25 @@ const removeRoom = async (room: RoomInResponse) => {
 }
 
 const createRoom = () => {
-  router.push({ name: 'room-create', params: { buildingId: buildingId.value } });
+  router.push({
+    name: 'room-create',
+    params: {
+      buildingId: buildingId.value
+    }
+  });
+}
+
+const toggleSortRoom = async () => {
+  try {
+    await router.push({
+      name: 'room-sort',
+      params: {
+        buildingId: buildingId.value
+      }
+    })
+  } catch (error) {
+    await toastHandler(error);
+  }
 }
 </script>
 
@@ -104,6 +122,7 @@ const createRoom = () => {
       <div class="text-h6">区画一覧</div>
     </template>
     <template #top-right>
+      <q-btn label="並び替え" color="primary" class="float-right text-capitalize shadow-3 q-mx-sm" icon="sym_r_sort" @click="toggleSortRoom" />
       <q-btn label="追加" color="primary" class="float-right text-capitalize shadow-3" icon="sym_r_add" @click="createRoom()" />
     </template>
     <template #[`body-cell-contractStatus`]="{ row }: { row: RoomInResponse }">

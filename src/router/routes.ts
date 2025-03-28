@@ -38,6 +38,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/room/RoomCreatePage.vue'),
       },
       {
+        path: 'buildings/:buildingId/room/sort',
+        name: 'room-sort',
+        component: () => import('pages/room/RoomSortPage.vue'),
+      },
+      {
         path: 'room/:id',
         name: 'room-detail',
         component: () => import('pages/room/RoomDetailPage.vue'),
