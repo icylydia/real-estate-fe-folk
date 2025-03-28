@@ -13,5 +13,6 @@ declare module 'yup' {
     postalCode(): StringSchema;
     date(): StringSchema;
     yearMonth(): StringSchema;
+    laterThan(target: string): StringSchema;
   }
 }

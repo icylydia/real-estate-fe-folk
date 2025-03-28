@@ -115,6 +115,22 @@ const toContractEdit = async (id?: string) => {
   }
 };
 
+const renewContract = async (id?: string) => {
+  if (!id) return;
+  $q.dialog({
+    title: '契約を更新',
+    message: '契約を更新しますか？',
+    ok: { label: '確認', color: 'negative'},
+    cancel: { label: 'キャンセル', color: 'grey-8'},
+    persistent: true,
+  }).onOk(async (): Promise<void> => {
+    await router.push({
+      name: 'rental-contract-renew',
+      params: { id },
+    })
+  })
+}
+
 const promptToUpdateContract = async (id?: string) => {
   if (!id) return;
   $q.dialog({
@@ -378,6 +394,11 @@ const onRequest = async ({ pagination: _pagination }: { pagination: { page: numb
               <q-btn icon="sym_r_more_horiz" flat dense class="q-ml-sm">
                 <q-menu>
                   <q-list>
+                    <q-item dense clickable @click="renewContract(key)">
+                      <q-item-section>
+                        <q-item-label>契約を継続する</q-item-label>
+                      </q-item-section>
+                    </q-item>
                     <q-item dense clickable @click="promptToUpdateContract(key)">
                       <q-item-section>
                         <q-item-label>更新を促す</q-item-label>

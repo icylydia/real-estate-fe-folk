@@ -6,6 +6,7 @@ import { useContractStore } from 'stores/contract-store';
 import useErrorHandler from 'components/app/useErrorHandler';
 import { storeToRefs } from 'pinia';
 import RegularIncomeList from 'components/contract/RegularIncomeList.vue';
+import RentalContractSequence from 'components/contract/RentalContractSequence.vue';
 
 const loading = ref(false);
 const router = useRouter()
@@ -149,6 +150,11 @@ const statusToTerminated = async () => {
     <q-card bordered class="q-mt-md">
       <q-card-section>
         <regular-income-list />
+      </q-card-section>
+    </q-card>
+    <q-card bordered class="q-mt-md">
+      <q-card-section>
+        <rental-contract-sequence />
       </q-card-section>
     </q-card>
   </q-page>

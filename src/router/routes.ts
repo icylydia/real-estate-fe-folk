@@ -68,6 +68,11 @@ const routes: RouteRecordRaw[] = [
         name: 'rental-contract-edit',
         component: () => import('pages/contract/RentalContractEditPage.vue'),
       },
+      {
+        path:'rental-contracts/:id/renew',
+        name:'rental-contract-renew',
+        component: () => import('pages/contract/RentalContractRenewPage.vue'),
+      },
       // 管理委託契約
       {
         path: 'entrust-contracts/new',

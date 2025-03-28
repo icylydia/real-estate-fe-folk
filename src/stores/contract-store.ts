@@ -6,6 +6,7 @@ import {
   RentalContractBase,
 } from 'src/api';
 import type {
+  RentalContractRenewRequest,
   EntrustContractInRequest,
   EntrustContractInResponse,
   EntrustContractManagementFeeBase,
@@ -103,6 +104,9 @@ export const useContractStore = defineStore('contract', {
     },
     resetRentalContractFormModel() {
       this.rentalContractFormModel = {...defaultRentalContractFormModel};
+    },
+    async renewRentalContract(id: string, payload: RentalContractRenewRequest): Promise<RentalContractInResponse> {
+      return api.renewRentalContract(payload, id)
     },
     async getEntrustContractList(payload: GetEntrustContractListRequest) {
       const { itemsPerPage, page, building, owner, status } = payload;

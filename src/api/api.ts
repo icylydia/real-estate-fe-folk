@@ -2394,6 +2394,12 @@ export interface RentalContractBase extends ContractBase {
    * @memberof RentalContractBase
    */
   promptRemindStatus?: RentalContractBase.PromptRemindStatusEnum;
+  /**
+   * 合同系列
+   * @type {Array<RentalContractBase>}
+   * @memberof RentalContractBase
+   */
+  sequence?: Array<RentalContractBase>;
 }
 
 /**
@@ -2443,6 +2449,12 @@ export interface RentalContractInResponse extends RentalContractBase {
    * @memberof RentalContractInResponse
    */
   regularIncomes?: Array<RentalContractRegularIncome>;
+  /**
+   * 合同的序列
+   * @type {Array<RentalContractInResponse>}
+   * @memberof RentalContractInResponse
+   */
+  sequence?: Array<RentalContractInResponse>;
 }
 
 /**
@@ -2571,6 +2583,19 @@ export namespace RentalContractRegularIncome {
     CreditCard = <any> 'creditCard',
     Other = <any> 'other'
   }
+}
+/**
+ *
+ * @export
+ * @interface RentalContractRenewRequest
+ */
+export interface RentalContractRenewRequest {
+  /**
+   * 合同结束日期
+   * @type {string}
+   * @memberof RentalContractRenewRequest
+   */
+  endDate?: string;
 }
 /**
  *
@@ -5878,6 +5903,55 @@ export const DefaultApiFetchParamCreator = function (configuration?: Configurati
       };
     },
     /**
+     * 根据ID续约租赁合同
+     * @summary 续约租赁合同
+     * @param {RentalContractRenewRequest} body 租赁合同信息
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    renewRentalContract(body: RentalContractRenewRequest, id: string, options: any = {}): FetchArgs {
+      // verify required parameter 'body' is not null or undefined
+      if (body === null || body === undefined) {
+        throw new RequiredError('body','Required parameter body was null or undefined when calling renewRentalContract.');
+      }
+      // verify required parameter 'id' is not null or undefined
+      if (id === null || id === undefined) {
+        throw new RequiredError('id','Required parameter id was null or undefined when calling renewRentalContract.');
+      }
+      const localVarPath = `/rental-contract/{id}/renew`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'POST' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearerAuth required
+
+      // authentication oauth2 required
+      // oauth required
+      if (configuration && configuration.accessToken) {
+        const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
+          ? configuration.accessToken("oauth2", [])
+          : configuration.accessToken;
+        localVarHeaderParameter["Authorization"] = "Bearer " + localVarAccessTokenValue;
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      localVarUrlObj.search = null;
+      localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+      const needsSerialization = (<any>"RentalContractRenewRequest" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+      localVarRequestOptions.body =  needsSerialization ? JSON.stringify(body || {}) : (body || "");
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 重置员工初始密码
      * @summary 重置员工初始密码
      * @param {string} id 员工ID
@@ -8412,6 +8486,26 @@ export const DefaultApiFp = function(configuration?: Configuration) {
       };
     },
     /**
+     * 根据ID续约租赁合同
+     * @summary 续约租赁合同
+     * @param {RentalContractRenewRequest} body 租赁合同信息
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    renewRentalContract(body: RentalContractRenewRequest, id: string, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<RentalContractInResponse> {
+      const localVarFetchArgs = DefaultApiFetchParamCreator(configuration).renewRentalContract(body, id, options);
+      return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+        return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * 重置员工初始密码
      * @summary 重置员工初始密码
      * @param {string} id 员工ID
@@ -9651,6 +9745,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, fetch?
       return DefaultApiFp(configuration).login(body, options)(fetch, basePath);
     },
     /**
+     * 根据ID续约租赁合同
+     * @summary 续约租赁合同
+     * @param {RentalContractRenewRequest} body 租赁合同信息
+     * @param {string} id 租赁合同ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    renewRentalContract(body: RentalContractRenewRequest, id: string, options?: any) {
+      return DefaultApiFp(configuration).renewRentalContract(body, id, options)(fetch, basePath);
+    },
+    /**
      * 重置员工初始密码
      * @summary 重置员工初始密码
      * @param {string} id 员工ID
@@ -10766,6 +10871,19 @@ export class DefaultApi extends BaseAPI {
    */
   public login(body: AuthLoginBody, options?: any) {
     return DefaultApiFp(this.configuration).login(body, options)(this.fetch, this.basePath);
+  }
+
+  /**
+   * 根据ID续约租赁合同
+   * @summary 续约租赁合同
+   * @param {RentalContractRenewRequest} body 租赁合同信息
+   * @param {string} id 租赁合同ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public renewRentalContract(body: RentalContractRenewRequest, id: string, options?: any) {
+    return DefaultApiFp(this.configuration).renewRentalContract(body, id, options)(this.fetch, this.basePath);
   }
 
   /**

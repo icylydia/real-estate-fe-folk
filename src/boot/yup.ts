@@ -1,4 +1,6 @@
 import * as yup from 'yup';
+import moment from 'moment';
+import type { AnyMessageParams } from 'yup';
 
 yup.addMethod(yup.string, 'phone', function () {
   return this
@@ -39,3 +41,16 @@ yup.addMethod(yup.string, 'yearMonth', function () {
       '年月の形式が正しくありません。',
       );
 });
+
+yup.addMethod(yup.string, 'laterThan', function (target) {
+  return this.test({
+    test: (value) => {
+      const targetDate = moment(target);
+      const valueDate = moment(value);
+      return valueDate.isAfter(targetDate);
+    },
+    message: (params: AnyMessageParams) => {
+      return `${params.path}は${target}より後の日付である必要があります。`;
+    },
+  })
+})
