@@ -543,13 +543,14 @@ defineExpose({
         <q-item-section>
           <q-input-currency
             :model-value="value"
-            @update:model-value="(value) => {
-              handleChange(value);
-              if (value) {
-                const tax = Math.round(value * 0.1);
-                setFieldValue('tax', tax, false);
+            @update:model-value="(newValue) => {
+              if (newValue === undefined || newValue === null) {
+                handleChange(0);
+                setFieldValue('tax', 0, false);
               } else {
-                setFieldValue('tax', undefined, false);
+                handleChange(newValue);
+                const tax = Math.round(newValue * 0.1);
+                setFieldValue('tax', tax, false);
               }
             }"
             :error-message="errorMessage"
@@ -565,7 +566,13 @@ defineExpose({
         <q-item-section>
           <q-input-currency
             :model-value="value"
-            @update:model-value="handleChange"
+            @update:model-value="(newValue) => {
+              if (newValue === undefined || newValue === null) {
+                handleChange(0);
+              } else {
+                handleChange(newValue);
+              }
+            }"
             :error-message="errorMessage"
             :error="!!errorMessage"
             label="税"
