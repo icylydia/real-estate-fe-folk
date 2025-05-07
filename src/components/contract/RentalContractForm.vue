@@ -227,6 +227,11 @@ const validationSchema = toTypedSchema(object({
     .transform((value) => value ?? null)
     .required()
     .label('契約終了日'),
+  terminationNoticeDate: string()
+    .date()
+    .transform((value) => value ?? null)
+    .nullable()
+    .label('解約日'),
   promptRemind: boolean().required().label('契約終了前に通知するか'),
   promptRemindMonths: string().when('promptRemind', {
       is: true,
@@ -335,7 +340,7 @@ defineExpose({
       </q-item>
     </Field>
     <Field name="startDate" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-date-picker
             :model-value="value"
@@ -350,7 +355,7 @@ defineExpose({
       </q-item>
     </Field>
     <Field name="endDate" #="{errorMessage, value, field}">
-      <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-date-picker
             :model-value="value"
@@ -359,7 +364,22 @@ defineExpose({
             :error="!!errorMessage"
             label="契約終了日"
             :readonly="readonly"
-            hint="フォーマット: 2021-01-01"
+            hint="契約の効力が終了する日付です"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="terminationNoticeDate" #="{errorMessage, value, field}">
+      <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input-date-picker
+            :model-value="value"
+            v-bind="field"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="解約日"
+            :readonly="readonly"
+            hint="契約を解約する旨を通知または合意した日付です"
           />
         </q-item-section>
       </q-item>

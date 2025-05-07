@@ -663,6 +663,12 @@ export interface ContractBase {
    */
   endDate?: string;
   /**
+   * 解约日
+   * @type {string}
+   * @memberof ContractBase
+   */
+  terminationNoticeDate?: string;
+  /**
    * 合同状态 - `beforeStart`: 预定签约/契約予定 - `active`: 签约中/契約中 - `toBeRenewed`: 预定续约/再契約予定 - `toBeTerminated`: 预定解约/解約予定 - `terminated`: 已解约/解約済み
    * @type {string}
    * @memberof ContractBase
