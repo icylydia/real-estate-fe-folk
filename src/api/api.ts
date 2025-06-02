@@ -265,7 +265,7 @@ export interface BuildingBase {
    */
   name?: string;
   /**
-   * 建筑类型/物件類    - `detachedHouse`: 一戸建    - `building`: 一棟もの    - `division`: 区分
+   * 建筑类型/物件類  - `detachedHouse`: 一戸建  - `building`: 一棟もの  - `division`: 区分
    * @type {string}
    * @memberof BuildingBase
    */
@@ -1291,7 +1291,7 @@ export namespace EntrustContractManagementFeeBase {
  */
 export interface ExpenseBase extends PaymentBase {
   /**
-   * 类别 - `propertyManagementFees`: 租赁管理费/賃貸管理費用 - `buildingManagementFees`: 建筑管理费/建物管理費用 - `managementRepairFees`: 管理维修储备金/管理修繕積立金 - `repairFees`: 维修费/修繕金 - `transferHandlingFees`: 转账手续费/振込手数料 - `lowVoltageElectricityCharges`: 低压电费/低圧電気料金 - `electricityCharges`: 电费/電気料金 - `gasCharges`: 煤气费/ガス代 - `waterCharges`: 水费/水道料金 - `utilityExpenses`: 水道光热费/水道光熱費 - `internetExpenses`: 网络费/インターネット費用 - `adjustmentFees`: 精算费/精算金 - `securityDepositRefund`: 押金退还/敷金返還 - `taxManagementFees`: 纳税管理费/納税管理費 - `outsourcingFees`: 业务委托费/業務委託料 - `advertisingFees`: 广告费/広告料 - `internationalTransferFees`: 国际转手续费/海外送金手数料 - `officeUsageFees`: 办公室使用费/事務所使用料 - `inspectionFees`: 检查费/点検費用 - `cleaningFees`: 清洁费/清掃費 - `dailyCleaningFees`: 日常清洁费/日常清掃費 - `periodicCleaningFees`: 定期清洁费/定期清掃費 - `brokerageCommission`: 仲介手数料/仲介手数料 - `renewalCommission`: 更新手数料/更新料 - `tax`: 税金/税金 - `commonAreaElectricityCharges`: 公共区域电费/共用部電気 - `commonAreaWaterCharges`: 公共区域水费/共用部水道 - `otherExpenses`: 其他/その他
+   * 类别 - `propertyManagementFees`: 租赁管理费/賃貸管理費用 - `buildingManagementFees`: 建筑管理费/建物管理費用 - `managementRepairFees`: 管理维修储备金/管理修繕積立金 - `repairFees`: 维修费/修繕金 - `transferHandlingFees`: 转账手续费/振込手数料 - `lowVoltageElectricityCharges`: 低压电费/低圧電気料金 - `electricityCharges`: 电费/電気料金 - `gasCharges`: 煤气费/ガス代 - `waterCharges`: 水费/水道料金 - `utilityExpenses`: 水道光热费/水道光熱費 - `internetExpenses`: 网络费/インターネット費用 - `cableTVCharges`: 有线电视费/ケーブルテレビ - `adjustmentFees`: 精算费/精算金 - `securityDepositRefund`: 押金退还/敷金返還 - `taxManagementFees`: 纳税管理费/納税管理費 - `outsourcingFees`: 业务委托费/業務委託料 - `advertisingFees`: 广告费/広告料 - `internationalTransferFees`: 国际转手续费/海外送金手数料 - `officeUsageFees`: 办公室使用费/事務所使用料 - `inspectionFees`: 检查费/点検費用 - `cleaningFees`: 清洁费/清掃費 - `dailyCleaningFees`: 日常清洁费/日常清掃費 - `periodicCleaningFees`: 定期清洁费/定期清掃費 - `brokerageCommission`: 仲介手数料/仲介手数料 - `renewalCommission`: 更新手数料/更新料 - `tax`: 税金/税金 - `commonAreaElectricityCharges`: 公共区域电费/共用部電気 - `commonAreaWaterCharges`: 公共区域水费/共用部水道 - `otherExpenses`: 其他/その他
    * @type {string}
    * @memberof ExpenseBase
    */
@@ -1325,6 +1325,7 @@ export namespace ExpenseBase {
     WaterCharges = <any> 'waterCharges',
     UtilityExpenses = <any> 'utilityExpenses',
     InternetExpenses = <any> 'internetExpenses',
+    CableTVCharges = <any> 'cableTVCharges',
     AdjustmentFees = <any> 'adjustmentFees',
     SecurityDepositRefund = <any> 'securityDepositRefund',
     TaxManagementFees = <any> 'taxManagementFees',
@@ -2252,7 +2253,7 @@ export interface RegularExpenseBase {
    */
   buildingId?: number;
   /**
-   * 类别 - `propertyManagementFees`: PM管理费/PM費用 - `buildingManagementFees`: BM管理费/BM費用 - `managementRepairFees`: 管理维修费/管理修繕金 - `repairFees`: 维修费/修繕金 - `transferHandlingFees`: 转账手续费/振込手数料 - `lowVoltageElectricityCharges`: 低压电费/低圧電気料金 - `electricityCharges`: 电费/電気料金 - `gasCharges`: 煤气费/ガス代 - `waterCharges`: 水费/水道料金 - `utilityExpenses`: 水道光热费/水道光熱費 - `internetExpenses`: 网络费/インターネット費用 - `adjustmentFees`: 精算费/精算金 - `securityDepositRefund`: 押金退还/敷金返還 - `taxManagementFees`: 纳税管理费/納税管理費 - `outsourcingFees`: 业务委托费/業務委託料 - `advertisingFees`: 广告费/広告料 - `internationalTransferFees`: 国际转手续费/海外送金手数料 - `officeUsageFees`: 办公室使用费/事務所使用料 - `inspectionFees`: 检查费/点検費用 - `cleaningFees`: 清洁费/清掃費 - `dailyCleaningFees`: 日常清洁费/日常清掃費 - `periodicCleaningFees`: 定期清洁费/定期清掃費 - `tax`: 税金/税金 - `commonAreaElectricityCharges`: 公共区域电费/共用部電気 - `commonAreaWaterCharges`: 公共区域水费/共用部水道 - `otherExpenses`: 其他/その他
+   * 类别 - `propertyManagementFees`: PM管理费/PM費用 - `buildingManagementFees`: BM管理费/BM費用 - `managementRepairFees`: 管理维修费/管理修繕金 - `repairFees`: 维修费/修繕金 - `transferHandlingFees`: 转账手续费/振込手数料 - `lowVoltageElectricityCharges`: 低压电费/低圧電気料金 - `electricityCharges`: 电费/電気料金 - `gasCharges`: 煤气费/ガス代 - `waterCharges`: 水费/水道料金 - `utilityExpenses`: 水道光热费/水道光熱費 - `internetExpenses`: 网络费/インターネット費用 - `cableTVCharges`: 有线电视费/ケーブルテレビ - `adjustmentFees`: 精算费/精算金 - `securityDepositRefund`: 押金退还/敷金返還 - `taxManagementFees`: 纳税管理费/納税管理費 - `outsourcingFees`: 业务委托费/業務委託料 - `advertisingFees`: 广告费/広告料 - `internationalTransferFees`: 国际转手续费/海外送金手数料 - `officeUsageFees`: 办公室使用费/事務所使用料 - `inspectionFees`: 检查费/点検費用 - `cleaningFees`: 清洁费/清掃費 - `dailyCleaningFees`: 日常清洁费/日常清掃費 - `periodicCleaningFees`: 定期清洁费/定期清掃費 - `tax`: 税金/税金 - `commonAreaElectricityCharges`: 公共区域电费/共用部電気 - `commonAreaWaterCharges`: 公共区域水费/共用部水道 - `otherExpenses`: 其他/その他
    * @type {string}
    * @memberof RegularExpenseBase
    */
@@ -2328,6 +2329,7 @@ export namespace RegularExpenseBase {
     WaterCharges = <any> 'waterCharges',
     UtilityExpenses = <any> 'utilityExpenses',
     InternetExpenses = <any> 'internetExpenses',
+    CableTVCharges = <any> 'cableTVCharges',
     AdjustmentFees = <any> 'adjustmentFees',
     SecurityDepositRefund = <any> 'securityDepositRefund',
     TaxManagementFees = <any> 'taxManagementFees',

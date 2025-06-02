@@ -133,6 +133,10 @@ export const usePayment = () => {
       value: 'internetExpenses',
     },
     {
+      label: 'ケーブルテレビ',
+      value: 'cableTVCharges',
+    },
+    {
       label: '精算金',
       value: 'adjustmentFees',
     },
