@@ -99,7 +99,27 @@ const submit = () => {
                   />
                 </q-item-section>
               </q-item>
-              <q-item class="col-6">
+              <q-item class="col-4">
+                <q-item-section>
+                  <q-input-currency
+                    :model-value="model.totalAmount"
+                    @update:model-value="(value) => {
+                      model.totalAmount = value;
+                      if (value) {
+                        const tax = Math.round(value / 11.0);
+                        model.amount = value - tax;
+                        model.tax = tax;
+                      } else {
+                        model.amount = undefined;
+                        model.tax = undefined;
+                      }
+                    }"
+                    label="金額(税込)"
+                    clearable
+                  />
+                </q-item-section>
+              </q-item>
+              <q-item class="col-4">
                 <q-item-section>
                   <q-input-currency
                     :model-value="model.amount"
@@ -107,8 +127,10 @@ const submit = () => {
                       model.amount = value;
                       if (value) {
                         const tax = Math.round(value * 0.1);
+                        model.totalAmount = value + tax;
                         model.tax = tax;
                       } else {
+                        model.totalAmount = undefined;
                         model.tax = undefined;
                       }
                     }"
@@ -117,7 +139,7 @@ const submit = () => {
                   />
                 </q-item-section>
               </q-item>
-              <q-item class="col-6">
+              <q-item class="col-4">
                 <q-item-section>
                   <q-input
                     v-model="model.tax"

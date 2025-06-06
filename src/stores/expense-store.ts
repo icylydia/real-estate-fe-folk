@@ -17,7 +17,9 @@ interface GetExpenseListRequest {
 
 export type ExpenseModel = Partial<
   ExpenseInRequest & ExpenseInResponse  & ExpenseDetailResponse
->
+> & {
+  totalAmount?: number;
+}
 const defaultFormModel: ExpenseModel = {
   building: undefined,
   room: undefined,
@@ -62,8 +64,15 @@ export const useExpenseStore = defineStore('expense', {
       this.list = resp.items ?? [];
       return resp.pagination ?? {} as PaginationResponsePagination;
     },
-    async getExpense(id: string) {
-      this.formModel = await api.getExpense(id);
+    async getExpense(id: string): Promise<void> {
+      const expense = await api.getExpense(id);
+      const amount = expense.amount ?? 0;
+      const tax = expense.tax?? 0;
+      const totalAmount = amount + tax;
+      this.formModel = {
+        ...expense,
+        totalAmount,
+      }
     },
     async createExpense(data: ExpenseInRequest) {
       return api.createExpense(data);

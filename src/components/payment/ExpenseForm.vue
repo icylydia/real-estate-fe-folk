@@ -363,7 +363,8 @@ const validationSchema = toTypedSchema(object({
   targetMonth: string()
     .required()
     .label('対象月'),
-  amount: string().required().label('金額'),
+  totalAmount: string().required().label('金額(税込)'),
+  amount: string().required().label('金額(税抜)'),
   tax: string().nullable().notRequired().label('税'),
   date: string().date().nullable().notRequired().label('日付'),
   paymentMethod: string().nullable().notRequired().label('支払方法'),
@@ -538,31 +539,60 @@ defineExpose({
         </q-item-section>
       </q-item>
     </Field>
-    <Field name="amount" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+    <Field name="totalAmount" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-currency
             :model-value="value"
             @update:model-value="(newValue) => {
               if (newValue === undefined || newValue === null) {
                 handleChange(0);
+                setFieldValue('amount', 0, false);
                 setFieldValue('tax', 0, false);
               } else {
                 handleChange(newValue);
-                const tax = Math.round(newValue * 0.1);
+                const tax = Math.round(newValue / 11.0);
+                const amount = newValue - tax;
+                setFieldValue('amount', amount, false)
                 setFieldValue('tax', tax, false);
               }
             }"
             :error-message="errorMessage"
             :error="!!errorMessage"
-            label="金額"
+            label="金額(税込)"
+            :readonly="readonly"
+          />
+        </q-item-section>
+      </q-item>
+    </Field>
+    <Field name="amount" #="{errorMessage, value, handleChange}">
+      <q-item class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-item-section>
+          <q-input-currency
+            :model-value="value"
+            @update:model-value="(newValue) => {
+              if (newValue === undefined || newValue === null) {
+                handleChange(0);
+                setFieldValue('totalAmount', 0, false);
+                setFieldValue('tax', 0, false);
+              } else {
+                handleChange(newValue);
+                const tax = Math.round(newValue * 0.1);
+                const totalAmount = newValue + tax;
+                setFieldValue('totalAmount', totalAmount, false);
+                setFieldValue('tax', tax, false);
+              }
+            }"
+            :error-message="errorMessage"
+            :error="!!errorMessage"
+            label="金額(税抜)"
             :readonly="readonly"
           />
         </q-item-section>
       </q-item>
     </Field>
     <Field name="tax" #="{errorMessage, value, handleChange}">
-      <q-item class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+      <q-item class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-item-section>
           <q-input-currency
             :model-value="value"
