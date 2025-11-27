@@ -21,6 +21,9 @@ const { statusToChipProps } = useContractStore();
 const router = useRouter()
 
 const startDate = computed<string>(() => {
+  if (!contract.value?.endDate) {
+    return '';
+  }
   return moment(contract.value.endDate).add(1, 'days').format('YYYY-MM-DD');
 });
 const endDate = ref<string>('');
@@ -47,9 +50,12 @@ onMounted(async () => {
   }
 });
 
-const validationSchema = toTypedSchema(object({
-  endDate: string().date().laterThan(contract.value?.endDate ?? '').required().label('契約終了日'),
-}));
+const validationSchema = computed(() => {
+  const previousEndDate = contract.value?.endDate ?? '1900-01-01';
+  return toTypedSchema(object({
+    endDate: string().date().laterThan(previousEndDate).required().label('契約終了日'),
+  }));
+});
 
 const initialValues = {
   endDate: endDate.value,
