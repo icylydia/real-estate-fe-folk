@@ -1,7 +1,7 @@
 import { defineBoot } from '#q-app/wrappers';
 import { inject } from 'vue';
 import { getToken } from 'src/auth';
-import type { FileBase } from 'src/api';
+import type { BuildingMonthlyArchiveResponse, FileBase, ImportBatchResponse } from 'src/api';
 import { Configuration, DefaultApi } from 'src/api';
 import axios from 'axios';
 
@@ -9,6 +9,16 @@ export interface UploadMainPhotoResponse {
   url: string;
   relativePath: string;
   name: string;
+}
+
+export interface UploadBuildingMonthlyAttachmentPayload {
+  id: number;
+  ownerId: number;
+  targetYear: number;
+  targetMonth: number;
+  category: string;
+  name: string;
+  file: File;
 }
 
 class CustomAPI extends DefaultApi {
@@ -54,6 +64,39 @@ class CustomAPI extends DefaultApi {
     axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`;
     const url = `${this.configuration.basePath}/file/${id}`;
     await axios.delete(url);
+  }
+
+  public dryRunItandiCsvImportFile = async (file: File): Promise<ImportBatchResponse> => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`;
+    const url = `${this.configuration.basePath}/imports/itandi-csv/dry-run`;
+    const formData = new FormData();
+    formData.append('file', file);
+    const resp = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return resp.data as ImportBatchResponse;
+  }
+
+  public uploadBuildingMonthlyAttachmentFile = async (
+    data: UploadBuildingMonthlyAttachmentPayload
+  ): Promise<BuildingMonthlyArchiveResponse> => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`;
+    const url = `${this.configuration.basePath}/building/${data.id}/monthly-attachments`;
+    const formData = new FormData();
+    formData.append('ownerId', String(data.ownerId));
+    formData.append('targetYear', String(data.targetYear));
+    formData.append('targetMonth', String(data.targetMonth));
+    formData.append('category', data.category);
+    formData.append('name', data.name);
+    formData.append('file', data.file);
+    const resp = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return resp.data as BuildingMonthlyArchiveResponse;
   }
 }
 

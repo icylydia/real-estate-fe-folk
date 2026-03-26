@@ -121,7 +121,17 @@ const essentialLinks = [
         link: router.resolve({ name: 'expense-list' }).href,
       },
       {
-        title: '月次収支',
+        title: 'CSV取込',
+        icon: 'sym_r_upload_file',
+        link: router.resolve({ name: 'itandi-csv-import' }).href,
+      },
+      {
+        title: '月度資料',
+        icon: 'sym_r_folder_managed',
+        link: router.resolve({ name: 'monthly-archive-list' }).href,
+      },
+      {
+        title: '月次収支報告（履歴）',
         icon: 'sym_r_summarize',
         link: router.resolve({ name: 'monthly-income-expense-report-list' }).href,
       },

@@ -112,6 +112,16 @@ const toCreate = async () => {
   }
 };
 
+const toImport = async () => {
+  try {
+    await router.push({
+      name: 'itandi-csv-import',
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 const toDetail = async (id: number) => {
   try {
     await router.push({
@@ -296,6 +306,7 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
                   />
                   <q-separator vertical class="q-mx-lg" />
                 </template>
+                <q-btn label="CSV取込" color="secondary" class="float-right q-mr-sm" icon="sym_r_upload_file" @click="toImport()" />
                 <q-btn label="新規" color="primary" class="float-right" icon="sym_r_add" @click="toCreate()" />
               </template>
               <template #[`body-cell-buildingName`]="{ row }: { row: IncomeInResponse }">
@@ -463,4 +474,3 @@ const rejectAll = (incomes: IncomeInResponse[]) => {
   cursor: pointer;
 }
 </style>
-

@@ -225,7 +225,23 @@ const routes: RouteRecordRaw[] = [
         name: 'expense-edit',
         component: () => import('pages/expense/ExpenseEditPage.vue'),
       },
+      // CSV取込
+      {
+        path: 'imports/itandi-csv',
+        name: 'itandi-csv-import',
+        component: () => import('pages/import/ItandiCsvImportPage.vue'),
+      },
+      {
+        path: 'imports/itandi-csv/:id',
+        name: 'itandi-csv-import-detail',
+        component: () => import('pages/import/ItandiCsvImportPage.vue'),
+      },
       // レポート
+      {
+        path: 'monthly-archives',
+        name: 'monthly-archive-list',
+        component: () => import('pages/report/MonthlyArchivePage.vue'),
+      },
       {
         path: 'report/monthly-income-expense',
         name: 'monthly-income-expense-report-list',
