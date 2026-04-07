@@ -40,10 +40,13 @@ export const useMonthlyArchiveStore = defineStore('monthlyArchive', {
         };
       }
     },
-    reset() {
-      this.archiveList = [];
+    clearSelection() {
       this.archive = null;
       this.attachments = [];
+    },
+    reset() {
+      this.archiveList = [];
+      this.clearSelection();
       this.searchParams = {};
     },
     async getArchiveList(params: MonthlyArchiveListRequest): Promise<PaginationResponsePagination> {

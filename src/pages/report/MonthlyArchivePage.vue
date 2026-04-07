@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import type { QTableProps } from 'quasar';
 import { useQuasar } from 'quasar';
 import { storeToRefs } from 'pinia';
@@ -53,6 +53,7 @@ const uploadCategory = ref<string | null>(null);
 const uploadFile = ref<File | null>(null);
 const loadingOwners = ref(false);
 const filteredOwnerOptions = ref<Array<OwnerOption> | undefined>(undefined);
+const lastSearchedUploadKey = ref<string | null>(null);
 
 const pagination = ref<Pagination>({
   sortBy: undefined,
@@ -175,37 +176,57 @@ const attachmentColumns: QTableProps['columns'] = [
   { name: 'actions', label: '操作', field: 'actions', align: 'right' },
 ];
 
+const buildUploadKey = (target: {
+  buildingId?: number;
+  ownerId?: number;
+  targetYear?: number;
+  targetMonth?: number;
+}): string | null => {
+  if (!target.buildingId || !target.ownerId || !target.targetYear || !target.targetMonth) {
+    return null;
+  }
+  return `${target.buildingId}:${target.ownerId}:${target.targetYear}:${target.targetMonth}`;
+};
+
 const uploadTarget = computed(() => {
   const archiveOwnerId = archive.value ? getPrimaryOwnerId((archive.value as ArchiveRow).owner) : undefined;
+  const fallbackOwnerId = archiveOwnerId ?? searchParams.value.ownerId;
+  const archiveOwnerName = archive.value ? getOwnerNames(archive.value as ArchiveRow) : '';
+  const fallbackOwnerName = ownerOptionLabel(getOwnerOptionById(fallbackOwnerId));
+  const fallbackBuildingId = searchParams.value.buildingId;
+  const fallbackBuildingName = buildingOptions.value.find((building) => Number(building.id) === fallbackBuildingId)?.name ?? '';
   return {
-    buildingId: archive.value?.building?.id ? Number(archive.value.building.id) : searchParams.value.buildingId,
-    ownerId: archiveOwnerId ?? searchParams.value.ownerId,
+    buildingId: archive.value?.building?.id ? Number(archive.value.building.id) : fallbackBuildingId,
+    buildingName: archive.value?.building?.name ?? fallbackBuildingName,
+    ownerId: fallbackOwnerId,
+    ownerName: archiveOwnerName || fallbackOwnerName,
     targetYear: archive.value?.targetYear ?? searchParams.value.year,
     targetMonth: archive.value?.targetMonth ?? searchParams.value.month,
   };
 });
 
+const uploadTargetKey = computed(() => buildUploadKey(uploadTarget.value));
+const hasExplicitArchiveTarget = computed(() => !!archive.value && !!uploadTargetKey.value);
+
 const canUpload = computed(() => {
-  return !!(
-    uploadTarget.value.buildingId
-    && uploadTarget.value.ownerId
-    && uploadTarget.value.targetYear
-    && uploadTarget.value.targetMonth
-  );
+  if (hasExplicitArchiveTarget.value) {
+    return true;
+  }
+  return !!uploadTargetKey.value && uploadTargetKey.value === lastSearchedUploadKey.value;
+});
+
+const uploadTargetSummary = computed(() => {
+  if (!uploadTargetKey.value) {
+    return '';
+  }
+  return `${uploadTarget.value.buildingName || '-'} / ${uploadTarget.value.ownerName || '-'} / ${uploadTarget.value.targetYear}年${uploadTarget.value.targetMonth}月`;
 });
 
 const selectedArchiveLabel = computed(() => {
   if (!archive.value) {
-    if (canUpload.value) {
-      const buildingName = buildingOptions.value.find((building) => Number(building.id) === uploadTarget.value.buildingId)?.name ?? '-';
-      const ownerName = ownerOptionLabel(getOwnerOptionById(uploadTarget.value.ownerId)) || '-';
-      return `${buildingName} / ${ownerName} / ${uploadTarget.value.targetYear}年${uploadTarget.value.targetMonth}月`;
-    }
-    return '月度資料詳細';
+    return '添付ファイルリスト';
   }
-  const buildingName = archive.value.building?.name ?? '-';
-  const ownerName = getOwnerNames(archive.value as ArchiveRow) || '-';
-  return `${buildingName} / ${ownerName} / ${archive.value.targetYear}年${archive.value.targetMonth}月`;
+  return uploadTargetSummary.value || '添付ファイルリスト';
 });
 
 const selectedArchiveDisabled = computed(() => archive.value?.disabled ?? false);
@@ -229,6 +250,7 @@ const updateOwnerByCurrentBuilding = async (buildingId?: number) => {
   loadingOwners.value = true;
   if (!buildingId) {
     searchParams.value.ownerId = undefined;
+    filteredOwnerOptions.value = getAllOwnerOptions();
     loadingOwners.value = false;
     return;
   }
@@ -238,6 +260,7 @@ const updateOwnerByCurrentBuilding = async (buildingId?: number) => {
       ? currentOwner.id
       : undefined;
     searchParams.value.ownerId = ownerId;
+    filteredOwnerOptions.value = getAllOwnerOptions();
   } catch (error) {
     await toastHandler(error);
   } finally {
@@ -253,10 +276,18 @@ const handleBuildingChange = async (buildingId: number | null) => {
 const search = async () => {
   loading.value = true;
   try {
+    archiveStore.clearSelection();
+    lastSearchedUploadKey.value = null;
     const pageMeta = await archiveStore.getArchiveList({
       ...searchParams.value,
       page: 1,
       itemsPerPage: pagination.value.rowsPerPage,
+    });
+    lastSearchedUploadKey.value = buildUploadKey({
+      buildingId: searchParams.value.buildingId,
+      ownerId: searchParams.value.ownerId,
+      targetYear: searchParams.value.year,
+      targetMonth: searchParams.value.month,
     });
     pagination.value = {
       ...pagination.value,
@@ -274,10 +305,18 @@ const search = async () => {
 const onRequest = async ({ pagination: nextPagination }: { pagination: Pagination }) => {
   loading.value = true;
   try {
+    archiveStore.clearSelection();
+    lastSearchedUploadKey.value = null;
     const pageMeta = await archiveStore.getArchiveList({
       ...searchParams.value,
       page: nextPagination.page,
       itemsPerPage: nextPagination.rowsPerPage,
+    });
+    lastSearchedUploadKey.value = buildUploadKey({
+      buildingId: searchParams.value.buildingId,
+      ownerId: searchParams.value.ownerId,
+      targetYear: searchParams.value.year,
+      targetMonth: searchParams.value.month,
     });
     pagination.value = {
       ...nextPagination,
@@ -297,7 +336,7 @@ const onPageChange = async () => {
 };
 
 const openArchive = async (row: BuildingMonthlyArchiveResponse) => {
-  const ownerId = getPrimaryOwnerId((row as ArchiveRow).owner);
+  const ownerId = getPrimaryOwnerId((row as ArchiveRow).owner) ?? searchParams.value.ownerId;
   if (!row.building?.id || !ownerId || !row.targetYear || !row.targetMonth) {
     await toastHandler(new Error('月度資料の識別情報が不足しています。'));
     return;
@@ -332,6 +371,10 @@ const toggleArchiveVisibility = async (row: BuildingMonthlyArchiveResponse) => {
 };
 
 const openUploadDialog = () => {
+  if (!canUpload.value) {
+    void toastHandler(new Error('アップロード対象の月度資料を選択してください。'));
+    return;
+  }
   uploadCategory.value = null;
   uploadFile.value = null;
   showUploadDialog.value = true;
@@ -395,6 +438,20 @@ const deleteAttachment = async (file: FileBase) => {
     }
   });
 };
+
+watch(
+  () => [
+    searchParams.value.buildingId,
+    searchParams.value.ownerId,
+    searchParams.value.year,
+    searchParams.value.month,
+    searchParams.value.category,
+  ],
+  () => {
+    archiveStore.clearSelection();
+    lastSearchedUploadKey.value = null;
+  },
+);
 
 onMounted(async () => {
   await loadOptions();
@@ -610,6 +667,12 @@ onMounted(async () => {
         <q-card-section class="text-h6">添付アップロード</q-card-section>
         <q-card-section class="row q-col-gutter-md">
           <div class="col-12">
+            <div class="upload-target-banner">
+              <div class="upload-target-banner__label">アップロード先</div>
+              <div class="upload-target-banner__value">{{ uploadTargetSummary }}</div>
+            </div>
+          </div>
+          <div class="col-12">
             <q-select
               v-model="uploadCategory"
               label="分類"
@@ -639,5 +702,27 @@ onMounted(async () => {
 .upload-dialog {
   width: 520px;
   max-width: 90vw;
+}
+
+.upload-target-banner {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 14px 16px;
+}
+
+.upload-target-banner__label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.upload-target-banner__value {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 8px;
+  word-break: break-word;
 }
 </style>
