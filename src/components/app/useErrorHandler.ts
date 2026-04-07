@@ -5,12 +5,21 @@ export default () => {
   const toastHandler = async (error: any) => {
     let message: string;
     if (error instanceof Response) {
-      if (error.status == 400) {
+      if (error.status >= 400 && error.status < 500) {
         const response = await error.json();
         const errors = response.errors;
-        message = Object.keys(errors).map((key) => {
-          return errors[key].join(', ');
-        }).join(' ');
+        const errorMessage = response.errorMessage;
+        if (errors && errors.length > 0) {
+          message = Object.keys(errors)
+            .map((key) => {
+              return errors[key].join(', ');
+            })
+            .join(' ');
+        } else if (errorMessage && typeof errorMessage === 'string') {
+          message = errorMessage;
+        } else {
+          message = 'システムエラー'
+        }
       } else {
         message = error.statusText;
       }
