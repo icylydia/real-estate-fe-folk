@@ -439,6 +439,27 @@ const deleteAttachment = async (file: FileBase) => {
   });
 };
 
+const deleteArchive = async (row: BuildingMonthlyArchiveResponse) => {
+  if (!row.id) {
+    await toastHandler(new Error('月度資料IDが見つかりません。'));
+    return;
+  }
+  $q.dialog({
+    title: '月度資料削除',
+    message: `この月度資料を削除しますか？`,
+    ok: { label: '確認', color: 'negative' },
+    cancel: { label: 'キャンセル', color: 'grey-8' },
+    persistent: true,
+  }).onOk(async () => {
+    try {
+      await archiveStore.deleteArchive(row.id as number);
+      await search();
+    } catch (error) {
+      await toastHandler(error);
+    }
+  });
+};
+
 watch(
   () => [
     searchParams.value.buildingId,
@@ -578,6 +599,7 @@ onMounted(async () => {
                     @click="toggleArchiveVisibility(row)"
                   />
                   <q-btn flat dense size="sm" icon="sym_r_folder_open" @click="openArchive(row)" />
+                  <q-btn flat dense size="sm" icon="sym_r_delete" color="negative" @click="deleteArchive(row)" />
                 </q-td>
               </template>
             </q-table>

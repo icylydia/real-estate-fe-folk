@@ -81,6 +81,13 @@ export const useMonthlyArchiveStore = defineStore('monthlyArchive', {
         this.archive.attachments = this.attachments;
       }
     },
+    async deleteArchive(archiveId: number): Promise<void> {
+      await api.deleteBuildingMonthlyArchive(archiveId);
+      this.archiveList = this.archiveList.filter((archive) => archive.id !== archiveId);
+      if (this.archive?.id === archiveId) {
+        this.clearSelection();
+      }
+    },
     async disableArchive(archiveId: number): Promise<BuildingMonthlyArchiveResponse> {
       const archive = await api.disableBuildingMonthlyArchive(archiveId);
       this.updateArchiveState(archive);
