@@ -47,6 +47,7 @@ const { archiveList, archive, attachments, searchParams } = storeToRefs(archiveS
 const loading = ref(false);
 const detailLoading = ref(false);
 const uploadLoading = ref(false);
+const visibilityLoadingId = ref<number | null>(null);
 const showUploadDialog = ref(false);
 const uploadCategory = ref<string | null>(null);
 const uploadFile = ref<File | null>(null);
@@ -163,6 +164,7 @@ const archiveColumns: QTableProps['columns'] = [
   { name: 'year', label: '年', field: 'targetYear', align: 'left' },
   { name: 'month', label: '月', field: 'targetMonth', align: 'left' },
   { name: 'attachments', label: '添付数', field: (row: ArchiveRow) => row.attachments?.length ?? 0, align: 'right' },
+  { name: 'visibility', label: '可視性', field: 'disabled', align: 'left' },
   { name: 'actions', label: '操作', field: 'actions', align: 'right' },
 ];
 
@@ -205,6 +207,8 @@ const selectedArchiveLabel = computed(() => {
   const ownerName = getOwnerNames(archive.value as ArchiveRow) || '-';
   return `${buildingName} / ${ownerName} / ${archive.value.targetYear}年${archive.value.targetMonth}月`;
 });
+
+const selectedArchiveDisabled = computed(() => archive.value?.disabled ?? false);
 
 const loadOptions = async () => {
   loadingOwners.value = true;
@@ -305,6 +309,25 @@ const openArchive = async (row: BuildingMonthlyArchiveResponse) => {
     await toastHandler(error);
   } finally {
     detailLoading.value = false;
+  }
+};
+
+const toggleArchiveVisibility = async (row: BuildingMonthlyArchiveResponse) => {
+  if (!row.id) {
+    await toastHandler(new Error('月度資料IDが見つかりません。'));
+    return;
+  }
+  visibilityLoadingId.value = row.id;
+  try {
+    if (row.disabled) {
+      await archiveStore.enableArchive(row.id);
+    } else {
+      await archiveStore.disableArchive(row.id);
+    }
+  } catch (error) {
+    await toastHandler(error);
+  } finally {
+    visibilityLoadingId.value = null;
   }
 };
 
@@ -473,8 +496,30 @@ onMounted(async () => {
                   {{ row.attachments?.length ?? 0 }}
                 </q-td>
               </template>
+              <template #[`body-cell-visibility`]="{ row }: { row: BuildingMonthlyArchiveResponse }">
+                <q-td>
+                  <q-badge
+                    v-if="row.disabled"
+                    color="red"
+                    label="不可"
+                  />
+                  <q-badge
+                    v-else
+                    color="green"
+                    label="可"
+                  />
+                </q-td>
+              </template>
               <template #[`body-cell-actions`]="{ row }: { row: BuildingMonthlyArchiveResponse }">
                 <q-td class="text-right">
+                  <q-btn
+                    flat
+                    dense
+                    size="sm"
+                    :icon="row.disabled ? 'sym_r_visibility' : 'sym_r_visibility_off'"
+                    :loading="visibilityLoadingId === row.id"
+                    @click="toggleArchiveVisibility(row)"
+                  />
                   <q-btn flat dense size="sm" icon="sym_r_folder_open" @click="openArchive(row)" />
                 </q-td>
               </template>
@@ -493,14 +538,38 @@ onMounted(async () => {
 
         <q-card bordered class="q-mt-md">
           <q-card-section class="row items-center justify-between">
-            <div class="text-h6">{{ selectedArchiveLabel }}</div>
-            <q-btn
-              color="primary"
-              label="添付アップロード"
-              icon="sym_r_upload_file"
-              :disable="!canUpload"
-              @click="openUploadDialog"
-            />
+            <div class="row items-center q-col-gutter-sm">
+              <div class="col-auto text-h6">{{ selectedArchiveLabel }}</div>
+              <div v-if="archive" class="col-auto">
+                <q-badge
+                  v-if="selectedArchiveDisabled"
+                  color="red"
+                  label="不可"
+                />
+                <q-badge
+                  v-else
+                  color="green"
+                  label="可"
+                />
+              </div>
+            </div>
+            <div class="row items-center q-gutter-sm">
+              <q-btn
+                v-if="archive?.id"
+                :color="selectedArchiveDisabled ? 'positive' : 'warning'"
+                :label="selectedArchiveDisabled ? '可視化' : '不可視化'"
+                :icon="selectedArchiveDisabled ? 'sym_r_visibility' : 'sym_r_visibility_off'"
+                :loading="visibilityLoadingId === archive.id"
+                @click="toggleArchiveVisibility(archive)"
+              />
+              <q-btn
+                color="primary"
+                label="添付アップロード"
+                icon="sym_r_upload_file"
+                :disable="!canUpload"
+                @click="openUploadDialog"
+              />
+            </div>
           </q-card-section>
           <q-separator />
           <q-card-section class="q-pa-none">

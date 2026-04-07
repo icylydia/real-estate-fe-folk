@@ -24,6 +24,22 @@ export const useMonthlyArchiveStore = defineStore('monthlyArchive', {
     searchParams: {} as MonthlyArchiveListRequest,
   }),
   actions: {
+    updateArchiveState(nextArchive: BuildingMonthlyArchiveResponse) {
+      this.archiveList = this.archiveList.map((archive) => (
+        archive.id === nextArchive.id
+          ? {
+            ...archive,
+            ...nextArchive,
+          }
+          : archive
+      ));
+      if (this.archive?.id === nextArchive.id) {
+        this.archive = {
+          ...this.archive,
+          ...nextArchive,
+        };
+      }
+    },
     reset() {
       this.archiveList = [];
       this.archive = null;
@@ -61,6 +77,16 @@ export const useMonthlyArchiveStore = defineStore('monthlyArchive', {
       if (this.archive) {
         this.archive.attachments = this.attachments;
       }
+    },
+    async disableArchive(archiveId: number): Promise<BuildingMonthlyArchiveResponse> {
+      const archive = await api.disableBuildingMonthlyArchive(archiveId);
+      this.updateArchiveState(archive);
+      return archive;
+    },
+    async enableArchive(archiveId: number): Promise<BuildingMonthlyArchiveResponse> {
+      const archive = await api.enableBuildingMonthlyArchive(archiveId);
+      this.updateArchiveState(archive);
+      return archive;
     },
   },
 });
