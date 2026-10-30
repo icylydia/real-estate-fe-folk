@@ -927,10 +927,10 @@
     "@typescript-eslint/types" "8.32.0"
     eslint-visitor-keys "^4.2.0"
 
-"@vee-validate/i18n@^4.15.0":
-  version "4.15.0"
-  resolved "https://registry.yarnpkg.com/@vee-validate/i18n/-/i18n-4.15.0.tgz#4e1636f4c61b4a86446c4048598740538c5f1658"
-  integrity sha512-XAXoIhcgy4//9WBmxK/6Wnv14Bwkrka/0PMHPOxUhbc8y4QfdIRbyFWvxWZw2nzc6suHrFIePt1mBx91aTqIwg==
+"@vee-validate/i18n@^4.15.1":
+  version "4.15.1"
+  resolved "https://registry.yarnpkg.com/@vee-validate/i18n/-/i18n-4.15.1.tgz#57c466eb9311e9fdc3be3d8dd4182cfc8a1ed7be"
+  integrity sha512-6ogEyxkoTr7IZk4EAUT0rD3pr34Nw/YEToez/c0DSlI1/cBeOpunSmGmoYPh32pmd3imxFPEawCB7IyFvRJSAw==
 
 "@vee-validate/yup@^4.15.0":
   version "4.15.0"
