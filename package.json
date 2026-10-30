@@ -36,7 +36,7 @@
     "yup-locale-ja": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.1",
+    "@babel/core": "^8.0.9",
     "@eslint/js": "^9.24.0",
     "@quasar/app-vite": "^2.2.0",
     "@types/isomorphic-fetch": "^0.0.39",
