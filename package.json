@@ -54,7 +54,7 @@
     "typescript": "^5.8.3",
     "vite-plugin-checker": "^0.9.3",
     "vue-component-type-helpers": "^2.2.10",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^3.3.13"
   },
   "engines": {
     "node": "^20",
