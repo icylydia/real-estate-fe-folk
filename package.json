@@ -18,7 +18,7 @@
     "build-chuwa": "quasar build"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.17",
+    "@quasar/extras": "^2.1.0",
     "@vee-validate/i18n": "^4.15.0",
     "@vee-validate/yup": "^4.15.0",
     "axios": "^1.11.0",
