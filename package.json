@@ -50,7 +50,7 @@
     "globals": "^16.1.0",
     "lodash": "^4.17.21",
     "postcss": "^8.5.3",
-    "prettier": "^3.5.3",
+    "prettier": "^3.9.10",
     "typescript": "^5.8.3",
     "vite-plugin-checker": "^0.9.3",
     "vue-component-type-helpers": "^2.2.10",
